@@ -57,7 +57,7 @@ export default async function Generations({
           .map((pokemon) => (
             <Link
               key={pokemon.name}
-              href={`/pokemon/${pokemon.name}`}
+              href={`/pokemon/${pokemon.id}`}
               className="mx-auto flex min-w-[250px] flex-col items-center justify-center rounded-lg bg-slate-600 py-2 text-xl font-semibold transition hover:bg-slate-700"
             >
               <p className="text-xl font-semibold "># {pokemon.id}</p>

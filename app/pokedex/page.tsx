@@ -6,11 +6,11 @@ import { PokemonData, Species } from "../../types/pokemonTypes";
 async function getDummyPokemon() {
   const pokemon = [];
   for (let i = 1; i < 19; i++) {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${i}`);
-    const data: Species = await res.json();
-    const pokemonRes = await fetch(data.varieties[0].pokemon.url);
-    const pokemonData: PokemonData = await pokemonRes.json();
-    pokemon.push({ ...data, pokemonData });
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
+    const data: PokemonData = await res.json();
+    const speciesRes = await fetch(data.species.url);
+    const speciesData: Species = await speciesRes.json();
+    pokemon.push({ ...data, speciesData });
   }
   return pokemon;
 }
@@ -47,20 +47,17 @@ export default async function Pokedex() {
             <h2 className="max-w-[280px] text-lg font-semibold">
               {pokemon.name}
             </h2>
-            <Link href={`/pokemon/${pokemon.name}`}>
+            <Link href={`/pokemon/${pokemon.id}`}>
               <Image
                 className="mx-auto"
                 width={200}
                 height={200}
-                src={
-                  pokemon.pokemonData.sprites.other["official-artwork"]
-                    .front_default
-                }
+                src={pokemon.sprites.other["official-artwork"].front_default}
                 alt={pokemon.name}
               />
             </Link>
             <div className="flex justify-center gap-2 text-lg font-semibold">
-              {pokemon.pokemonData.types.map((type) => {
+              {pokemon.types.map((type) => {
                 const matchingType = PokemonTypes.filter(
                   (pokemonType) => pokemonType.name === type.type.name
                 )[0];

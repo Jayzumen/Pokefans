@@ -7,19 +7,17 @@ async function getRandomPokemon() {
   const pokemon = [];
   for (let i = 0; i < 6; i++) {
     const randomId = Math.floor(Math.random() * 1008);
-    const res = await fetch(
-      `https://pokeapi.co/api/v2/pokemon-species/${randomId}`
-    );
-    const data: Species = await res.json();
-    const pokemonRes = await fetch(data.varieties[0].pokemon.url);
-    const pokemonData: PokemonData = await pokemonRes.json();
-    pokemon.push({ ...data, pokemonData });
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
+    const data: PokemonData = await res.json();
+    const speciesRes = await fetch(data.species.url);
+    const speciesData: Species = await speciesRes.json();
+    pokemon.push({ ...data, speciesData });
   }
   return pokemon;
 }
 
 export default async function Home() {
-  const randomPokemon: Species[] = await getRandomPokemon();
+  const randomPokemon: PokemonData[] = await getRandomPokemon();
 
   return (
     <main className="p-4">
@@ -33,20 +31,17 @@ export default async function Home() {
             <h2 className="max-w-[280px] text-2xl font-semibold">
               {pokemon.name}
             </h2>
-            <Link href={`pokemon/${pokemon.name}`}>
+            <Link href={`pokemon/${pokemon.id}`}>
               <Image
                 className="mx-auto"
-                src={
-                  pokemon.pokemonData.sprites.other["official-artwork"]
-                    .front_default
-                }
+                src={pokemon.sprites.other["official-artwork"].front_default}
                 alt={pokemon.name}
                 width={200}
                 height={200}
               />
             </Link>
             <div className="flex justify-center gap-2 text-lg font-semibold">
-              {pokemon.pokemonData.types.map((type: any) => {
+              {pokemon.types.map((type) => {
                 const matchingType = PokemonTypes.filter(
                   (pokemonType) => pokemonType.name === type.type.name
                 )[0];

@@ -20,6 +20,7 @@ export interface PokemonData {
       };
     };
   };
+  speciesData: Species;
 }
 
 export interface Species {
@@ -37,7 +38,6 @@ export interface Species {
   is_mythical: boolean;
   is_baby: boolean;
   varieties: Variety[];
-  pokemonData: PokemonData;
 }
 
 export interface Variety {
