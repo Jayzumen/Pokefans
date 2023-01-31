@@ -1,91 +1,63 @@
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from './page.module.css'
+import Image from "next/image";
+import Link from "next/link";
+import { PokemonTypes } from "./constants";
 
-const inter = Inter({ subsets: ['latin'] })
+const getRandomPokemon = async () => {
+  const pokemon = [];
+  for (let i = 0; i < 6; i++) {
+    const randomId = Math.floor(Math.random() * 1008);
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const data = await res.json();
+    pokemon.push(data);
+  }
+  return pokemon;
+};
 
-export default function Home() {
+export default async function Home() {
+  const randomPokemon = await getRandomPokemon();
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="px-4">
+      <h1 className="my-4 text-4xl font-bold underline">Pokéfans</h1>
+      <div className="mx-auto flex max-w-[1200px] flex-wrap justify-center gap-4 capitalize text-black">
+        {randomPokemon.map((pokemon: any) => (
+          <div
+            key={pokemon.name}
+            className="min-w-[300px] rounded-lg bg-slate-400 p-4"
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+            <h2 className="max-w-[280px] text-2xl font-semibold">
+              {pokemon.name}
+            </h2>
+            <Link href={`pokemon/${pokemon.name}`}>
+              <Image
+                className="mx-auto"
+                src={pokemon.sprites.other["official-artwork"].front_default}
+                alt={pokemon.name}
+                width={200}
+                height={200}
+              />
+            </Link>
+            <div className="flex justify-center gap-2 text-lg font-semibold">
+              {pokemon.types.map((type: any) => {
+                const matchingType = PokemonTypes.filter(
+                  (pokemonType) => pokemonType.name === type.type.name
+                )[0];
+                return (
+                  <p
+                    key={type.type.name}
+                    className={`min-w-[100px] rounded-lg p-1 ${matchingType.color}`}
+                  >
+                    {type.type.name}
+                  </p>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </main>
-  )
+  );
 }
