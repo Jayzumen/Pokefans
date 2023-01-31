@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
+    "pokeapi-typescript": "^2.1.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.3",
     "prettier-plugin-tailwindcss": "^0.2.2",

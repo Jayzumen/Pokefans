@@ -1,20 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PokemonTypes } from "../constants";
+import { PokemonTypes } from "../../assets/constants";
+import { PokemonData, Species } from "../../types/pokemonTypes";
 
-async function getPokemon() {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=18`);
-  const data = await res.json();
-  const pokemon = data.results.map(async (result: any) => {
-    const res = await fetch(result.url);
-    const data = await res.json();
-    return data;
-  });
-  return Promise.all(pokemon);
+async function getDummyPokemon() {
+  const pokemon = [];
+  for (let i = 1; i < 19; i++) {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${i}`);
+    const data: Species = await res.json();
+    const pokemonRes = await fetch(data.varieties[0].pokemon.url);
+    const pokemonData: PokemonData = await pokemonRes.json();
+    pokemon.push({ ...data, pokemonData });
+  }
+  return pokemon;
 }
 
 export default async function Pokedex() {
-  const pokemon = await getPokemon();
+  const pokemon = await getDummyPokemon();
   return (
     <main className="px-4">
       <h1 className="my-2 text-4xl font-bold underline">Pokédex</h1>
@@ -37,7 +39,7 @@ export default async function Pokedex() {
       </form>
 
       <div className="mx-auto my-4 flex max-w-[1200px] flex-wrap gap-8 capitalize">
-        {pokemon.map((pokemon: any) => (
+        {pokemon.map((pokemon) => (
           <div
             className="mx-auto min-w-[300px] rounded-lg bg-slate-500 p-2 "
             key={pokemon.id}
@@ -50,12 +52,15 @@ export default async function Pokedex() {
                 className="mx-auto"
                 width={200}
                 height={200}
-                src={pokemon.sprites.other["official-artwork"].front_default}
+                src={
+                  pokemon.pokemonData.sprites.other["official-artwork"]
+                    .front_default
+                }
                 alt={pokemon.name}
               />
             </Link>
             <div className="flex justify-center gap-2 text-lg font-semibold">
-              {pokemon.types.map((type: any) => {
+              {pokemon.pokemonData.types.map((type) => {
                 const matchingType = PokemonTypes.filter(
                   (pokemonType) => pokemonType.name === type.type.name
                 )[0];
