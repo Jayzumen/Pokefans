@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PokemonTypes } from "../../../assets/constants";
 import { PokemonData, Species } from "../../../types/pokemonTypes";
 
-export async function getPokemonData(pokemonId: number) {
+async function getPokemonData(pokemonId: number) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
   const pokemonData: PokemonData = await res.json();
   const speciesRes = await fetch(pokemonData.species.url);

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { AttackData } from "../../../types/attackTypes";
 import { PokemonTypes } from "@/assets/constants";
 
-export async function getAttackData(id: number) {
+async function getAttackData(id: number) {
   const attackRes = await fetch(`https://pokeapi.co/api/v2/move/${id}`);
   const attackData: AttackData = await attackRes.json();
   return attackData;
