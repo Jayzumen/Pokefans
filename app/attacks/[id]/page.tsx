@@ -3,7 +3,7 @@ import Image from "next/image";
 import { AttackData } from "../../../types/attackTypes";
 import { PokemonTypes } from "@/assets/constants";
 
-async function getAttackData(id: number) {
+export async function getAttackData(id: number) {
   const attackRes = await fetch(`https://pokeapi.co/api/v2/move/${id}`);
   const attackData: AttackData = await attackRes.json();
   return attackData;
@@ -74,7 +74,7 @@ export default async function AttackPage({
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
                   pokemon.url.split("/")[6]
                 }.png`}
-                alt={pokemon.name}
+                alt={pokemon.url.split("/")[6]}
                 width={200}
                 height={200}
               />

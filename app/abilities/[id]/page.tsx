@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { AbilityData } from "../../../types/abilityTypes";
 
-async function getAbilityData(id: number) {
+export async function getAbilityData(id: number) {
   const abilityRes = await fetch(`https://pokeapi.co/api/v2/ability/${id}`);
   const abilityData: AbilityData = await abilityRes.json();
   return abilityData;

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PokemonTypes } from "../../../assets/constants";
 import { PokemonData, Species } from "../../../types/pokemonTypes";
 
-async function getPokemonData(pokemonId: number) {
+export async function getPokemonData(pokemonId: number) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
   const pokemonData: PokemonData = await res.json();
   const speciesRes = await fetch(pokemonData.species.url);
@@ -38,12 +38,13 @@ export default async function Pokemon({ params }: { params: { id: number } }) {
                 (pokemonType) => pokemonType.name === type.type.name
               )[0];
               return (
-                <p
+                <Link
                   key={type.type.name}
-                  className={`min-w-[100px] rounded-lg p-1 ${matchingType.color}`}
+                  href={`/types/${type.type.url.split("/")[6]}`}
+                  className={`min-w-[100px] rounded-lg py-2 text-black transition hover:opacity-80 ${matchingType.color}`}
                 >
                   {type.type.name}
-                </p>
+                </Link>
               );
             })}
           </div>

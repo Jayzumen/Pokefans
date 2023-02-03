@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AbilityData } from "./../../types/abilityTypes";
+import SearchForm from "./SearchForm";
 
 async function randomAbilities(): Promise<AbilityData[]> {
   const abilities: AbilityData[] = [];
@@ -14,10 +15,13 @@ async function randomAbilities(): Promise<AbilityData[]> {
 
 export default async function AbilityPage() {
   const randomAbilityData: AbilityData[] = await randomAbilities();
-  // const searchedAbilityData: AbilityData[] = await getSearchedAbilities(abilityName);
 
   return (
     <main className="p-4">
+      <h1 className="my-2 text-4xl font-bold capitalize underline">
+        Ability-Dex
+      </h1>
+      <SearchForm />
       <div className="mx-auto mt-4 flex max-w-[1400px] flex-wrap justify-center gap-4 text-white">
         {randomAbilityData?.map((ability) => {
           const englishEntry = ability.flavor_text_entries?.find(

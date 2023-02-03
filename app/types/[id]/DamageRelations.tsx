@@ -6,8 +6,8 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
   return (
     <>
       <p className="mt-4 mb-2 text-2xl font-bold">Damage Relations:</p>
-      <div className="mx-auto flex max-w-[1200px] flex-col justify-between gap-4 px-4 text-center md:flex-row">
-        <section className="mx-auto flex max-w-[550px] flex-col gap-4">
+      <div className="mx-auto flex max-w-[1200px] flex-col justify-center gap-4 px-4 text-center md:flex-row md:justify-between">
+        <section className="mx-auto flex flex-col gap-4 md:w-[50%]">
           <p className="text-2xl font-semibold">Offense:</p>
           <p className="text-xl font-semibold">Double Damage To:</p>
           <div className="flex flex-wrap justify-center gap-2">
@@ -65,7 +65,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
             )}
           </div>
         </section>
-        <section className="mx-auto flex max-w-[550px] flex-col gap-4">
+        <section className="mx-auto flex flex-col gap-4 md:w-[50%]">
           <p className="text-2xl font-semibold">Defense:</p>
           <p className="text-xl font-semibold">Double Damage From:</p>
           <div className="flex flex-wrap justify-center gap-2">

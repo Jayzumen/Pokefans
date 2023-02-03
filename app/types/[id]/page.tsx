@@ -1,7 +1,7 @@
 import { TypeData } from "@/types/typeTypes";
 import DamageRelations from "./DamageRelations";
 
-async function getTypeData(id: number): Promise<TypeData> {
+export async function getTypeData(id: number): Promise<TypeData> {
   const res = await fetch(`https://pokeapi.co/api/v2/type/${id}`);
   const data: TypeData = await res.json();
   return data;
