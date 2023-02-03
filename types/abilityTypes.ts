@@ -1,3 +1,15 @@
+export interface AbilityResponse {
+  count: number;
+  next: string;
+  previous: string;
+  results: Ability[];
+}
+
+export interface Ability {
+  name: string;
+  url: string;
+}
+
 export interface AbilityData {
   name: string;
   id: number;

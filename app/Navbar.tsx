@@ -54,17 +54,17 @@ function Navbar() {
     },
     {
       id: 3,
-      path: "/attack",
+      path: "/attacks",
       name: "Attack-Dex",
     },
     {
       id: 4,
-      path: "/ability",
+      path: "/abilities",
       name: "Ability-Dex",
     },
     {
       id: 5,
-      path: "/type",
+      path: "/types",
       name: "Type-Dex",
     },
   ];
