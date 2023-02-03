@@ -56,7 +56,7 @@ export default async function Pokemon({ params }: { params: { id: number } }) {
                 <Link
                   href={`/abilities/${ability.ability.url.split("/")[6]}`}
                   key={index}
-                  className="transition hover:underline"
+                  className="mx-auto w-fit transition hover:underline"
                 >
                   {ability.ability.name}
                 </Link>

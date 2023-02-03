@@ -7,6 +7,40 @@ function Navbar() {
   const [nav, setNav] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const closeBtn = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+  );
+
+  const openBtn = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h16"
+      />
+    </svg>
+  );
+
   const dexLinks = [
     {
       id: 1,
@@ -80,7 +114,7 @@ function Navbar() {
         onClick={() => setNav(!nav)}
         className="z-10 cursor-pointer pr-4 lg:hidden"
       >
-        {nav ? <p>X</p> : <p>O</p>}
+        {nav ? <p>{closeBtn}</p> : <p>{openBtn}</p>}
       </button>
 
       {nav && (
@@ -91,7 +125,7 @@ function Navbar() {
             onClick={() => setNav(!nav)}
             className="absolute top-0 right-0 z-50 cursor-pointer pr-4"
           >
-            {nav ? <p>X</p> : <p>O</p>}
+            {nav ? <p>{closeBtn}</p> : <p>{openBtn}</p>}
           </button>
           <ul
             className="fixed top-0 left-0 z-10 flex h-full w-full flex-col items-center overflow-hidden
