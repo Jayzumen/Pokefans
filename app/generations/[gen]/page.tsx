@@ -1,15 +1,6 @@
 import Link from "next/link";
-import {
-  AllGenerations,
-  GenerationPokemon,
-} from "../../../types/generationTypes";
+import { GenerationPokemon } from "../../../types/generationTypes";
 import Image from "next/image";
-
-async function getAllGenerations() {
-  const res = await fetch("https://pokeapi.co/api/v2/generation/");
-  const data = await res.json();
-  return data;
-}
 
 async function getGenerationsData(gen: string) {
   const res = await fetch(`https://pokeapi.co/api/v2/generation/${gen}/`);
@@ -29,28 +20,15 @@ async function getGenerationsData(gen: string) {
   return pokemon;
 }
 
-export default async function Generations({
+export default async function GenerationsPage({
   params,
 }: {
   params: { gen: string };
 }) {
-  const allGenerations: AllGenerations = await getAllGenerations();
   const data: GenerationPokemon[] = await getGenerationsData(params.gen);
 
   return (
     <main className="px-4">
-      <h1 className="my-2 text-4xl font-bold underline">Generations</h1>
-      <div className="flex flex-wrap justify-center gap-4 py-2">
-        {allGenerations.results.map((gen) => (
-          <Link
-            key={gen.name}
-            className="min-w-[100px] items-center justify-center rounded-lg bg-purple-800 py-2 text-xl font-semibold transition hover:bg-purple-700"
-            href={`/generations/${gen.url.split("/")[6]}`}
-          >
-            {gen.name.split("-")[1].toUpperCase()}
-          </Link>
-        ))}
-      </div>
       <div className="flex flex-wrap gap-8 p-4">
         {data
           .sort((a, b) => (a.id > b.id ? 1 : -1))
