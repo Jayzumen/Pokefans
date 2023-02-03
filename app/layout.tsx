@@ -19,7 +19,10 @@ export default function RootLayout({
         className={`${poppins.className} flex flex-col justify-center bg-black text-center text-white`}
       >
         <Navbar />
-        {children}
+        <main className="p-4">
+          <h1 className="my-4 text-4xl font-bold underline">Pokéfans</h1>
+          {children}
+        </main>
       </body>
     </html>
   );
