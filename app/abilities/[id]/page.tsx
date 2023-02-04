@@ -2,14 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { AbilityData } from "../../../types/abilityTypes";
 
-async function getAbilityData(id: string) {
+async function getAbilityData(id: string): Promise<AbilityData> {
   const abilityRes = await fetch(`https://pokeapi.co/api/v2/ability/${id}`);
   const abilityData: AbilityData = await abilityRes?.json();
   return abilityData;
 }
 
 export default async function Ability({ params }: { params: { id: string } }) {
-  const ability = await getAbilityData(params?.id);
+  const ability = await getAbilityData(params.id);
 
   const englishFlavText = ability.flavor_text_entries.find(
     (entry) => entry.language.name === "en"
