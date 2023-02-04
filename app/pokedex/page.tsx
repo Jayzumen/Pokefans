@@ -63,7 +63,7 @@ export default async function Pokedex() {
                 )[0];
                 return (
                   <Link
-                    href={`/type/${type.type.name}`}
+                    href={`/types/${type.type.name}`}
                     key={type.type.name}
                     className={`min-w-[100px] rounded-lg p-1 ${matchingType.color}`}
                   >
