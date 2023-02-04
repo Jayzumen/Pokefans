@@ -7,7 +7,7 @@ async function randomAbilities(): Promise<AbilityData[]> {
   for (let i = 1; i <= 10; i++) {
     const randomId = Math.floor(Math.random() * 298);
     const res = await fetch(`https://pokeapi.co/api/v2/ability/${randomId}`);
-    const data: AbilityData = await res.json();
+    const data: AbilityData = await res?.json();
     abilities.push(data);
   }
   return abilities;
@@ -31,7 +31,7 @@ export default async function AbilityPage() {
           return (
             <Link
               key={ability.id}
-              href={`/abilities/${ability.id}`}
+              href={`/abilities/${ability.name}`}
               className="flex min-h-[250px] min-w-[250px] flex-col gap-2 rounded-lg bg-slate-700"
             >
               <p className="border-b-2 py-1 text-2xl font-bold capitalize">

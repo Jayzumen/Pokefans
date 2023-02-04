@@ -17,7 +17,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
               )[0];
               return (
                 <Link
-                  href={`/types/${type.url.split("/")[6]}`}
+                  href={`/types/${type.name}`}
                   key={type.name}
                   className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
                 >
@@ -34,7 +34,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
               )[0];
               return (
                 <Link
-                  href={`/types/${type.url.split("/")[6]}`}
+                  href={`/types/${type.name}`}
                   key={type.name}
                   className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
                 >
@@ -52,7 +52,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
                 )[0];
                 return (
                   <Link
-                    href={`/types/${type.url.split("/")[6]}`}
+                    href={`/types/${type.name}`}
                     key={type.name}
                     className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
                   >
@@ -75,7 +75,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
               )[0];
               return (
                 <Link
-                  href={`/types/${type.url.split("/")[6]}`}
+                  href={`/types/${type.name}`}
                   key={type.name}
                   className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
                 >
@@ -93,7 +93,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
               )[0];
               return (
                 <Link
-                  href={`/types/${type.url.split("/")[6]}`}
+                  href={`/types/${type.name}`}
                   key={type.name}
                   className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
                 >
@@ -112,7 +112,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
                 )[0];
                 return (
                   <Link
-                    href={`/types/${type.url.split("/")[6]}`}
+                    href={`/types/${type.name}`}
                     key={type.name}
                     className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
                   >

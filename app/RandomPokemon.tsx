@@ -18,7 +18,7 @@ export default function RandomPokemon({
           <h2 className="max-w-[280px] text-2xl font-semibold">
             {pokemon.name}
           </h2>
-          <Link href={`pokemon/${pokemon.id}`}>
+          <Link href={`pokemon/${pokemon.name}`}>
             <Image
               className="mx-auto"
               src={pokemon.sprites.other["official-artwork"].front_default}
@@ -35,7 +35,7 @@ export default function RandomPokemon({
               return (
                 <Link
                   key={type.type.name}
-                  href={`/types/${type.type.url.split("/")[6]}`}
+                  href={`/types/${type.type.name}`}
                   className={`min-w-[100px] rounded-lg py-2 transition hover:opacity-80 ${matchingType.color}`}
                 >
                   {type.type.name}

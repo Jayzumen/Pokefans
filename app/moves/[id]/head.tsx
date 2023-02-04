@@ -1,8 +1,4 @@
-export default async function AttackHead({
-  params,
-}: {
-  params: { id: number };
-}) {
+export default async function MoveHead({ params }: { params: { id: number } }) {
   return (
     <>
       <title>{params.id}</title>

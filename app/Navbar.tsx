@@ -54,8 +54,8 @@ function Navbar() {
     },
     {
       id: 3,
-      path: "/attacks",
-      name: "Attack-Dex",
+      path: "/moves",
+      name: "Move-Dex",
     },
     {
       id: 4,

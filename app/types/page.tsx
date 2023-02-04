@@ -4,7 +4,7 @@ import Link from "next/link";
 
 async function getTypeData(): Promise<Type[]> {
   const res = await fetch("https://pokeapi.co/api/v2/type?limit=18");
-  const data = await res.json();
+  const data = await res?.json();
   const results: Type[] = data.results;
   return results;
 }
@@ -22,7 +22,7 @@ export default async function TypesPage() {
           return (
             <Link
               key={type.name}
-              href={`/types/${type.url.split("/")[6]}`}
+              href={`/types/${type.name}`}
               className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
             >
               {type.name}

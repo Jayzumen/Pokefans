@@ -1,12 +1,12 @@
 import { EffectChange, EffectEntry, FlavorTextEntry } from "./abilityTypes";
 import { Pokemon } from "./pokemonTypes";
 
-export interface Attack {
+export interface Move {
   name: string;
   url: string;
 }
 
-export interface AttackData {
+export interface MoveData {
   accuracy: number;
   effect_chance: number;
   pp: number;

@@ -6,9 +6,9 @@ async function getRandomPokemon() {
   for (let i = 0; i < 6; i++) {
     const randomId = Math.floor(Math.random() * 1008);
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
-    const data: PokemonData = await res.json();
+    const data: PokemonData = await res?.json();
     const speciesRes = await fetch(data.species.url);
-    const speciesData: Species = await speciesRes.json();
+    const speciesData: Species = await speciesRes?.json();
     pokemon.push({ ...data, speciesData });
   }
   return pokemon;

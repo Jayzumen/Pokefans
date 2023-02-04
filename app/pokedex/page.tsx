@@ -7,9 +7,9 @@ async function getDummyPokemon() {
   const pokemon = [];
   for (let i = 1; i < 19; i++) {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
-    const data: PokemonData = await res.json();
+    const data: PokemonData = await res?.json();
     const speciesRes = await fetch(data.species.url);
-    const speciesData: Species = await speciesRes.json();
+    const speciesData: Species = await speciesRes?.json();
     pokemon.push({ ...data, speciesData });
   }
   return pokemon;
@@ -47,7 +47,7 @@ export default async function Pokedex() {
             <h2 className="max-w-[280px] text-lg font-semibold">
               {pokemon.name}
             </h2>
-            <Link href={`/pokemon/${pokemon.id}`}>
+            <Link href={`/pokemon/${pokemon.name}`}>
               <Image
                 className="mx-auto"
                 width={200}
@@ -62,12 +62,13 @@ export default async function Pokedex() {
                   (pokemonType) => pokemonType.name === type.type.name
                 )[0];
                 return (
-                  <p
+                  <Link
+                    href={`/type/${type.type.name}`}
                     key={type.type.name}
                     className={`min-w-[100px] rounded-lg p-1 ${matchingType.color}`}
                   >
                     {type.type.name}
-                  </p>
+                  </Link>
                 );
               })}
             </div>
