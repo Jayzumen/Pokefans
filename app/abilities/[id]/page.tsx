@@ -37,9 +37,9 @@ export default async function Ability({ params }: { params: { id: string } }) {
         <div>
           <p className="py-4 text-2xl font-bold">Pokemon with the ability:</p>
           <div className="flex flex-wrap gap-8 p-4">
-            {ability.pokemon.map((pokemon) => (
+            {ability.pokemon.map((pokemon, index) => (
               <Link
-                key={pokemon.pokemon.name}
+                key={index}
                 href={`/pokemon/${pokemon.pokemon.name}`}
                 className="mx-auto flex min-w-[250px] flex-col items-center justify-center rounded-lg bg-slate-600 py-2 text-xl font-semibold transition hover:bg-slate-700"
               >

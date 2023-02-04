@@ -11,7 +11,7 @@ export default function GenerationLayout({
       className={`flex flex-col justify-center bg-black text-center text-white`}
     >
       <p className="my-2 text-4xl font-bold underline">Generations</p>
-      <div className="flex flex-wrap justify-center gap-4 py-2">
+      <div className="mx-auto flex max-w-[70%] flex-wrap justify-center gap-4 py-2">
         {Generations.map((gen) => (
           <Link
             key={gen.name}

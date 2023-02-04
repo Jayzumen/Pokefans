@@ -27,6 +27,7 @@ export interface Generation {
 export interface GenerationPokemon {
   id: number;
   name: string;
+  speciesName: string;
 }
 
 export interface AllGenerations {

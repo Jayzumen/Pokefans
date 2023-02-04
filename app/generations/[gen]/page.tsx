@@ -2,7 +2,7 @@ import Link from "next/link";
 import { GenerationPokemon } from "../../../types/generationTypes";
 import Image from "next/image";
 
-async function getGenerationsData(gen: string) {
+async function getGenerationsData(gen: string): Promise<GenerationPokemon[]> {
   const res = await fetch(`https://pokeapi.co/api/v2/generation/${gen}/`);
   const data = await res?.json();
   const pokemon = await Promise.all(
@@ -11,8 +11,9 @@ async function getGenerationsData(gen: string) {
       const data = await res?.json();
 
       return {
-        name: data.name,
         id: data.id,
+        speciesName: data.name,
+        name: data.varieties[0].pokemon.name,
       };
     })
   );
@@ -49,7 +50,7 @@ export default async function GenerationsPage({
                 </p>
 
                 <p className="text-xl font-semibold capitalize">
-                  {pokemon.name}
+                  {pokemon.speciesName}
                 </p>
                 <Image
                   src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}

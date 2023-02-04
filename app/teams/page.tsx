@@ -59,7 +59,7 @@ export default async function TeamsPage() {
                           key={p.id}
                         >
                           <p className="mx-auto w-fit text-2xl">{p.name}</p>
-                          <Link href={`/pokemon/${p.id}`}>
+                          <Link href={`/pokemon/${p.name}`}>
                             <Image
                               height={250}
                               width={250}
@@ -69,7 +69,7 @@ export default async function TeamsPage() {
                           </Link>
                           <div>
                             <p>
-                              Total Stats:
+                              Total Stats:{" "}
                               <span className="font-semibold">
                                 {totalStats}
                               </span>
@@ -83,7 +83,7 @@ export default async function TeamsPage() {
                               return (
                                 <Link
                                   key={t.slot}
-                                  href={`/types/${t.type.url.split("/")[6]}`}
+                                  href={`/types/${t.type.name}`}
                                   className={`mx-auto min-w-[100px] rounded-md p-2 text-xl font-semibold text-black ${matchingType.color} transition hover:opacity-80`}
                                 >
                                   {t.type.name}
