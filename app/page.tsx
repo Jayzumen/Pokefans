@@ -1,4 +1,5 @@
 import { PokemonData, Species } from "../types/pokemonTypes";
+import PageLinks from "./PageLinks";
 import RandomPokemon from "./RandomPokemon";
 
 async function getRandomPokemon() {
@@ -19,7 +20,10 @@ export default async function Home() {
 
   return (
     <main className="p-4">
-      <h1 className="my-4 text-4xl font-bold underline">Pokéfans</h1>
+      <h1 className=" my-4 text-5xl font-bold underline">
+        Welcome to Pokéfans
+      </h1>
+      <PageLinks />
       <RandomPokemon randomPokemon={randomPokemon} />
     </main>
   );

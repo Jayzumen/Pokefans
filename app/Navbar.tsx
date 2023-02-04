@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { dexLinks } from "@/assets/constants";
 
 function Navbar() {
   const [nav, setNav] = useState(false);
@@ -41,37 +42,11 @@ function Navbar() {
     </svg>
   );
 
-  const dexLinks = [
-    {
-      id: 1,
-      path: "/pokedex",
-      name: "Pokédex",
-    },
-    {
-      id: 2,
-      path: "/generations/1",
-      name: "Generation-Dex",
-    },
-    {
-      id: 3,
-      path: "/moves",
-      name: "Move-Dex",
-    },
-    {
-      id: 4,
-      path: "/abilities",
-      name: "Ability-Dex",
-    },
-    {
-      id: 5,
-      path: "/types",
-      name: "Type-Dex",
-    },
-  ];
-
   return (
     <div className="sticky top-0 z-10 flex h-24 items-center justify-between bg-purple-900 px-4 text-center text-white md:px-10">
-      <h1 className="text-3xl font-extrabold underline">Pokéfans</h1>
+      <Link href={"/"} className="text-3xl font-extrabold underline">
+        Pokéfans
+      </Link>
 
       <ul className="hidden md:mr-16 md:justify-center md:gap-6 lg:flex">
         <li className="text-lg font-bold transition hover:text-slate-400 hover:underline">

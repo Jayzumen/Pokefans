@@ -1,3 +1,31 @@
+export const dexLinks = [
+  {
+    id: 1,
+    path: "/pokedex",
+    name: "Pokédex",
+  },
+  {
+    id: 2,
+    path: "/generations/1",
+    name: "Generation-Dex",
+  },
+  {
+    id: 3,
+    path: "/moves",
+    name: "Move-Dex",
+  },
+  {
+    id: 4,
+    path: "/abilities",
+    name: "Ability-Dex",
+  },
+  {
+    id: 5,
+    path: "/types",
+    name: "Type-Dex",
+  },
+];
+
 export const PokemonTypes = [
   {
     name: "normal",
