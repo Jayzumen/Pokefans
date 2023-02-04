@@ -28,6 +28,7 @@ function PokemonLayout({ data }: { data: GenerationPokemon[] }) {
                 {pokemon.speciesName}
               </p>
               <Image
+                loading="lazy"
                 src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
                 alt={pokemon.name}
                 width={200}

@@ -1,5 +1,6 @@
 import { TypeData } from "@/types/typeTypes";
 import DamageRelations from "./DamageRelations";
+import TypePokemon from "./TypePokemon";
 
 async function getTypeData(id: string): Promise<TypeData> {
   const res = await fetch(`https://pokeapi.co/api/v2/type/${id}`);
@@ -15,7 +16,7 @@ export default async function TypePage({ params }: { params: { id: string } }) {
         {typeData.name}
       </h1>
       <DamageRelations typeData={typeData} />
-      {/* TODO: Add moves and Pokemon of the Type */}
+      <TypePokemon typeData={typeData} />
     </main>
   );
 }
