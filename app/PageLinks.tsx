@@ -7,12 +7,6 @@ function PageLinks() {
     <div className="mx-auto my-4 flex max-w-[50%] flex-wrap justify-center gap-4 text-xl font-semibold text-black">
       <Link
         className="min-w-[200px] rounded-lg bg-slate-400 py-2  transition hover:bg-slate-500"
-        href={"/"}
-      >
-        Home
-      </Link>
-      <Link
-        className="min-w-[200px] rounded-lg bg-slate-400 py-2  transition hover:bg-slate-500"
         href={"/teams"}
       >
         Teams
