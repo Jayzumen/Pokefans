@@ -1,37 +1,46 @@
-import Link from "next/link";
-import { PokemonData, Species } from "../../../types/pokemonTypes";
+import {
+  EvolutionChain,
+  PokemonData,
+  Species,
+} from "../../../types/pokemonTypes";
+import PokemonEvoChain from "./PokemonEvoChain";
 import PokemonImage from "./PokemonImage";
 import PokemonInfo from "./PokemonInfo";
+import PokemonStats from "./PokemonStats";
 
 async function getPokemonData(pokemonId: string) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
   const pokemonData: PokemonData = await res?.json();
   const speciesRes = await fetch(pokemonData.species.url);
   const speciesData: Species = await speciesRes?.json();
-  return { ...pokemonData, speciesData };
+  let evoChainData: EvolutionChain | undefined;
+  if (speciesData.evolution_chain?.url) {
+    const evoChainRes = await fetch(speciesData.evolution_chain.url);
+    evoChainData = await evoChainRes?.json();
+  }
+  return { ...pokemonData, speciesData, evoChainData };
 }
 
 export default async function Pokemon({ params }: { params: { id: string } }) {
   const pokemon: PokemonData = await getPokemonData(params?.id);
 
-  if (pokemon) {
-    return (
-      <main className="px-4">
-        <h1 className="my-2 text-4xl font-bold capitalize underline">
-          {pokemon.name}
-        </h1>
-        <div className="flex flex-col md:flex-row md:gap-10">
-          <PokemonImage pokemon={pokemon} />
-          <PokemonInfo pokemon={pokemon} />
+  return (
+    <main className="px-4">
+      <div className="w-full 2xl:flex 2xl:justify-center">
+        <PokemonImage pokemon={pokemon} />
+
+        <div className="my-2 rounded-md bg-slate-700 p-4 text-white lg:m-4 2xl:w-[70%]">
+          <div className="mx-auto mt-2 flex flex-col text-lg md:mt-0 md:flex-row md:justify-between">
+            <PokemonInfo pokemon={pokemon} />
+            <div className="md:w-[50%]">
+              <PokemonStats pokemon={pokemon} />
+            </div>
+          </div>
+          {pokemon.evoChainData && (
+            <PokemonEvoChain evoChainData={pokemon.evoChainData} />
+          )}
         </div>
-      </main>
-    );
-  } else {
-    return (
-      <main className="flex h-screen flex-col items-center justify-center">
-        <h1 className="text-4xl font-bold">Pokemon not found</h1>
-        <Link href="/">Go back home</Link>
-      </main>
-    );
-  }
+      </div>
+    </main>
+  );
 }

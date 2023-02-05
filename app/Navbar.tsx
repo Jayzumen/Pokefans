@@ -3,44 +3,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { dexLinks } from "@/assets/constants";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { FaTimes } from "react-icons/fa";
 
 function Navbar() {
   const [nav, setNav] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const closeBtn = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
-    </svg>
-  );
-
-  const openBtn = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 6h16M4 12h16M4 18h16"
-      />
-    </svg>
-  );
 
   return (
     <div className="sticky top-0 z-10 flex h-24 items-center justify-between bg-purple-900 px-4 text-center text-white md:px-10">
@@ -89,7 +57,7 @@ function Navbar() {
         onClick={() => setNav(!nav)}
         className="z-10 cursor-pointer pr-4 lg:hidden"
       >
-        {nav ? <p>{closeBtn}</p> : <p>{openBtn}</p>}
+        {!nav && <GiHamburgerMenu className="h-8 w-8" />}
       </button>
 
       {nav && (
@@ -100,7 +68,7 @@ function Navbar() {
             onClick={() => setNav(!nav)}
             className="absolute top-0 right-0 z-50 cursor-pointer pr-4"
           >
-            {nav ? <p>{closeBtn}</p> : <p>{openBtn}</p>}
+            {nav && <FaTimes className="h-8 w-8" />}
           </button>
           <ul
             className="fixed top-0 left-0 z-10 flex h-full w-full flex-col items-center overflow-hidden

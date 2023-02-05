@@ -4,10 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
+export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
   return (
     <>
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col">
+        <h1 className="my-2 text-center text-4xl font-bold capitalize underline">
+          {pokemon.name}
+        </h1>
         <div className="flex flex-col items-center pb-2">
           <Image
             priority
@@ -16,7 +19,7 @@ function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
             height={475}
             alt={pokemon.name}
           />
-          <div className="flex gap-4 text-lg font-semibold capitalize">
+          <div className="mt-1 flex gap-4 text-lg font-semibold capitalize">
             {pokemon.types.map((type) => {
               const matchingType = PokemonTypes.filter(
                 (pokemonType) => pokemonType.name === type.type.name
@@ -37,5 +40,3 @@ function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
     </>
   );
 }
-
-export default PokemonImage;
