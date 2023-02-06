@@ -39,7 +39,7 @@ export default async function movePage({ params }: { params: { id: string } }) {
         style={{
           backgroundColor: matchingType.color,
         }}
-        className="px-4 pt-32 pb-4"
+        className="min-h-screen px-4 pt-32 pb-4"
       >
         <MoveInfo move={move} />
 
