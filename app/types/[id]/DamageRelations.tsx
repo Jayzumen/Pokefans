@@ -43,9 +43,15 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
                 <Link
                   href={`/types/${type.name}`}
                   key={type.name}
-                  className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
+                  style={{ backgroundColor: matchingType?.color }}
+                  className="rounded-full p-2 transition hover:opacity-80"
                 >
-                  {type.name}
+                  <Image
+                    src={`/typeImages/${type.name}.svg`}
+                    alt={type.name}
+                    height={50}
+                    width={50}
+                  />
                 </Link>
               );
             })}
@@ -61,9 +67,15 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
                   <Link
                     href={`/types/${type.name}`}
                     key={type.name}
-                    className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
+                    style={{ backgroundColor: matchingType?.color }}
+                    className="rounded-full p-2 transition hover:opacity-80"
                   >
-                    {type.name}
+                    <Image
+                      src={`/typeImages/${type.name}.svg`}
+                      alt={type.name}
+                      height={50}
+                      width={50}
+                    />
                   </Link>
                 );
               })
@@ -84,9 +96,15 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
                 <Link
                   href={`/types/${type.name}`}
                   key={type.name}
-                  className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
+                  style={{ backgroundColor: matchingType?.color }}
+                  className="rounded-full p-2 transition hover:opacity-80"
                 >
-                  {type.name}
+                  <Image
+                    src={`/typeImages/${type.name}.svg`}
+                    alt={type.name}
+                    height={50}
+                    width={50}
+                  />
                 </Link>
               );
             })}
@@ -102,9 +120,15 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
                 <Link
                   href={`/types/${type.name}`}
                   key={type.name}
-                  className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
+                  style={{ backgroundColor: matchingType?.color }}
+                  className="rounded-full p-2 transition hover:opacity-80"
                 >
-                  {type.name}
+                  <Image
+                    src={`/typeImages/${type.name}.svg`}
+                    alt={type.name}
+                    height={50}
+                    width={50}
+                  />
                 </Link>
               );
             })}
@@ -121,9 +145,15 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
                   <Link
                     href={`/types/${type.name}`}
                     key={type.name}
-                    className={`min-w-[100px] rounded-md py-2 text-lg capitalize text-black transition hover:opacity-80 ${matchingType.color}`}
+                    style={{ backgroundColor: matchingType?.color }}
+                    className="rounded-full p-2 transition hover:opacity-80"
                   >
-                    {type.name}
+                    <Image
+                      src={`/typeImages/${type.name}.svg`}
+                      alt={type.name}
+                      height={50}
+                      width={50}
+                    />
                   </Link>
                 );
               })

@@ -17,6 +17,15 @@ async function getMoveData(id: string): Promise<MoveData> {
   return { ...moveData, pokemon };
 }
 
+export async function generateStaticParams() {
+  const res = await fetch("https://pokeapi.co/api/v2/move?limit=6");
+  const data = await res?.json();
+  const params = data.results.map((move: { name: string; url: string }) => ({
+    id: move.name,
+  }));
+  return params;
+}
+
 export default async function movePage({ params }: { params: { id: string } }) {
   const move = await getMoveData(params?.id);
 

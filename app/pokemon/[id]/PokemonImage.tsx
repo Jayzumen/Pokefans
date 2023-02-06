@@ -56,17 +56,19 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
             alt={pokemon.name}
           />
 
-          <div className="my-2 flex flex-col mx-auto">
-            <p className="text-xl font-semibold">Other Forms:</p>
-            <p className="mt-2 text-xl">Shiny:</p>
-            <Image
-              height={200}
-              width={200}
-              src={pokemon.sprites.other["official-artwork"].front_shiny}
-              alt={pokemon.name + " shiny"}
-              title={pokemon.name + " shiny"}
-            />
-          </div>
+          {pokemon.sprites.other["official-artwork"].front_shiny && (
+            <div className="my-2 mx-auto flex flex-col">
+              <p className="text-xl font-semibold">Other Forms:</p>
+              <p className="mt-2 text-xl">Shiny:</p>
+              <Image
+                height={200}
+                width={200}
+                src={pokemon.sprites.other["official-artwork"].front_shiny}
+                alt={pokemon.name + " shiny"}
+                title={pokemon.name + " shiny"}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>

@@ -22,6 +22,15 @@ async function getPokemonData(pokemonId: string) {
   return { ...pokemonData, speciesData, evoChainData };
 }
 
+export async function generateStaticParams() {
+  const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=6");
+  const data = await res?.json();
+  const params = data.results.map((pokemon: { name: string; url: string }) => ({
+    id: pokemon.name,
+  }));
+  return params;
+}
+
 export default async function Pokemon({ params }: { params: { id: string } }) {
   const pokemon: PokemonData = await getPokemonData(params?.id);
 

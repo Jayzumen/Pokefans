@@ -1,10 +1,11 @@
 export default async function MoveHead({ params }: { params: { id: string } }) {
   return (
     <>
-      <title>{`Move | ${params.id
-        .split("-")
-        .map((word) => word[0].toUpperCase() + word.slice(1))
-        .join("-")}`}</title>
+      <title>
+        {`Pokémon Moves |
+        ${params?.id.charAt(0).toUpperCase() + params?.id.slice(1)}`}
+      </title>
+
       <meta content="width=device-width, initial-scale=1" name="viewport" />
       <meta
         name="description"
