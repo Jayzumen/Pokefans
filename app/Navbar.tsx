@@ -31,9 +31,9 @@ function Navbar() {
             Dex-Menu
           </button>
           {dropdownOpen && (
-            <ul className="absolute mt-2 hidden bg-transparent shadow-md shadow-black md:block">
+            <ul className="absolute mt-2 hidden bg-slate-800 rounded-md shadow-md shadow-black md:block">
               {dexLinks.map((link) => (
-                <li key={link.id} className="bg-slate-800">
+                <li key={link.id} >
                   <Link
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     href={link.path}
@@ -96,9 +96,9 @@ function Navbar() {
                 Dex-Menu
               </button>
               {nav && dropdownOpen && (
-                <ul className="absolute bg-slate-800 text-2xl shadow-md shadow-black">
+                <ul className="absolute bg-slate-800 rounded-md text-2xl shadow-md shadow-black">
                   {dexLinks.map((link) => (
-                    <li key={link.id} className="">
+                    <li key={link.id}>
                       <Link
                         onClick={() => {
                           setDropdownOpen(!dropdownOpen);

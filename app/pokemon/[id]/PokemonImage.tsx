@@ -47,7 +47,7 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
           </div>
         </div>
 
-        <div className="flex flex-col pb-2">
+        <div className="mx-auto flex flex-col justify-center pb-2">
           <Image
             priority
             src={pokemon.sprites.other["official-artwork"].front_default}
@@ -56,7 +56,7 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
             alt={pokemon.name}
           />
 
-          <div className="my-2 flex flex-col">
+          <div className="my-2 flex flex-col mx-auto">
             <p className="text-xl font-semibold">Other Forms:</p>
             <p className="mt-2 text-xl">Shiny:</p>
             <Image
