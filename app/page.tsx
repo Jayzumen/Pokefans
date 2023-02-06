@@ -19,7 +19,7 @@ export default async function Home() {
   const randomPokemon: PokemonData[] = await getRandomPokemon();
 
   return (
-    <main className="p-4">
+    <main className="px-4 pt-32 pb-4">
       <h1 className=" my-4 text-5xl font-bold underline">
         Welcome to Pokéfans
       </h1>

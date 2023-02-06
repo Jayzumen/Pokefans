@@ -14,6 +14,11 @@ export default function PokemonInfo({ pokemon }: { pokemon: PokemonData }) {
         <p className="mx-auto min-h-[200px] max-w-[300px] py-2">
           {englishEntry && englishEntry.flavor_text.replace(/\f/g, " ")}
         </p>
+        <div>
+          {pokemon.speciesData.is_baby && <p>Baby Pokémon</p>}
+          {pokemon.speciesData.is_legendary && <p>Legendary Pokémon</p>}
+          {pokemon.speciesData.is_mythical && <p>Mythical Pokémon</p>}
+        </div>
         <div className="flex flex-col justify-center gap-4 py-4 sm:flex-row">
           <p className="text-2xl font-semibold">Height:</p>
           <p className="text-2xl">{pokemon.height / 10} m</p>
@@ -22,6 +27,7 @@ export default function PokemonInfo({ pokemon }: { pokemon: PokemonData }) {
           <p className="text-2xl">{pokemon.weight / 10} kg</p>
         </div>
       </div>
+
       <div>
         <p className="pb-2 text-2xl font-semibold">Abilities:</p>
         <div className="flex flex-col gap-2 text-2xl capitalize">
@@ -31,7 +37,14 @@ export default function PokemonInfo({ pokemon }: { pokemon: PokemonData }) {
               key={index}
               className="mx-auto w-fit transition hover:underline"
             >
-              {ability.ability.name}
+              {ability.is_hidden ? (
+                <p>
+                  {ability.ability.name}{" "}
+                  <span className="text-sm"> (hidden)</span>
+                </p>
+              ) : (
+                <p>{ability.ability.name}</p>
+              )}
             </Link>
           ))}
         </div>

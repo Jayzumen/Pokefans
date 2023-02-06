@@ -32,16 +32,16 @@ async function getTeams() {
 export default async function TeamsPage() {
   const teams = await getTeams();
   return (
-    <main className="p-4">
+    <main className="px-4 pt-32 pb-4">
       <h1 className="text-4xl font-semibold underline">Teams</h1>
-      <div className="flex flex-col gap-4 p-2">
+      <div className="flex flex-col gap-4 p-2 text-black">
         {teams &&
           teams.map((t, index) => (
             <div
-              className="mx-auto max-w-[1200px] rounded-lg bg-slate-800"
+              className="mx-auto max-w-[1200px] rounded-lg bg-slate-700"
               key={index}
             >
-              <p className="text-xl font-semibold underline">
+              <p className="text-xl font-semibold text-white underline">
                 {t.userId}'s Team
               </p>
               <div className="mx-auto flex max-w-[1000px] flex-wrap justify-center gap-8 py-4 px-2 ">
@@ -53,9 +53,23 @@ export default async function TeamsPage() {
                         (tot: number, arr: Stat) => tot + arr.base_stat,
                         0
                       );
+                      const matchingTypes = p.types.map((type: Type) => {
+                        return PokemonTypes.filter(
+                          (pokemonType) => pokemonType.name === type.type.name
+                        )[0];
+                      });
                       return (
                         <div
-                          className="rounded-lg bg-slate-700 capitalize shadow-lg shadow-slate-600"
+                          style={{
+                            background: `linear-gradient(180deg, ${
+                              matchingTypes[0].color
+                            } 0%, ${
+                              matchingTypes[1]
+                                ? matchingTypes[1]?.color
+                                : "white"
+                            } 100%)`,
+                          }}
+                          className="rounded-lg capitalize shadow-md shadow-black"
                           key={p.id}
                         >
                           <p className="mx-auto w-fit text-2xl">{p.name}</p>
@@ -75,7 +89,7 @@ export default async function TeamsPage() {
                               </span>
                             </p>
                           </div>
-                          <div className="flex p-2">
+                          <div className="flex justify-center p-2">
                             {p.types.map((t: Type) => {
                               const matchingType = PokemonTypes.filter(
                                 (typ) => typ.name === t.type.name
@@ -84,9 +98,17 @@ export default async function TeamsPage() {
                                 <Link
                                   key={t.slot}
                                   href={`/types/${t.type.name}`}
-                                  className={`mx-auto min-w-[100px] rounded-md p-2 text-xl font-semibold text-black ${matchingType.color} transition hover:opacity-80`}
+                                  style={{
+                                    backgroundColor: matchingType.color,
+                                  }}
+                                  className="mx-auto rounded-full p-2 text-xl font-semibold text-black shadow-md shadow-black transition hover:opacity-80"
                                 >
-                                  {t.type.name}
+                                  <Image
+                                    src={`/typeImages/${t.type.name}.svg`}
+                                    alt={t.type.name}
+                                    width={30}
+                                    height={30}
+                                  />
                                 </Link>
                               );
                             })}

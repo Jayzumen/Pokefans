@@ -29,113 +29,131 @@ export const dexLinks = [
 export const PokemonTypes = [
   {
     name: "normal",
-    color: "bg-[#a8a878]",
+    color: "#737373",
   },
   {
     name: "grass",
-    color: "bg-[#78c850]",
+    color: "#22C55E",
   },
   {
     name: "fire",
-    color: "bg-[#f08030]",
+    color: "#EF4444",
   },
   {
     name: "water",
-    color: "bg-[#6890f0]",
+    color: "#3B82F6",
   },
   {
     name: "electric",
-    color: "bg-[#f8d030]",
+    color: "#EAB308",
   },
   {
     name: "fighting",
-    color: "bg-[#c04028]",
+    color: "#D97706",
   },
   {
     name: "flying",
-    color: "bg-[#a890f0]",
+    color: "#A855F7",
   },
   {
     name: "poison",
-    color: "bg-[#a040a0]",
+    color: "#6B21A8",
   },
   {
     name: "ground",
-    color: "bg-[#e0c068]",
+    color: "#854D0E",
   },
   {
     name: "rock",
-    color: "bg-[#5e5854]",
+    color: "#78716C",
   },
   {
     name: "bug",
-    color: "bg-[#a8b820]",
+    color: "#65A30D",
   },
   {
     name: "ice",
-    color: "bg-[#98d8d8]",
+    color: "#22D3EE",
   },
   {
     name: "psychic",
-    color: "bg-[#f85888]",
+    color: "#D946EF",
   },
   {
     name: "ghost",
-    color: "bg-[#705898]",
+    color: "#4F46E5",
   },
   {
     name: "dragon",
-    color: "bg-[#7038f8]",
+    color: "#6D28D9",
   },
   {
     name: "dark",
-    color: "bg-[#705848]",
+    color: "#475569",
   },
   {
     name: "steel",
-    color: "bg-[#b8bbd0]",
+    color: "#94A3B8",
   },
   {
     name: "fairy",
-    color: "bg-[#f0b6bc]",
+    color: "#F472B6",
   },
 ];
 
 export const Generations = [
   {
-    id: 1,
+    id: "1",
     name: "I",
+    limit: 151,
+    offset: 0,
   },
   {
-    id: 2,
+    id: "2",
     name: "II",
+    limit: 100,
+    offset: 151,
   },
   {
-    id: 3,
+    id: "3",
     name: "III",
+    limit: 135,
+    offset: 251,
   },
   {
-    id: 4,
+    id: "4",
     name: "IV",
+    limit: 107,
+    offset: 386,
   },
   {
-    id: 5,
+    id: "5",
     name: "V",
+    limit: 156,
+    offset: 493,
   },
   {
-    id: 6,
+    id: "6",
     name: "VI",
+    limit: 72,
+    offset: 649,
   },
   {
-    id: 7,
+    id: "7",
     name: "VII",
+    limit: 88,
+    offset: 721,
   },
   {
-    id: 8,
+    id: "8",
     name: "VIII",
+    limit: 96,
+    offset: 809,
   },
   {
-    id: 9,
+    id: "9",
     name: "IX",
+    limit: 103,
+    offset: 905,
   },
 ];

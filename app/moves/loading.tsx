@@ -1,7 +1,7 @@
 import Image from "next/image";
 export default function Loading() {
   return (
-    <div className="flex min-h-[80vh] flex-col items-center justify-center">
+    <div className="flex min-h-screen flex-col items-center justify-center">
       <Image
         src="/pokeball.svg"
         width={100}

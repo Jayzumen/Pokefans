@@ -44,6 +44,15 @@ export interface Species {
   is_mythical: boolean;
   is_baby: boolean;
   varieties: Variety[];
+  genera: Genus[];
+}
+
+export interface Genus {
+  genus: string;
+  language: {
+    name: string;
+    url: string;
+  };
 }
 
 export interface EvolutionChain {

@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { PokemonTypes } from "@/assets/constants";
 import { MoveData } from "@/types/moveTypes";
+import Image from "next/image";
 
 function MoveInfo({ move }: { move: MoveData }) {
   const englishFlavText = move.flavor_text_entries.find(
@@ -12,7 +13,7 @@ function MoveInfo({ move }: { move: MoveData }) {
     (entry) => entry.language.name === "en"
   );
   return (
-    <>
+    <div className="rounded-lg bg-slate-700 p-2 lg:mx-auto lg:w-[70%]">
       <h1 className="my-2 text-4xl font-bold capitalize underline">
         {move.name}
       </h1>
@@ -29,25 +30,32 @@ function MoveInfo({ move }: { move: MoveData }) {
               : englishFlavText?.flavor_text}
           </p>
         </div>
-        <div className="flex flex-col gap-2">
-          <p className="text-2xl font-bold">
-            Type:{" "}
+        <div className="flex w-[40%] flex-col gap-2">
+          <div className="flex flex-row items-center justify-center gap-4 text-center text-2xl font-bold">
+            <p>Type:</p>
             <Link
               href={`/types/${move.type.name}`}
-              className={`rounded-md py-2 px-4 text-center text-lg font-semibold capitalize text-black transition hover:opacity-80 ${
-                PokemonTypes.filter((typ) => typ.name === move.type.name)[0]
-                  .color
-              }`}
+              style={{
+                backgroundColor: PokemonTypes.filter(
+                  (typ) => typ.name === move.type.name
+                )[0].color,
+              }}
+              className="rounded-full p-2 shadow-md shadow-black transition hover:opacity-80"
             >
-              {move.type.name}
+              <Image
+                height={30}
+                width={30}
+                src={`/typeImages/${move.type.name}.svg`}
+                alt={move.type.name}
+              />
             </Link>
-          </p>
+          </div>
           <p className="text-xl font-semibold">Accuracy: {move.accuracy}</p>
           <p className="text-xl font-semibold">Power: {move.power}</p>
           <p className="text-xl font-semibold">PP: {move.pp}</p>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

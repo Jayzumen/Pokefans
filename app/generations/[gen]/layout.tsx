@@ -7,9 +7,7 @@ export default function GenerationLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={`flex flex-col justify-center bg-black text-center text-white`}
-    >
+    <div className="flex flex-col justify-center px-4 pt-28 pb-4 text-center text-white">
       <p className="my-2 text-4xl font-bold underline">Generations</p>
       <div className="mx-auto flex max-w-[70%] flex-wrap justify-center gap-4 py-2">
         {Generations.map((gen) => (

@@ -1,23 +1,22 @@
 import Link from "next/link";
-import { GenerationPokemon } from "../../../types/generationTypes";
+import { Generations } from "@/assets/constants";
+import { Pokemon } from "@/types/pokemonTypes";
+import { GenPokemonData } from "../../../types/generationTypes";
 import PokemonLayout from "./PokemonLayout";
 
-async function getGenerationsData(gen: string): Promise<GenerationPokemon[]> {
-  const res = await fetch(`https://pokeapi.co/api/v2/generation/${gen}/`);
+async function getGenPokemon(gen: string) {
+  const generation = Generations.find((generation) => generation.id === gen);
+  const res = await fetch(
+    ` https://pokeapi.co/api/v2/pokemon?limit=${generation?.limit}&offset=${generation?.offset}`
+  );
   const data = await res?.json();
-  const pokemon = await Promise.all(
-    data.pokemon_species.map(async (pokemon: any) => {
+  const pokemon: GenPokemonData[] = await Promise.all(
+    data.results.map(async (pokemon: Pokemon) => {
       const res = await fetch(pokemon.url);
       const data = await res?.json();
-
-      return {
-        id: data.id,
-        speciesName: data.name,
-        name: data.varieties[0].pokemon.name,
-      };
+      return data;
     })
   );
-
   return pokemon;
 }
 
@@ -26,13 +25,13 @@ export default async function GenerationsPage({
 }: {
   params: { gen: string };
 }) {
-  const data: GenerationPokemon[] = await getGenerationsData(params?.gen);
+  const data: GenPokemonData[] = await getGenPokemon(params.gen);
 
   if (data) {
     return <PokemonLayout data={data} />;
   } else {
     return (
-      <main className="px-4">
+      <main className="px-4 pt-32 pb-4">
         <div className="flex flex-wrap gap-8 p-4">
           <p>No Pokemon found for this generation</p>
           <Link href="/">Go to home</Link>

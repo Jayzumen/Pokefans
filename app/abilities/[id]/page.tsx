@@ -13,7 +13,7 @@ export default async function Ability({ params }: { params: { id: string } }) {
 
   if (ability) {
     return (
-      <main className="mx-4">
+      <main className="px-4 pt-32 pb-4">
         <AbilityInfo ability={ability} />
         <AbilityPokemon ability={ability} />
       </main>

@@ -1,3 +1,4 @@
+import { PokemonTypes } from "@/assets/constants";
 import {
   EvolutionChain,
   PokemonData,
@@ -24,12 +25,24 @@ async function getPokemonData(pokemonId: string) {
 export default async function Pokemon({ params }: { params: { id: string } }) {
   const pokemon: PokemonData = await getPokemonData(params?.id);
 
+  const matchingTypes = pokemon.types.map((type) => {
+    return PokemonTypes.filter(
+      (pokemonType) => pokemonType.name === type.type.name
+    )[0];
+  });
   return (
-    <main className="px-4">
-      <div className="w-full 2xl:flex 2xl:justify-center">
+    <main
+      style={{
+        background: `linear-gradient(180deg, ${matchingTypes[0].color} 0%, ${
+          matchingTypes[1] ? matchingTypes[1]?.color : "white"
+        } 100%)`,
+      }}
+      className="px-4 pt-32 pb-4"
+    >
+      <div className="flex w-full flex-col">
         <PokemonImage pokemon={pokemon} />
 
-        <div className="my-2 rounded-md bg-slate-700 p-4 text-white lg:m-4 2xl:w-[70%]">
+        <div className="my-2 rounded-md bg-slate-700 p-4 text-white lg:m-4">
           <div className="mx-auto mt-2 flex flex-col text-lg md:mt-0 md:flex-row md:justify-between">
             <PokemonInfo pokemon={pokemon} />
             <div className="md:w-[50%]">

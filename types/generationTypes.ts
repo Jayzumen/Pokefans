@@ -1,49 +1,25 @@
-export interface Generation {
-  abilities: {
-    name: string;
-    url: string;
-  }[];
+import { Ability, Move, Stat, Type } from "./pokemonTypes";
+
+export interface GenPokemonData {
   id: number;
-  main_region: {
+  name: string;
+  types: Type[];
+  abilities: Ability[];
+  is_default: boolean;
+  species: {
     name: string;
     url: string;
   };
-  moves: {
-    name: string;
-    url: string;
-  }[];
-  name: string;
-  names: Name[];
-  pokemon_species: {
-    name: string;
-    url: string;
-  }[];
-  version_groups: {
-    name: string;
-    url: string;
-  }[];
-}
-
-export interface GenerationPokemon {
-  id: number;
-  name: string;
-  speciesName: string;
-}
-
-export interface AllGenerations {
-  count: number;
-  next: string;
-  previous: string;
-  results: {
-    name: string;
-    url: string;
-  }[];
-}
-
-export interface Name {
-  language: {
-    name: string;
-    url: string;
+  moves: Move[];
+  height: number;
+  weight: number;
+  stats: Stat[];
+  sprites: {
+    other: {
+      "official-artwork": {
+        front_default: string;
+        front_shiny: string;
+      };
+    };
   };
-  name: string;
 }

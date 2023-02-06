@@ -17,7 +17,7 @@ export default async function AbilityPage() {
   const randomAbilityData: AbilityData[] = await randomAbilities();
 
   return (
-    <main className="p-4">
+    <main className="min-h-screen px-4 pt-32 pb-4">
       <h1 className="my-2 text-4xl font-bold capitalize underline">
         Ability-Dex
       </h1>

@@ -1,6 +1,6 @@
-import Navbar from "@/app/Navbar";
 import "./globals.css";
 import { Poppins } from "@next/font/google";
+import Navbar from "@/app/Navbar";
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
@@ -17,10 +17,10 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body
-        className={`${poppins.className} flex flex-col justify-center bg-black text-center text-white`}
+        className={`${poppins.className} flex flex-col justify-center text-center text-white`}
       >
         <Navbar />
-        {children}
+        <div className="bg-slate-900">{children}</div>
       </body>
     </html>
   );

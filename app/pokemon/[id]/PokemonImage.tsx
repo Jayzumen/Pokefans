@@ -5,21 +5,25 @@ import Link from "next/link";
 import React from "react";
 
 export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
+  const englishGenus = pokemon.speciesData.genera.find(
+    (genus: any) => genus.language.name === "en"
+  );
+
   return (
     <>
-      <div className="flex flex-col">
-        <h1 className="my-2 text-center text-4xl font-bold capitalize underline">
-          {pokemon.name}
-        </h1>
-        <div className="flex flex-col items-center pb-2">
-          <Image
-            priority
-            src={pokemon.sprites.other["official-artwork"].front_default}
-            width={475}
-            height={475}
-            alt={pokemon.name}
-          />
-          <div className="mt-1 flex gap-4 text-lg font-semibold capitalize">
+      <div className="mx-auto mt-4 flex flex-col md:w-[80%] lg:flex-row lg:justify-between">
+        <div className="flex flex-col">
+          <p className="text-2xl font-semibold">
+            #
+            {pokemon.id < 10
+              ? `00${pokemon.id}`
+              : pokemon.id < 100
+              ? `0${pokemon.id}`
+              : pokemon.id}
+          </p>
+          <p className="my-2 text-5xl font-bold capitalize ">{pokemon.name}</p>
+          {englishGenus && <span>The {englishGenus?.genus}</span>}
+          <div className="mt-4 flex justify-center gap-4">
             {pokemon.types.map((type) => {
               const matchingType = PokemonTypes.filter(
                 (pokemonType) => pokemonType.name === type.type.name
@@ -28,12 +32,40 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
                 <Link
                   key={type.type.name}
                   href={`/types/${type.type.name}`}
-                  className={`min-w-[100px] rounded-lg py-2 text-black transition hover:opacity-80 ${matchingType.color}`}
+                  style={{ backgroundColor: matchingType?.color }}
+                  className="rounded-full p-2 shadow-md shadow-black transition hover:opacity-80"
                 >
-                  {type.type.name}
+                  <Image
+                    src={`/typeImages/${type.type.name}.svg`}
+                    alt={type.type.name}
+                    height={50}
+                    width={50}
+                  />
                 </Link>
               );
             })}
+          </div>
+        </div>
+
+        <div className="flex flex-col pb-2">
+          <Image
+            priority
+            src={pokemon.sprites.other["official-artwork"].front_default}
+            width={475}
+            height={475}
+            alt={pokemon.name}
+          />
+
+          <div className="my-2 flex flex-col">
+            <p className="text-xl font-semibold">Other Forms:</p>
+            <p className="mt-2 text-xl">Shiny:</p>
+            <Image
+              height={200}
+              width={200}
+              src={pokemon.sprites.other["official-artwork"].front_shiny}
+              alt={pokemon.name + " shiny"}
+              title={pokemon.name + " shiny"}
+            />
           </div>
         </div>
       </div>
