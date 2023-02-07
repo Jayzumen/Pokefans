@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { AbilityData } from "./../../types/abilityTypes";
+import { AbilityData, Ability } from "./../../types/abilityTypes";
 import SearchForm from "./SearchForm";
 
 async function randomAbilities(): Promise<AbilityData[]> {
@@ -13,37 +12,26 @@ async function randomAbilities(): Promise<AbilityData[]> {
   return abilities;
 }
 
+async function getAllAbilities() {
+  const res = await fetch("https://pokeapi.co/api/v2/ability?limit=400");
+  const data = await res?.json();
+  const results: Ability[] = await data.results;
+  return results;
+}
+
 export default async function AbilityPage() {
   const randomAbilityData: AbilityData[] = await randomAbilities();
+  const allAbilities: Ability[] = await getAllAbilities();
 
   return (
     <main className="min-h-screen px-4 pt-32 pb-4">
       <h1 className="my-2 text-4xl font-bold capitalize underline">
         Ability-Dex
       </h1>
-      <SearchForm />
-      <div className="mx-auto mt-4 flex max-w-[1400px] flex-wrap justify-center gap-4 text-white">
-        {randomAbilityData?.map((ability) => {
-          const englishEntry = ability.flavor_text_entries?.find(
-            (entry: any) => entry.language.name === "en"
-          );
-
-          return (
-            <Link
-              key={ability.id}
-              href={`/abilities/${ability.name}`}
-              className="flex min-h-[250px] min-w-[250px] flex-col gap-2 rounded-lg bg-slate-700"
-            >
-              <p className="border-b-2 py-1 text-2xl font-bold capitalize">
-                {ability?.name}
-              </p>
-              <p className="mx-auto max-w-[200px] text-xl font-semibold">
-                {englishEntry?.flavor_text}
-              </p>
-            </Link>
-          );
-        })}
-      </div>
+      <SearchForm
+        randomAbility={randomAbilityData}
+        allAbilities={allAbilities}
+      />
     </main>
   );
 }

@@ -20,7 +20,9 @@ function AbilityInfo({ ability }: { ability: AbilityData }) {
         <p className="mx-auto max-w-[700px] text-xl">
           {englishEffect?.effect
             ? englishEffect?.effect
-            : englishFlavText?.flavor_text}
+            : englishFlavText?.flavor_text
+            ? englishFlavText?.flavor_text
+            : "No Effect text yet"}
         </p>
       </div>
     </div>

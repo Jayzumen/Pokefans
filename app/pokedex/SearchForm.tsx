@@ -68,7 +68,7 @@ export default function SearchForm({
           Search
         </button>
       </form>
-      {searchedPokemon.length === 0 ? (
+      {searchedPokemon?.length === 0 ? (
         <DefaultPokemon pokemon={pokemon} />
       ) : (
         <SearchedPokemon pokemon={searchedPokemon} />

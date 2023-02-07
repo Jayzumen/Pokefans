@@ -27,7 +27,9 @@ function MoveInfo({ move }: { move: MoveData }) {
                   "$effect_chance",
                   `${move.effect_chance}`
                 )
-              : englishFlavText?.flavor_text}
+              : englishFlavText?.flavor_text
+              ? englishFlavText?.flavor_text
+              : "No effect yet"}
           </p>
         </div>
         <div className="flex flex-col gap-2 md:w-[50%]">
@@ -50,8 +52,12 @@ function MoveInfo({ move }: { move: MoveData }) {
               />
             </Link>
           </div>
-          <p className="text-xl font-semibold">Accuracy: {move.accuracy ? move.accuracy : "0"}</p>
-          <p className="text-xl font-semibold">Power: {move.power ? move.power : "0"}</p>
+          <p className="text-xl font-semibold">
+            Accuracy: {move.accuracy ? move.accuracy : "0"}
+          </p>
+          <p className="text-xl font-semibold">
+            Power: {move.power ? move.power : "0"}
+          </p>
           <p className="text-xl font-semibold">PP: {move.pp}</p>
         </div>
       </div>
