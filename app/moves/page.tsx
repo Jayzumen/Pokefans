@@ -36,10 +36,10 @@ export default async function MovePage() {
               }}
               className="flex min-h-[250px] min-w-[280px] flex-col gap-2 rounded-lg text-black md:min-w-[350px]"
             >
-              <Link href={`/moves/${move.name}`}>
-                <p className="mx-auto min-h-[80px] max-w-[300px] py-1 text-2xl font-bold capitalize underline">
-                  {move?.name}
-                </p>
+              <p className="mx-auto min-h-[80px] max-w-[300px] py-1 text-2xl font-bold capitalize underline">
+                {move?.name}
+              </p>
+              <Link href={`/moves/${move?.name}`}>
                 <p className="mx-auto min-h-[200px] max-w-[300px] text-xl font-semibold">
                   {englishEntry?.flavor_text
                     ? englishEntry?.flavor_text

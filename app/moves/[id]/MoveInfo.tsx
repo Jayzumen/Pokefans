@@ -50,8 +50,8 @@ function MoveInfo({ move }: { move: MoveData }) {
               />
             </Link>
           </div>
-          <p className="text-xl font-semibold">Accuracy: {move.accuracy}</p>
-          <p className="text-xl font-semibold">Power: {move.power}</p>
+          <p className="text-xl font-semibold">Accuracy: {move.accuracy ? move.accuracy : "0"}</p>
+          <p className="text-xl font-semibold">Power: {move.power ? move.power : "0"}</p>
           <p className="text-xl font-semibold">PP: {move.pp}</p>
         </div>
       </div>
