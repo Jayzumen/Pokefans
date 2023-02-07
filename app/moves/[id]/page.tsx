@@ -7,7 +7,7 @@ async function getMoveData(id: string): Promise<MoveData> {
   const moveRes = await fetch(`https://pokeapi.co/api/v2/move/${id}`);
   const moveData: MoveData = await moveRes?.json();
   const pokemon = await Promise.all(
-    moveData?.learned_by_pokemon?.map(async (pokemon: any) => {
+    moveData?.learned_by_pokemon?.map(async (pokemon) => {
       const pokemonRes = await fetch(pokemon?.url);
       const pokemonData = await pokemonRes?.json();
       return pokemonData;

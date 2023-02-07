@@ -1,3 +1,4 @@
+import { PokemonTypes } from "@/assets/constants";
 import { AbilityData } from "@/types/abilityTypes";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,26 +8,39 @@ function AbilityPokemon({ ability }: { ability: AbilityData }) {
   return (
     <>
       <p className="py-4 text-2xl font-bold">Pokemon with the ability:</p>
-      <div className="flex flex-wrap gap-8 p-4">
-        {ability.pokemon.map((pokemon, index) => (
-          <Link
-            key={index}
-            href={`/pokemon/${pokemon.pokemon.name}`}
-            className="mx-auto flex min-w-[250px] flex-col items-center justify-center rounded-lg bg-slate-600 py-2 text-xl font-semibold transition hover:bg-slate-700"
-          >
-            <p className="mx-auto max-w-[200px] capitalize">
-              {pokemon.pokemon.name}
-            </p>
-            <Image
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
-                pokemon.pokemon.url.split("/")[6]
-              }.png`}
-              alt={pokemon.pokemon.name}
-              width={200}
-              height={200}
-            />
-          </Link>
-        ))}
+      <div className="flex flex-wrap gap-8 p-4 text-black">
+        {ability.pokemonData.map((pokemon, index) => {
+          const matchingTypes = pokemon.types.map((type) => {
+            return PokemonTypes.filter(
+              (pokemonType) => pokemonType.name === type.type.name
+            )[0];
+          });
+          if (pokemon.sprites.other["official-artwork"].front_default)
+            return (
+              <Link
+                key={index}
+                href={`/pokemon/${pokemon.name}`}
+                style={{
+                  background: `linear-gradient(180deg, ${
+                    matchingTypes[0].color
+                  } 0%, ${
+                    matchingTypes[1] ? matchingTypes[1]?.color : "white"
+                  } 100%)`,
+                }}
+                className="mx-auto flex min-h-[300px] min-w-[250px] flex-col items-center justify-center rounded-lg py-2 text-xl font-semibold shadow-md shadow-black"
+              >
+                <p className="mx-auto max-w-[200px] capitalize">
+                  {pokemon.name}
+                </p>
+                <Image
+                  src={pokemon.sprites.other["official-artwork"].front_default}
+                  alt={pokemon.name}
+                  width={200}
+                  height={200}
+                />
+              </Link>
+            );
+        })}
       </div>
     </>
   );

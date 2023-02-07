@@ -1,3 +1,4 @@
+import { PokemonData } from "@/types/pokemonTypes";
 import { AbilityData } from "../../../types/abilityTypes";
 import AbilityInfo from "./AbilityInfo";
 import AbilityPokemon from "./AbilityPokemon";
@@ -5,7 +6,14 @@ import AbilityPokemon from "./AbilityPokemon";
 async function getAbilityData(id: string): Promise<AbilityData> {
   const abilityRes = await fetch(`https://pokeapi.co/api/v2/ability/${id}`);
   const abilityData: AbilityData = await abilityRes?.json();
-  return abilityData;
+  const pokemonData: PokemonData[] = await Promise.all(
+    abilityData?.pokemon?.map(async (pokemon) => {
+      const pokemonRes = await fetch(pokemon.pokemon.url);
+      const data: PokemonData = await pokemonRes?.json();
+      return data;
+    })
+  );
+  return { ...abilityData, pokemonData };
 }
 
 export async function generateStaticParams() {
