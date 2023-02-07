@@ -17,7 +17,7 @@ function AbilityInfo({ ability }: { ability: AbilityData }) {
 
       <div className="py-2">
         <p className="text-2xl font-bold">Effect:</p>
-        <p className="mx-auto max-w-[400px] text-xl">
+        <p className="mx-auto max-w-[700px] text-xl">
           {englishEffect?.effect
             ? englishEffect?.effect
             : englishFlavText?.flavor_text}

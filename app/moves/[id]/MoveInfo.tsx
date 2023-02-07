@@ -21,7 +21,7 @@ function MoveInfo({ move }: { move: MoveData }) {
       <div className="my-4 flex flex-col items-center justify-center gap-8 md:flex-row md:gap-32">
         <div className="py-2">
           <p className="text-2xl font-bold">Effect:</p>
-          <p className="mx-auto max-w-[400px] text-xl">
+          <p className="mx-auto max-w-[600px] text-xl">
             {englishEffect?.effect
               ? englishEffect?.effect.replace(
                   "$effect_chance",
