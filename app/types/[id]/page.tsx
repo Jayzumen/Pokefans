@@ -10,7 +10,7 @@ async function getTypeData(id: string): Promise<TypeData> {
 }
 
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/type?limit=18");
+  const res = await fetch("https://pokeapi.co/api/v2/type?limit=1");
   const data = await res?.json();
   const params = data.results.map((type: { name: string; url: string }) => ({
     id: type.name,

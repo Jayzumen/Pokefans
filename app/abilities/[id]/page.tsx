@@ -9,7 +9,7 @@ async function getAbilityData(id: string): Promise<AbilityData> {
 }
 
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/ability?limit=6");
+  const res = await fetch("https://pokeapi.co/api/v2/ability?limit=1");
   const data = await res?.json();
   const params = data.results.map((ability: { name: string; url: string }) => ({
     id: ability.name,

@@ -23,3 +23,23 @@ export interface GenPokemonData {
     };
   };
 }
+
+export interface Generation {
+  id: string;
+  name: string;
+  pokemon_species: {
+    name: string;
+    url: string;
+  }[];
+  types: Type[];
+  abilities: Ability[];
+  moves: Move[];
+  main_region: {
+    name: string;
+    url: string;
+  };
+  version_groups: {
+    name: string;
+    url: string;
+  }[];
+}

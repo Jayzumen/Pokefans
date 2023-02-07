@@ -18,7 +18,7 @@ async function getMoveData(id: string): Promise<MoveData> {
 }
 
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/move?limit=6");
+  const res = await fetch("https://pokeapi.co/api/v2/move?limit=1");
   const data = await res?.json();
   const params = data.results.map((move: { name: string; url: string }) => ({
     id: move.name,

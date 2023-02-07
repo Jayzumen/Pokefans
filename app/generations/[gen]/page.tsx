@@ -21,10 +21,10 @@ async function getGenPokemon(gen: string) {
 }
 
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/generation");
+  const res = await fetch("https://pokeapi.co/api/v2/generation?limit=1");
   const data = await res?.json();
   const params = data.results.map((gen: { name: string; url: string }) => ({
-     gen: gen.url.split("/")[6].toString()
+    gen: gen.url.split("/")[6].toString(),
   }));
   return params;
 }
