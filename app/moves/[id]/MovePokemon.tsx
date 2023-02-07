@@ -29,7 +29,7 @@ function MovePokemon({ move }: { move: MoveData }) {
                   } 100%)`,
                 }}
                 href={`/pokemon/${pokemon.name}`}
-                className="mx-auto flex min-w-[250px] flex-col items-center justify-center rounded-lg border border-black py-2 text-xl font-semibold shadow-md shadow-black transition "
+                className="mx-auto flex min-w-[250px] flex-col items-center justify-center rounded-lg border border-black py-2 text-xl font-semibold shadow-md shadow-black duration-300 hover:scale-105"
               >
                 <p className="mx-auto max-w-[200px] capitalize">
                   {pokemon.name}

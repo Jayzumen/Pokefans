@@ -27,7 +27,7 @@ function AbilityPokemon({ ability }: { ability: AbilityData }) {
                     matchingTypes[1] ? matchingTypes[1]?.color : "white"
                   } 100%)`,
                 }}
-                className="mx-auto flex min-h-[300px] min-w-[250px] flex-col items-center justify-center rounded-lg py-2 text-xl font-semibold shadow-md shadow-black"
+                className="mx-auto flex min-h-[300px] min-w-[250px] flex-col items-center justify-center rounded-lg border border-black py-2 text-xl font-semibold shadow-md shadow-black duration-300 hover:scale-105"
               >
                 <p className="mx-auto max-w-[200px] capitalize">
                   {pokemon.name}

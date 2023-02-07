@@ -6,7 +6,14 @@ import TypePokemon from "./TypePokemon";
 async function getTypeData(id: string): Promise<TypeData> {
   const res = await fetch(`https://pokeapi.co/api/v2/type/${id}`);
   const data: TypeData = await res?.json();
-  return data;
+  const pokemonData = await Promise.all(
+    data.pokemon.map(async (pokemon) => {
+      const res = await fetch(pokemon.pokemon.url);
+      const data = await res?.json();
+      return data;
+    })
+  );
+  return { ...data, pokemonData };
 }
 
 export async function generateStaticParams() {

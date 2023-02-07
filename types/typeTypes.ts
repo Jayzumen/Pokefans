@@ -1,9 +1,12 @@
+import { PokemonData } from "./pokemonTypes";
+
 export interface TypeData {
   id: number;
   name: string;
   damage_relations: DamageRelations;
   moves: Move[];
   pokemon: Pokemon[];
+  pokemonData: PokemonData[];
 }
 
 export interface Pokemon {
