@@ -30,7 +30,7 @@ function MoveInfo({ move }: { move: MoveData }) {
               : englishFlavText?.flavor_text}
           </p>
         </div>
-        <div className="flex w-[40%] flex-col gap-2">
+        <div className="flex flex-col gap-2 md:w-[50%]">
           <div className="flex flex-row items-center justify-center gap-4 text-center text-2xl font-bold">
             <p>Type:</p>
             <Link

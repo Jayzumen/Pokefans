@@ -54,10 +54,10 @@ export default async function Pokedex() {
                   matchingTypes[1] ? matchingTypes[1]?.color : "white"
                 } 100%)`,
               }}
-              className="mx-auto min-w-[300px] rounded-lg p-2 "
+              className="mx-auto min-w-[280px] rounded-lg p-2"
               key={pokemon.id}
             >
-              <h2 className="max-w-[280px] text-lg font-semibold">
+              <h2 className="max-w-[250px] text-lg font-semibold">
                 {pokemon.name}
               </h2>
               <Link href={`/pokemon/${pokemon.name}`}>

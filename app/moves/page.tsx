@@ -34,7 +34,7 @@ export default async function MovePage() {
               style={{
                 backgroundColor: matchingType.color,
               }}
-              className="flex min-h-[250px] min-w-[350px] flex-col gap-2 rounded-lg text-black"
+              className="flex min-h-[250px] min-w-[280px] flex-col gap-2 rounded-lg text-black md:min-w-[350px]"
             >
               <p className="mx-auto min-h-[80px] max-w-[300px] py-1 text-2xl font-bold capitalize underline">
                 {move?.name}
