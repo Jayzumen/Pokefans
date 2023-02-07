@@ -1,10 +1,11 @@
 import { PokemonTypes } from "@/assets/constants";
 import { MoveData } from "@/types/moveTypes";
+import Image from "next/image";
 import Link from "next/link";
 
 async function randomMoves(): Promise<MoveData[]> {
   const moves: MoveData[] = [];
-  for (let i = 1; i <= 9; i++) {
+  for (let i = 1; i <= 6; i++) {
     const randomId = Math.floor(Math.random() * 900);
     const res = await fetch(`https://pokeapi.co/api/v2/move/${randomId}`);
     const data: MoveData = await res?.json();
@@ -39,11 +40,24 @@ export default async function MovePage() {
               <p className="mx-auto min-h-[80px] max-w-[300px] py-1 text-2xl font-bold capitalize underline">
                 {move?.name}
               </p>
-              <p className="mx-auto max-w-[300px] text-xl font-semibold">
+              <p className="mx-auto max-w-[300px] min-h-[200px] text-xl font-semibold">
                 {englishEntry?.flavor_text
                   ? englishEntry?.flavor_text
                   : "No Description"}
               </p>
+              <Link
+                href={`/types/${move.type.name}`}
+                style={{ backgroundColor: matchingType.color }}
+                title={move.type.name}
+                className="rounded-full w-fit mx-auto mb-2 border border-black p-2 shadow-md shadow-black duration-300 hover:scale-105"
+              >
+                <Image
+                  height={30}
+                  width={30}
+                  src={`/typeImages/${move.type.name}.svg`}
+                  alt={move.type.name}
+                />
+              </Link>
             </Link>
           );
         })}

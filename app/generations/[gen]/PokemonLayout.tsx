@@ -7,7 +7,7 @@ import { PokemonTypes } from "@/assets/constants";
 function PokemonLayout({ data }: { data: GenPokemonData[] }) {
   return (
     <main className="px-4">
-      <div className="gap-8text-black flex flex-wrap">
+      <div className="flex flex-wrap gap-8 text-black">
         {data
           .sort((a, b) => (a.id > b.id ? 1 : -1))
           .map((pokemon, index) => {
