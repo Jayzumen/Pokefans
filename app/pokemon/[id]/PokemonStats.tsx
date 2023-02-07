@@ -43,7 +43,7 @@ export default function PokemonStats({ pokemon }: { pokemon: PokemonData }) {
     scales: {
       r: {
         min: 0,
-        max: 200,
+        max: 255,
         angleLines: {
           color: "white",
         },
