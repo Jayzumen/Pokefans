@@ -29,27 +29,28 @@ export default async function MovePage() {
           )[0];
 
           return (
-            <Link
+            <div
               key={index}
-              href={`/moves/${move.name}`}
               style={{
                 backgroundColor: matchingType.color,
               }}
               className="flex min-h-[250px] min-w-[280px] flex-col gap-2 rounded-lg text-black md:min-w-[350px]"
             >
-              <p className="mx-auto min-h-[80px] max-w-[300px] py-1 text-2xl font-bold capitalize underline">
-                {move?.name}
-              </p>
-              <p className="mx-auto max-w-[300px] min-h-[200px] text-xl font-semibold">
-                {englishEntry?.flavor_text
-                  ? englishEntry?.flavor_text
-                  : "No Description"}
-              </p>
+              <Link href={`/moves/${move.name}`}>
+                <p className="mx-auto min-h-[80px] max-w-[300px] py-1 text-2xl font-bold capitalize underline">
+                  {move?.name}
+                </p>
+                <p className="mx-auto min-h-[200px] max-w-[300px] text-xl font-semibold">
+                  {englishEntry?.flavor_text
+                    ? englishEntry?.flavor_text
+                    : "No Description"}
+                </p>
+              </Link>
               <Link
                 href={`/types/${move.type.name}`}
                 style={{ backgroundColor: matchingType.color }}
                 title={move.type.name}
-                className="rounded-full w-fit mx-auto mb-2 border border-black p-2 shadow-md shadow-black duration-300 hover:scale-105"
+                className="mx-auto mb-2 w-fit rounded-full border border-black p-2 shadow-md shadow-black duration-300 hover:scale-105"
               >
                 <Image
                   height={30}
@@ -58,7 +59,7 @@ export default async function MovePage() {
                   alt={move.type.name}
                 />
               </Link>
-            </Link>
+            </div>
           );
         })}
       </div>
