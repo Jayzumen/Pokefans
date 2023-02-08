@@ -14,7 +14,7 @@
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "chart.js": "^4.2.0",
-    "firebase": "^9.17.0",
+    "firebase": "9.9.0",
     "next": "13.1.6",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",

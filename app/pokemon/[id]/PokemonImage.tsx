@@ -1,10 +1,92 @@
-import { PokemonTypes } from "@/assets/constants";
-import { PokemonData } from "@/types/pokemonTypes";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { PokemonTypes } from "@/assets/constants";
+import { PokemonData } from "@/types/pokemonTypes";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
+import { auth } from "../../auth";
+import { db } from "../../firebase";
+import { toast } from "react-toastify";
 
 export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
+  const [isSaved, setIsSaved] = useState(false);
+  const [userName, setUsername] = useState("");
+
+  const compareId = async (id: string) => {
+    const userRef = doc(db, "Users", id);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      setUsername(userSnap.data()?.username);
+    }
+  };
+
+  useEffect(() => {
+    compareId(auth.currentUser?.uid as string);
+    if (userName) {
+      const userRef = doc(db, "Teams", userName);
+      getDoc(userRef).then((docSnap) => {
+        if (!docSnap.exists()) {
+          setDoc(userRef, {});
+        }
+      });
+      collection(db, "Teams", userName, "pokemonTeam");
+    }
+  }, [auth.currentUser?.uid]);
+
+  // Check if visited Pokemon is already saved
+  useEffect(() => {
+    if (userName) {
+      const docRef = doc(db, "Teams", userName, "pokemonTeam", pokemon.name);
+      getDoc(docRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          setIsSaved(true);
+        } else {
+          setIsSaved(false);
+        }
+      });
+    }
+  }, [userName, pokemon]);
+
+  const handleClick = async () => {
+    if (!userName) {
+      toast("You need to be logged in to save a Pokémon to your Team");
+      return;
+    }
+    if (isSaved) {
+      const docRef = doc(db, "Teams", userName, "pokemonTeam", pokemon.name);
+      await deleteDoc(docRef);
+      setIsSaved(false);
+      toast(`${pokemon.name} removed from your Team`);
+    } else {
+      const pokemonTeamRef = collection(db, "Teams", userName, "pokemonTeam");
+      const querySnapshot = await getDocs(pokemonTeamRef);
+      if (querySnapshot.size < 6) {
+        const docRef = doc(db, "Teams", userName, "pokemonTeam", pokemon.name);
+        await setDoc(docRef, {
+          id: pokemon.id,
+          name: pokemon.name,
+          types: pokemon.types,
+          sprite: pokemon.sprites.other["official-artwork"].front_default,
+          stats: pokemon.stats,
+        });
+        setIsSaved(true);
+        toast(`${pokemon.name} added to your Team`);
+      } else {
+        toast("You can only have 6 Pokémon in your Team");
+      }
+    }
+  };
+
   const englishGenus = pokemon.speciesData.genera.find(
     (genus: any) => genus.language.name === "en"
   );
@@ -48,13 +130,26 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
         </div>
 
         <div className="mx-auto flex flex-col justify-center pb-2">
-          <Image
-            priority
-            src={pokemon.sprites.other["official-artwork"].front_default}
-            width={475}
-            height={475}
-            alt={pokemon.name}
-          />
+          <div>
+            <Image
+              priority
+              src={pokemon.sprites.other["official-artwork"].front_default}
+              width={475}
+              height={475}
+              alt={pokemon.name}
+            />
+            <button
+              aria-label="save to firestore btn"
+              onClick={handleClick}
+              className="ml-60"
+            >
+              {isSaved ? (
+                <AiFillHeart className="h-12 w-12 text-red-500" />
+              ) : (
+                <AiOutlineHeart className="h-12 w-12" />
+              )}
+            </button>
+          </div>
 
           {pokemon.sprites.other["official-artwork"].front_shiny && (
             <div className="my-2 mx-auto flex flex-col">

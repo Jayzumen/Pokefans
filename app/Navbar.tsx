@@ -1,14 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { dexLinks } from "@/assets/constants";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaTimes } from "react-icons/fa";
+import { auth, getCurrentUser, signOutUser } from "./auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "./firebase";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
   const [nav, setNav] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userData, setUserData] = useState(
+    auth.currentUser ? (auth.currentUser.uid as string) : ""
+  );
+  const [username, setUsername] = useState("");
+
+  const path = usePathname();
+
+  useEffect(() => {
+    getCurrentUser().then(async (user) => {
+      setUserData(user);
+      if (user) {
+        const userRef = doc(db, "Users", user);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUsername(userSnap.data()?.username);
+        }
+      }
+    });
+  }, [path]);
 
   return (
     <div className="absolute top-0 z-10 flex h-24 w-full items-center justify-between bg-transparent px-4 text-center text-white shadow-md shadow-black md:px-10">
@@ -17,6 +40,25 @@ function Navbar() {
       </Link>
 
       <ul className="hidden md:mr-16 md:justify-center md:gap-6 lg:flex">
+        {!userData ? (
+          <li className="text-lg font-bold transition hover:underline">
+            <Link href="/login">Login</Link>
+          </li>
+        ) : (
+          <>
+            <li className="text-lg font-bold transition hover:underline">
+              <Link href={`/teams/${username}`}>{username}'s Team</Link>
+            </li>
+            <li className="text-lg font-bold">
+              <button
+                className="transition hover:underline"
+                onClick={signOutUser}
+              >
+                Logout
+              </button>
+            </li>
+          </>
+        )}
         <li className="text-lg font-bold transition hover:underline">
           <Link href="/teams">Teams</Link>
         </li>
@@ -31,9 +73,9 @@ function Navbar() {
             Dex-Menu
           </button>
           {dropdownOpen && (
-            <ul className="absolute mt-2 hidden bg-slate-800 rounded-md shadow-md shadow-black md:block">
+            <ul className="absolute mt-2 hidden rounded-md bg-slate-800 shadow-md shadow-black md:block">
               {dexLinks.map((link) => (
-                <li key={link.id} >
+                <li key={link.id}>
                   <Link
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     href={link.path}
@@ -76,6 +118,38 @@ function Navbar() {
                 Home
               </Link>
             </li>
+            {!userData ? (
+              <li className="my-4 mx-6 cursor-pointer text-4xl capitalize transition hover:underline">
+                <Link
+                  onClick={() => setNav(!nav)}
+                  href="/login"
+                  className="m-0 p-0"
+                >
+                  Login
+                </Link>
+              </li>
+            ) : (
+              <>
+                <li className="my-4 mx-6 cursor-pointer text-4xl capitalize transition hover:underline">
+                  <Link
+                    onClick={() => setNav(!nav)}
+                    href={`/teams/${username}`}
+                    className="m-0 p-0"
+                  >
+                    {username}'s Team
+                  </Link>
+                </li>
+                <li className="my-4 mx-6 cursor-pointer text-4xl capitalize ">
+                  <button
+                    className="m-0 p-0 transition hover:underline"
+                    onClick={signOutUser}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
+
             <li className="my-4 mx-6 cursor-pointer text-4xl capitalize transition hover:underline">
               <Link
                 onClick={() => setNav(!nav)}
@@ -96,7 +170,7 @@ function Navbar() {
                 Dex-Menu
               </button>
               {nav && dropdownOpen && (
-                <ul className="absolute bg-slate-800 rounded-md text-2xl shadow-md shadow-black">
+                <ul className="absolute rounded-md bg-slate-800 text-2xl shadow-md shadow-black">
                   {dexLinks.map((link) => (
                     <li key={link.id}>
                       <Link

@@ -17,6 +17,14 @@ export interface Pokemon {
   slot: number;
 }
 
+export interface Type2 {
+  type: {
+    name: string;
+    url: string;
+  };
+  slot: number;
+}
+
 export interface Type {
   name: string;
   url: string;
