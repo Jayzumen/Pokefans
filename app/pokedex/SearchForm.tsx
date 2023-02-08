@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Pokemon, PokemonData, Species } from "@/types/pokemonTypes";
 import DefaultPokemon from "./DefaultPokemon";
 import SearchedPokemon from "./SearchedPokemon";
+import { toast } from "react-toastify";
 
 export default function SearchForm({
   pokemon,
@@ -20,7 +21,7 @@ export default function SearchForm({
       const pokemon = allPokemon.filter((pokemon) =>
         pokemon.name.includes(name.toLowerCase())
       );
-      if (pokemon) {
+      if (pokemon.length > 0) {
         const res: PokemonData[] = await Promise.all(
           pokemon?.map(async (pokemon) => {
             const res = await fetch(pokemon.url);
@@ -31,6 +32,9 @@ export default function SearchForm({
           })
         );
         return res;
+      } else {
+        toast.error(`No Pokémon with name "${search}" found`);
+        setSearch("");
       }
       return null;
     }
@@ -48,7 +52,7 @@ export default function SearchForm({
   return (
     <>
       <form
-        className="mx-auto mt-10 flex max-w-[500px] flex-col gap-y-4 px-2 text-xl"
+        className="mx-auto mt-10 flex max-w-[500px] flex-col gap-y-4 px-2 pb-4 text-xl"
         onSubmit={handleSubmit}
       >
         <label htmlFor="search">Search for a Pokémon</label>
@@ -63,7 +67,7 @@ export default function SearchForm({
         />
         <button
           type="submit"
-          className="mx-auto w-fit rounded-md bg-purple-900 py-2 px-6 text-white transition hover:bg-slate-300 hover:text-black disabled:bg-sky-700 disabled:text-gray-200"
+          className="rounded-full bg-sky-700 px-4 py-2 text-white shadow-md shadow-sky-700 outline-none"
         >
           Search
         </button>

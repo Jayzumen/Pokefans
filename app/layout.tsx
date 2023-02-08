@@ -1,6 +1,10 @@
+"use client";
+
 import "./globals.css";
 import { Poppins } from "@next/font/google";
 import Navbar from "@/app/Navbar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
@@ -21,6 +25,18 @@ export default function RootLayout({
       >
         <Navbar />
         <div className="bg-slate-900">{children}</div>
+        <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          // theme="dark"
+        />
       </body>
     </html>
   );

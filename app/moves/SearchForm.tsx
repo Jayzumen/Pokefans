@@ -2,6 +2,7 @@
 
 import { Move, MoveData } from "@/types/moveTypes";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import DefaultMoves from "./DefaultMoves";
 import SearchedMoves from "./SearchedMoves";
 
@@ -20,7 +21,7 @@ export default function SearchForm({
       const move = allMoves?.filter((move) =>
         move.name.includes(name.toLowerCase())
       );
-      if (move) {
+      if (move.length > 0) {
         const res: MoveData[] = await Promise.all(
           move?.map(async (move) => {
             const res = await fetch(move.url);
@@ -29,6 +30,9 @@ export default function SearchForm({
           })
         );
         return res;
+      } else {
+        toast.error(`No Move with name "${search}" found`);
+        setSearch("");
       }
     }
   };
@@ -47,7 +51,7 @@ export default function SearchForm({
     <>
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mt-10 flex max-w-[500px] flex-col gap-y-4 p-2 text-xl"
+        className="mx-auto mt-10 pb-4 flex max-w-[500px] flex-col gap-y-4 p-2 text-xl"
       >
         <label htmlFor="search">Search for a Move</label>
         <input

@@ -2,6 +2,7 @@
 
 import { Ability, AbilityData } from "@/types/abilityTypes";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import DefaultAbility from "./DefaultAbility";
 import SearchedAbility from "./SearchedAbility";
 
@@ -20,7 +21,7 @@ export default function SearchForm({
       const ability = allAbilities?.filter((ability) =>
         ability.name.includes(name.toLowerCase())
       );
-      if (ability) {
+      if (ability.length > 0) {
         const res: AbilityData[] = await Promise.all(
           ability?.map(async (ability) => {
             const res = await fetch(ability.url);
@@ -29,6 +30,9 @@ export default function SearchForm({
           })
         );
         return res;
+      } else {
+        toast.error(`No Ability with name "${search}" found`);
+        setSearch("");
       }
     }
   };
@@ -47,7 +51,7 @@ export default function SearchForm({
     <>
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mt-10 flex max-w-[500px] flex-col gap-y-4 px-2 text-xl"
+        className="mx-auto mt-10 pb-4 flex max-w-[500px] flex-col gap-y-4 px-2 text-xl"
       >
         <label htmlFor="search">Search for an Ability</label>
         <input
@@ -61,7 +65,7 @@ export default function SearchForm({
         />
         <button
           type="submit"
-          className="mx-auto w-fit rounded-md bg-purple-900 py-2 px-6 text-white transition hover:bg-slate-300 hover:text-black disabled:bg-sky-700 disabled:text-gray-200"
+          className="rounded-full bg-sky-700 px-4 py-2 text-white shadow-md shadow-sky-700 outline-none"
         >
           Search
         </button>
