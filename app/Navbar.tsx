@@ -46,9 +46,6 @@ function Navbar() {
           </li>
         ) : (
           <>
-            <li className="text-lg font-bold transition hover:underline">
-              <Link href={`/teams/${username}`}>{username}'s Team</Link>
-            </li>
             <li className="text-lg font-bold">
               <button
                 className="transition hover:underline"
@@ -56,6 +53,9 @@ function Navbar() {
               >
                 Logout
               </button>
+            </li>
+            <li className="text-lg font-bold transition hover:underline">
+              <Link href={`/teams/${username}`}>{username}'s Team</Link>
             </li>
           </>
         )}
@@ -130,6 +130,14 @@ function Navbar() {
               </li>
             ) : (
               <>
+                <li className="my-4 mx-6 cursor-pointer text-4xl capitalize ">
+                  <button
+                    className="m-0 p-0 transition hover:underline"
+                    onClick={signOutUser}
+                  >
+                    Logout
+                  </button>
+                </li>
                 <li className="my-4 mx-6 cursor-pointer text-4xl capitalize transition hover:underline">
                   <Link
                     onClick={() => setNav(!nav)}
@@ -138,14 +146,6 @@ function Navbar() {
                   >
                     {username}'s Team
                   </Link>
-                </li>
-                <li className="my-4 mx-6 cursor-pointer text-4xl capitalize ">
-                  <button
-                    className="m-0 p-0 transition hover:underline"
-                    onClick={signOutUser}
-                  >
-                    Logout
-                  </button>
                 </li>
               </>
             )}

@@ -23,6 +23,7 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
   const [userName, setUsername] = useState("");
 
   const compareId = async (id: string) => {
+    if (!id) return;
     const userRef = doc(db, "Users", id);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
@@ -41,7 +42,7 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
       });
       collection(db, "Teams", userName, "pokemonTeam");
     }
-  }, [auth.currentUser?.uid]);
+  }, [userName]);
 
   // Check if visited Pokemon is already saved
   useEffect(() => {

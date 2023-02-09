@@ -10,8 +10,7 @@ export default function RandomPokemon({
 }) {
   return (
     <>
-      <p className="mt-10 mb-4 text-2xl font-semibold">Random Pokémon:</p>
-      <div className="mx-auto flex max-w-[1200px] flex-wrap justify-center gap-4 capitalize text-black">
+      <div className="mx-auto flex max-w-[1200px] flex-wrap justify-center gap-4 pt-4 capitalize text-black">
         {randomPokemon.map((pokemon, index) => {
           const matchingTypes = pokemon.types.map((type) => {
             return PokemonTypes.filter(
@@ -29,9 +28,9 @@ export default function RandomPokemon({
                   matchingTypes[1] ? matchingTypes[1]?.color : "white"
                 } 100%)`,
               }}
-              className={`min-w-[300px] rounded-lg p-4`}
+              className={`min-w-[280px] rounded-lg p-4 md:min-w-[300px]`}
             >
-              <h2 className="max-w-[280px] text-2xl font-semibold">
+              <h2 className="max-w-[270px] text-2xl font-semibold">
                 {pokemon.name}
               </h2>
               <Link href={`pokemon/${pokemon.name}`}>
