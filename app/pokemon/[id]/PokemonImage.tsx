@@ -145,7 +145,7 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
               className="ml-60"
             >
               {isSaved ? (
-                <AiFillHeart className="h-12 w-12 text-red-500" />
+                <AiOutlineHeart className="h-12 w-12 rounded-full bg-red-500 text-white shadow-md shadow-black" />
               ) : (
                 <AiOutlineHeart className="h-12 w-12" />
               )}

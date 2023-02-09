@@ -1,4 +1,4 @@
-import { SiVite, SiTailwindcss } from "react-icons/si";
+import { SiNextdotjs, SiTailwindcss } from "react-icons/si";
 import { BsGithub } from "react-icons/bs";
 import { TbPokeball } from "react-icons/tb";
 
@@ -21,8 +21,12 @@ export default function Footer() {
           </a>
         </li>
         <li>
-          <a href="https://vitejs.dev/" target="_blank" rel="noreferrer">
-            <SiVite className="transform transition duration-300 ease-in-out hover:scale-110 hover:text-white" />
+          <a
+            href="https://beta.nextjs.org/docs"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <SiNextdotjs className="transform transition duration-300 ease-in-out hover:scale-110 hover:text-white" />
           </a>
         </li>
         <li>
@@ -33,7 +37,7 @@ export default function Footer() {
       </ul>
 
       <p className="text-center text-xs text-gray-400">
-        &copy; 2022 Pokéfans. All rights reserved.
+        &copy; 2023 Pokéfans. All rights reserved.
       </p>
     </footer>
   );
