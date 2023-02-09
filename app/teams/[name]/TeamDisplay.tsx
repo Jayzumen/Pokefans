@@ -1,22 +1,44 @@
 "use client";
 
+import { db } from "@/app/firebase";
 import { PokemonTypes } from "@/assets/constants";
 import { Stat } from "@/types/pokemonTypes";
 import { Type2 } from "@/types/typeTypes";
-import { DocumentData } from "firebase/firestore";
+import { collection, DocumentData, getDocs } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function TeamDisplay({
-  savedTeamData,
-}: {
-  savedTeamData: DocumentData | undefined;
-}) {
+export default function TeamDisplay({ name }: { name: string }) {
+  const [teamData, setTeamData] = useState<DocumentData | undefined>([]);
+  const path = usePathname();
+
+  const getPokemonTeam = async (name: string) => {
+    if (name) {
+      const q = collection(db, "Teams", name, "pokemonTeam");
+      const querySnapshot = await getDocs(q);
+      const data: DocumentData = [];
+      querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+      });
+      return data;
+    }
+  };
+
+  useEffect(() => {
+    const getTeamData = async () => {
+      const data = await getPokemonTeam(name);
+      setTeamData(data);
+    };
+    getTeamData();
+  }, [path]);
+
   return (
     <>
-      {savedTeamData && savedTeamData.length > 0 && (
+      {teamData && teamData.length > 0 && (
         <div className="mx-auto flex max-w-[1200px] flex-wrap justify-center gap-8 py-10 px-2 text-black">
-          {savedTeamData
+          {teamData
             .sort((a: DocumentData, b: DocumentData) => a.id - b.id)
             .map((mon: DocumentData) => {
               let totalStats = mon.stats.reduce(
