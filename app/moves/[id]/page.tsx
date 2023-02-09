@@ -4,7 +4,9 @@ import MoveInfo from "./MoveInfo";
 import MovePokemon from "./MovePokemon";
 
 async function getMoveData(id: string): Promise<MoveData> {
-  const moveRes = await fetch(`https://pokeapi.co/api/v2/move/${id}`);
+  const moveRes = await fetch(`https://pokeapi.co/api/v2/move/${id}`, {
+    next: { revalidate: 30 },
+  });
   const moveData: MoveData = await moveRes?.json();
   const pokemon = await Promise.all(
     moveData?.learned_by_pokemon?.map(async (pokemon) => {

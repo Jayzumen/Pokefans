@@ -4,7 +4,9 @@ import AbilityInfo from "./AbilityInfo";
 import AbilityPokemon from "./AbilityPokemon";
 
 async function getAbilityData(id: string): Promise<AbilityData> {
-  const abilityRes = await fetch(`https://pokeapi.co/api/v2/ability/${id}`);
+  const abilityRes = await fetch(`https://pokeapi.co/api/v2/ability/${id}`, {
+    next: { revalidate: 30 },
+  });
   const abilityData: AbilityData = await abilityRes?.json();
   const pokemonData: PokemonData[] = await Promise.all(
     abilityData?.pokemon?.map(async (pokemon) => {
