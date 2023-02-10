@@ -5,6 +5,7 @@ import { Poppins } from "@next/font/google";
 import Navbar from "@/app/Navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AnalyticsWrapper } from "@/components/AnalyticsWrapper";
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
@@ -35,8 +36,8 @@ export default function RootLayout({
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          // theme="dark"
         />
+        <AnalyticsWrapper />
       </body>
     </html>
   );
