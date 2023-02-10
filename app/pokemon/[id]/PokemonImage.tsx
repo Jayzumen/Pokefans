@@ -134,7 +134,7 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
           </div>
         </div>
 
-        <div className="mx-auto flex flex-col justify-center pb-2">
+        <div className="mx-auto flex flex-col items-center justify-center pb-2">
           <div>
             <Image
               priority
