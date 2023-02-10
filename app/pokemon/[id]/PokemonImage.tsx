@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PokemonTypes } from "@/assets/constants";
-import { PokemonData } from "@/types/pokemonTypes";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { PokemonData, Variety } from "@/types/pokemonTypes";
+import { AiOutlineHeart } from "react-icons/ai";
 import {
   collection,
   deleteDoc,
@@ -92,6 +92,10 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
     (genus: any) => genus.language.name === "en"
   );
 
+  const varieties = pokemon.speciesData.varieties.filter(
+    (variety: Variety) => variety.is_default !== true
+  );
+
   return (
     <>
       <div className="mx-auto mt-4 flex flex-col md:w-[80%] lg:flex-row lg:justify-between">
@@ -152,19 +156,44 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
             </button>
           </div>
 
-          {pokemon.sprites.other["official-artwork"].front_shiny && (
-            <div className="my-2 mx-auto flex flex-col">
-              <p className="text-xl font-semibold">Other Forms:</p>
-              <p className="mt-2 text-xl">Shiny:</p>
-              <Image
-                height={200}
-                width={200}
-                src={pokemon.sprites.other["official-artwork"].front_shiny}
-                alt={pokemon.name + " shiny"}
-                title={pokemon.name + " shiny"}
-              />
-            </div>
-          )}
+          {pokemon.is_default &&
+            pokemon.sprites.other["official-artwork"].front_shiny && (
+              <div className="my-2 mx-auto flex flex-col items-center">
+                <p className="text-xl font-semibold">Other Forms:</p>
+                <p className="mt-2 text-xl">Shiny:</p>
+                <Image
+                  height={200}
+                  width={200}
+                  src={pokemon.sprites.other["official-artwork"].front_shiny}
+                  alt={pokemon.name + " shiny"}
+                  title={pokemon.name + " shiny"}
+                />
+
+                {varieties.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-xl">Other:</p>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {varieties.map((variety) => (
+                        <Link
+                          key={variety.pokemon.name}
+                          href={`/pokemon/${variety.pokemon.name}`}
+                        >
+                          <Image
+                            height={200}
+                            width={200}
+                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
+                              variety.pokemon.url.split("/")[6]
+                            }.png`}
+                            alt={variety.pokemon.name}
+                            title={variety.pokemon.name}
+                          />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
         </div>
       </div>
     </>
