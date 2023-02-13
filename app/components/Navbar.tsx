@@ -5,9 +5,9 @@ import Link from "next/link";
 import { dexLinks } from "@/assets/constants";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaTimes } from "react-icons/fa";
-import { auth, getCurrentUser, signOutUser } from "./auth";
+import { auth, getCurrentUser, signOutUser } from "../auth";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "../firebase";
 import { usePathname } from "next/navigation";
 
 function Navbar() {

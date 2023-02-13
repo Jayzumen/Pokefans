@@ -14,8 +14,8 @@ import {
   getDocs,
   setDoc,
 } from "firebase/firestore";
-import { auth } from "../../auth";
-import { db } from "../../firebase";
+import { auth } from "../../../auth";
+import { db } from "../../../firebase";
 import { toast } from "react-toastify";
 
 export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {

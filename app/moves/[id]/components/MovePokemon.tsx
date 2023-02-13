@@ -1,15 +1,16 @@
-import { PokemonTypes } from "@/assets/constants";
-import { AbilityData } from "@/types/abilityTypes";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { PokemonTypes } from "@/assets/constants";
+import { MoveData } from "@/types/moveTypes";
 
-function AbilityPokemon({ ability }: { ability: AbilityData }) {
+function MovePokemon({ move }: { move: MoveData }) {
   return (
     <>
-      <p className="py-4 text-2xl font-bold">Pokemon with the ability:</p>
-      <div className="flex flex-wrap gap-8 p-4 text-black">
-        {ability.pokemonData.map((pokemon, index) => {
+      <p className="py-4 text-2xl font-bold">
+        Pokemon that can learn this move:
+      </p>
+      <div className="flex flex-wrap gap-8 p-4">
+        {move.pokemon.map((pokemon) => {
           const matchingTypes = pokemon.types.map((type) => {
             return PokemonTypes.filter(
               (pokemonType) => pokemonType.name === type.type.name
@@ -18,8 +19,7 @@ function AbilityPokemon({ ability }: { ability: AbilityData }) {
           if (pokemon.sprites.other["official-artwork"].front_default)
             return (
               <Link
-                key={index}
-                href={`/pokemon/${pokemon.name}`}
+                key={pokemon.name}
                 style={{
                   background: `linear-gradient(180deg, ${
                     matchingTypes[0].color
@@ -27,7 +27,8 @@ function AbilityPokemon({ ability }: { ability: AbilityData }) {
                     matchingTypes[1] ? matchingTypes[1]?.color : "white"
                   } 100%)`,
                 }}
-                className="mx-auto flex min-h-[300px] min-w-[250px] flex-col items-center justify-center rounded-lg border border-black py-2 text-xl font-semibold shadow-md shadow-black duration-300 hover:scale-105"
+                href={`/pokemon/${pokemon.name}`}
+                className="mx-auto flex min-w-[250px] flex-col items-center justify-center rounded-lg border border-black py-2 text-xl font-semibold shadow-md shadow-black duration-300 hover:scale-105"
               >
                 <p className="mx-auto max-w-[200px] capitalize">
                   {pokemon.name}
@@ -46,4 +47,4 @@ function AbilityPokemon({ ability }: { ability: AbilityData }) {
   );
 }
 
-export default AbilityPokemon;
+export default MovePokemon;

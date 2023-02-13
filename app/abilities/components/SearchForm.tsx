@@ -51,7 +51,7 @@ export default function SearchForm({
     <>
       <form
         onSubmit={handleSubmit}
-        className="mx-auto mt-10 pb-4 flex max-w-[500px] flex-col gap-y-4 px-2 text-xl"
+        className="mx-auto mt-10 flex max-w-[500px] flex-col gap-y-4 px-2 pb-4 text-xl"
       >
         <label htmlFor="search">Search for an Ability</label>
         <input

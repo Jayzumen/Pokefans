@@ -1,7 +1,7 @@
 import { PokemonTypes } from "@/assets/constants";
 import { TypeData } from "@/types/typeTypes";
-import DamageRelations from "./DamageRelations";
-import TypePokemon from "./TypePokemon";
+import DamageRelations from "./components/DamageRelations";
+import TypePokemon from "./components/TypePokemon";
 
 async function getTypeData(id: string): Promise<TypeData> {
   const res = await fetch(`https://pokeapi.co/api/v2/type/${id}`);

@@ -1,5 +1,5 @@
 import { AbilityData, Ability } from "./../../types/abilityTypes";
-import SearchForm from "./SearchForm";
+import SearchForm from "./components/SearchForm";
 
 async function randomAbilities(): Promise<AbilityData[]> {
   const abilities: AbilityData[] = [];

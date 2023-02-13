@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "./../firebase";
+import { db } from "../../firebase";
 import { toast } from "react-toastify";
-import { signUpUser, signInUser, auth } from "../auth";
+import { signUpUser, signInUser, auth } from "../../auth";
 
 export default function LoginForm() {
   const [username, setUserName] = useState("");

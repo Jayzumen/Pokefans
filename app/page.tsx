@@ -1,7 +1,7 @@
 import { PokemonData, Species } from "../types/pokemonTypes";
-import Footer from "./Footer";
-import PageLinks from "./PageLinks";
-import RandomPokemon from "./RandomPokemon";
+import Footer from "./components/Footer";
+import PageLinks from "./components/PageLinks";
+import RandomPokemon from "./components/RandomPokemon";
 
 async function getRandomPokemon() {
   const pokemon = [];

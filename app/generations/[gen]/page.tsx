@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Generations } from "@/assets/constants";
 import { Pokemon } from "@/types/pokemonTypes";
 import { GenPokemonData } from "../../../types/generationTypes";
-import PokemonLayout from "./PokemonLayout";
+import PokemonLayout from "./components/PokemonLayout";
 
 async function getGenPokemon(gen: string) {
   const generation = Generations.find((generation) => generation.id === gen);

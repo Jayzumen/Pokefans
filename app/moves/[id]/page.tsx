@@ -1,7 +1,7 @@
 import { PokemonTypes } from "@/assets/constants";
 import { MoveData } from "../../../types/moveTypes";
-import MoveInfo from "./MoveInfo";
-import MovePokemon from "./MovePokemon";
+import MoveInfo from "./components/MoveInfo";
+import MovePokemon from "./components/MovePokemon";
 
 async function getMoveData(id: string): Promise<MoveData> {
   const moveRes = await fetch(`https://pokeapi.co/api/v2/move/${id}`, {

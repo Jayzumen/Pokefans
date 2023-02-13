@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
-import TeamDisplay from "./TeamDisplay";
+import Team from "./components/Team";
 
 interface TeamPageProps {
   name: string;
@@ -26,7 +26,7 @@ export default async function TeamPage({
   return (
     <div className="mx-4 mt-28 mb-4 min-h-screen">
       <h1 className="text-5xl font-semibold underline">My Team</h1>
-      <TeamDisplay name={name} />
+      <Team name={name} />
     </div>
   );
 }

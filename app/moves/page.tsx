@@ -1,5 +1,5 @@
 import { Move, MoveData } from "@/types/moveTypes";
-import SearchForm from "./SearchForm";
+import SearchForm from "./components/SearchForm";
 
 async function randomMoves(): Promise<MoveData[]> {
   const moves: MoveData[] = [];

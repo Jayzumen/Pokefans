@@ -1,39 +1,11 @@
-"use client";
-
-import { db } from "@/app/firebase";
+import Image from "next/image";
+import Link from "next/link";
+import { DocumentData } from "firebase/firestore";
 import { PokemonTypes } from "@/assets/constants";
 import { Stat } from "@/types/pokemonTypes";
 import { Type2 } from "@/types/typeTypes";
-import { collection, DocumentData, getDocs } from "firebase/firestore";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
-export default function TeamDisplay({ name }: { name: string }) {
-  const [teamData, setTeamData] = useState<DocumentData | undefined>([]);
-  const path = usePathname();
-
-  const getPokemonTeam = async (name: string) => {
-    if (name) {
-      const q = collection(db, "Teams", name, "pokemonTeam");
-      const querySnapshot = await getDocs(q);
-      const data: DocumentData = [];
-      querySnapshot.forEach((doc) => {
-        data.push(doc.data());
-      });
-      return data;
-    }
-  };
-
-  useEffect(() => {
-    const getTeamData = async () => {
-      const data = await getPokemonTeam(name);
-      setTeamData(data);
-    };
-    getTeamData();
-  }, [path]);
-
+function TeamDisplay({ teamData }: { teamData: DocumentData | undefined }) {
   return (
     <>
       {teamData && teamData.length > 0 && (
@@ -107,3 +79,5 @@ export default function TeamDisplay({ name }: { name: string }) {
     </>
   );
 }
+
+export default TeamDisplay;

@@ -1,5 +1,4 @@
 import { AbilityData } from "@/types/abilityTypes";
-import React from "react";
 
 function AbilityInfo({ ability }: { ability: AbilityData }) {
   const englishFlavText = ability.flavor_text_entries.find(

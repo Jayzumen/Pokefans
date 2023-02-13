@@ -4,10 +4,10 @@ import {
   PokemonData,
   Species,
 } from "../../../types/pokemonTypes";
-import PokemonEvoChain from "./PokemonEvoChain";
-import PokemonImage from "./PokemonImage";
-import PokemonInfo from "./PokemonInfo";
-import PokemonStats from "./PokemonStats";
+import PokemonEvoChain from "./components/PokemonEvoChain";
+import PokemonImage from "./components/PokemonImage";
+import PokemonInfo from "./components/PokemonInfo";
+import PokemonStats from "./components/PokemonStats";
 
 async function getPokemonData(pokemonId: string) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);

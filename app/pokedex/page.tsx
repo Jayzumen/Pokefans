@@ -1,5 +1,5 @@
 import { Pokemon, PokemonData, Species } from "@/types/pokemonTypes";
-import SearchForm from "./SearchForm";
+import SearchForm from "./components/SearchForm";
 
 async function getDummyPokemon() {
   const pokemon = [];

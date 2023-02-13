@@ -1,8 +1,7 @@
-import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { PokemonTypes } from "@/assets/constants";
 import { MoveData } from "@/types/moveTypes";
-import Image from "next/image";
 
 function MoveInfo({ move }: { move: MoveData }) {
   const englishFlavText = move.flavor_text_entries.find(

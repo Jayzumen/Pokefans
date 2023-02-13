@@ -1,7 +1,7 @@
 import { PokemonData } from "@/types/pokemonTypes";
 import { AbilityData } from "../../../types/abilityTypes";
-import AbilityInfo from "./AbilityInfo";
-import AbilityPokemon from "./AbilityPokemon";
+import AbilityInfo from "./components/AbilityInfo";
+import AbilityPokemon from "./components/AbilityPokemon";
 
 async function getAbilityData(id: string): Promise<AbilityData> {
   const abilityRes = await fetch(`https://pokeapi.co/api/v2/ability/${id}`, {

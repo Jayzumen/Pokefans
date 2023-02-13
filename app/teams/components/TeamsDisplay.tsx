@@ -1,48 +1,10 @@
-"use client";
-
 import { PokemonTypes } from "@/assets/constants";
 import { Stat, Type } from "@/types/pokemonTypes";
-import { collection, DocumentData, getDocs } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { db } from "../firebase";
 
-export default function TeamsDisplay() {
-  const [teams, setTeams] = useState<DocumentData[]>([]);
-  const path = usePathname();
-
-  async function getTeams() {
-    const teamsRef = collection(db, "Teams");
-    const querySnapshot = await getDocs(teamsRef);
-    const data: DocumentData[] = [];
-    const teamData: DocumentData[] = [];
-    querySnapshot.forEach(async (doc) => {
-      const pokemonTeamRef = collection(db, "Teams", doc.id, "pokemonTeam");
-      teamData.push(
-        getDocs(pokemonTeamRef).then((pokemonTeamSnapshot) => {
-          const pokemonTeamData: DocumentData = [];
-          pokemonTeamSnapshot.forEach((pokemonDoc) => {
-            pokemonTeamData.push(pokemonDoc.data());
-          });
-          data.push({
-            userId: doc.id,
-            pokemonTeam: pokemonTeamData,
-          });
-        })
-      );
-    });
-    await Promise.all(teamData);
-    return data;
-  }
-
-  useEffect(() => {
-    getTeams()
-      .then((data) => setTeams(data))
-      .catch((err) => console.log(err));
-  }, [path]);
-
+function TeamsDisplay({ teams }: { teams: DocumentData[] }) {
   return (
     <div className="flex flex-col gap-4 p-2 text-black">
       {teams &&
@@ -128,3 +90,5 @@ export default function TeamsDisplay() {
     </div>
   );
 }
+
+export default TeamsDisplay;

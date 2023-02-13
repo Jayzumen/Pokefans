@@ -2,7 +2,7 @@
 
 import "./globals.css";
 import { Poppins } from "@next/font/google";
-import Navbar from "@/app/Navbar";
+import Navbar from "./components/Navbar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AnalyticsWrapper } from "@/components/AnalyticsWrapper";
