@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head />
       <body
-        className={`${poppins.className} flex flex-col justify-center text-center`}
+        className={`${poppins.className} min-h-screen bg-background font-sans antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -34,7 +34,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <div className="">{children}</div>
+          <div className="pt-16">{children}</div>
           <ToastUtils />
         </ThemeProvider>
       </body>

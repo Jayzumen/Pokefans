@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
-import PageLinks from "@/components/PageLinks";
-import RandomPokemon from "@/components/RandomPokemon";
+import HeroSection from "@/components/HeroSection";
+import FeaturedPokemon from "@/components/FeaturedPokemon";
+import QuickLinks from "@/components/QuickLinks";
 import { PokemonData, Species } from "@/types/pokemonTypes";
 
 async function getRandomPokemon() {
@@ -22,10 +23,10 @@ export default async function Home() {
   const randomPokemon: PokemonData[] = await getRandomPokemon();
 
   return (
-    <main className="px-4 pt-32">
-      <h1 className="my-4 text-5xl font-bold underline">Welcome to Pokéfans</h1>
-      <PageLinks />
-      <RandomPokemon randomPokemon={randomPokemon} />
+    <main className="min-h-screen">
+      <HeroSection />
+      <QuickLinks />
+      <FeaturedPokemon randomPokemon={randomPokemon} />
       <Footer />
     </main>
   );
