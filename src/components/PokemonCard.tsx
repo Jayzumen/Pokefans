@@ -21,6 +21,10 @@ interface PokemonCardProps {
 
 export default function PokemonCard(props: PokemonCardProps) {
   const { pokemonData, matchingTypes } = props;
+  // if image not available, render no card
+  if (!pokemonData.sprites.other["official-artwork"].front_default) {
+    return;
+  }
 
   return (
     <Card
