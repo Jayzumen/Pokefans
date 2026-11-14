@@ -93,7 +93,6 @@ export default function Hero({
         <Link
           href={`/pokemon/${star.name}`}
           className="group relative mx-auto block w-full max-w-md outline-none"
-          aria-label={`${star.name}, Pokémon of the day`}
         >
           <Image
             src={artworkUrl(star.id)}

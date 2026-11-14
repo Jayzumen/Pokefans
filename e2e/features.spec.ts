@@ -1,4 +1,40 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+/** Collect hydration mismatches and other runtime errors on a page. */
+function watchErrors(page: Page) {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  page.on("console", (m) => {
+    if (m.type() === "error" || /hydrat/i.test(m.text())) errors.push(m.text());
+  });
+  return errors;
+}
+
+test("pages driven by URL parameters hydrate without mismatches", async ({ page }) => {
+  const errors = watchErrors(page);
+  for (const path of [
+    "/pokedex?type=fire,flying&gen=1&sort=name&q=char",
+    "/pokemon/charizard?game=red-blue",
+    "/pokemon/pikachu?game=lets-go-pikachu-lets-go-eevee#moves",
+  ]) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.waitForTimeout(500);
+  }
+  expect(errors, errors.join("\n")).toEqual([]);
+});
+
+test("dark mode hydrates without mismatches", async ({ page }) => {
+  const errors = watchErrors(page);
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  await page.evaluate(() => localStorage.setItem("theme", "dark"));
+  for (const path of ["/", "/pokedex", "/pokemon/charizard", "/types"]) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  }
+  expect(errors, errors.join("\n")).toEqual([]);
+});
 
 test("Pokédex filters are shareable through the URL", async ({ page }) => {
   await page.goto("/pokedex?type=fire,flying&gen=1");
@@ -88,7 +124,8 @@ test("login shows separate sign-in and sign-up forms", async ({ page }) => {
   await expect(page.getByRole("tab", { name: "Sign in" })).toHaveAttribute("aria-selected", "true");
   await page.getByRole("tab", { name: "Create account" }).click();
   await expect(page.getByLabel("Username")).toBeVisible();
-  await expect(page.getByLabel("Password")).toHaveAttribute("minlength", "8");
+  // exact: "Show password" (the visibility toggle) also contains the word.
+  await expect(page.getByLabel("Password", { exact: true })).toHaveAttribute("minlength", "8");
 });
 
 test("mobile menu opens and navigates", async ({ page, isMobile }) => {

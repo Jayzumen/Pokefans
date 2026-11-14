@@ -23,6 +23,9 @@ vi.mock("firebase/app", () => {
 });
 vi.mock("firebase/auth", () => ({
   getAuth: () => ({ currentUser: null }),
+  initializeAuth: () => ({ currentUser: null }),
+  indexedDBLocalPersistence: {},
+  browserLocalPersistence: {},
   createUserWithEmailAndPassword: fb.createUser,
   signInWithEmailAndPassword: fb.signIn,
   sendPasswordResetEmail: fb.resetEmail,

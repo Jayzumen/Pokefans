@@ -22,8 +22,10 @@ for (const theme of ["light", "dark"] as const) {
     for (const path of pages) {
       test(path, async ({ page }) => {
         await page.goto(path);
-        // Let streamed sections and entrance animations settle.
-        await page.waitForLoadState("networkidle");
+        // Firebase keeps a connection open, so "networkidle" never happens:
+        // wait for the page to load and entrance animations to finish.
+        await page.waitForLoadState("load");
+        await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
         await page.waitForTimeout(800);
 
         const results = await new AxeBuilder({ page })

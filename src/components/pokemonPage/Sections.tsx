@@ -155,7 +155,7 @@ export function DetailBody({ detail }: { detail: PokemonDetail }) {
 
       {hasEvolution && (
         <SectionBlock id="evolution" title="Evolution">
-          <div className="surface overflow-x-auto p-6 md:p-8">
+          <div className="surface overflow-x-auto p-6 contain-paint md:p-8">
             <EvolutionChain root={chain!.chain} current={species.name} />
           </div>
         </SectionBlock>

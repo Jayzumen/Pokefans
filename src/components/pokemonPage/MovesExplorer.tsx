@@ -33,7 +33,7 @@ function RadioPills<T extends string | number>({
   onChange: (v: T) => void;
 }) {
   return (
-    <fieldset>
+    <fieldset className="min-w-0">
       <legend className="eyebrow mb-2 text-muted-foreground">{legend}</legend>
       <div className="flex flex-wrap gap-1.5">
         {options.map((o) => (
@@ -47,7 +47,7 @@ function RadioPills<T extends string | number>({
                 ? "border-transparent bg-foreground text-background"
                 : cn(
                     "bg-card hover:border-foreground/25 hover:text-foreground",
-                    o.muted ? "text-muted-foreground/70" : "text-muted-foreground",
+                    o.muted ? "border-dashed text-muted-foreground" : "text-muted-foreground",
                   ),
             )}
           >
@@ -149,7 +149,7 @@ export default function MovesExplorer({ data }: { data: LearnsetData }) {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto contain-paint">
         <table id="moves-table" role="tabpanel" className="w-full text-sm">
           <caption className="sr-only">
             {METHODS.find((m) => m.id === method)?.label} moves in {game.label}

@@ -36,18 +36,21 @@ export default function PokemonStats({ stats }: { stats: Stat[] }) {
             <dd className="text-right font-mono text-sm font-medium tabular-nums">
               {base_stat}
             </dd>
-            <dd
-              role="meter"
-              aria-label={label}
-              aria-valuemin={0}
-              aria-valuemax={MAX_STAT}
-              aria-valuenow={base_stat}
-              className="h-2 overflow-hidden rounded-full bg-muted"
-            >
+            {/* The meter lives inside the <dd> so the list stays valid HTML. */}
+            <dd>
               <div
-                className={`stat-bar h-full rounded-full ${barColor(base_stat)}`}
-                style={{ width: `${(base_stat / MAX_STAT) * 100}%` }}
-              />
+                role="meter"
+                aria-label={label}
+                aria-valuemin={0}
+                aria-valuemax={MAX_STAT}
+                aria-valuenow={base_stat}
+                className="h-2 overflow-hidden rounded-full bg-muted"
+              >
+                <div
+                  className={`stat-bar h-full rounded-full ${barColor(base_stat)}`}
+                  style={{ width: `${(base_stat / MAX_STAT) * 100}%` }}
+                />
+              </div>
             </dd>
           </div>
         );

@@ -46,7 +46,12 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="flex min-h-screen flex-col bg-background font-sans antialiased">
+      {/* Browser extensions often add attributes to <body> before React
+          hydrates; ignore those (this only affects <body> itself). */}
+      <body
+        suppressHydrationWarning
+        className="flex min-h-screen flex-col bg-background font-sans antialiased"
+      >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <a
             href="#content"

@@ -40,12 +40,13 @@ function Logo() {
   return (
     <Link
       href="/"
-      className="group flex items-center gap-2 rounded-full pr-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      aria-label="Pokéfans home"
+      className="group flex shrink-0 items-center gap-2 rounded-full outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:pr-2"
     >
       <span className="grid size-8 place-items-center rounded-full bg-primary text-primary-foreground transition-transform duration-500 ease-out group-hover:rotate-[200deg] motion-reduce:transition-none">
         <PokeballIcon className="size-5" />
       </span>
-      <span className="text-[15px] font-semibold tracking-[-0.02em]">
+      <span className="hidden text-[15px] font-semibold tracking-[-0.02em] sm:inline">
         Pokéfans
       </span>
     </Link>
@@ -70,7 +71,7 @@ export default function Navbar() {
     <header className="fixed inset-x-0 top-3 z-50 px-3">
       <nav
         aria-label="Main"
-        className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 rounded-full border bg-background/75 py-2 pr-2 pl-3 shadow-md backdrop-blur-xl backdrop-saturate-150"
+        className="mx-auto flex h-14 max-w-6xl min-w-0 items-center justify-between gap-2 rounded-full border bg-background/75 py-2 pr-2 pl-3 shadow-md backdrop-blur-xl backdrop-saturate-150"
       >
         <Logo />
 
@@ -97,7 +98,7 @@ export default function Navbar() {
           })}
         </ul>
 
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
           <SearchTrigger />
           <ModeToggle />
 
@@ -137,7 +138,7 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild size="sm" className="h-9 rounded-full px-4">
+            <Button asChild size="sm" className="hidden h-9 rounded-full px-4 sm:inline-flex">
               <Link href="/login">Sign in</Link>
             </Button>
           )}
@@ -177,6 +178,13 @@ export default function Navbar() {
                   </li>
                 ))}
               </ul>
+              {!user && (
+                <div className="px-4 pt-2 sm:hidden">
+                  <Button asChild className="h-12 w-full rounded-xl text-base">
+                    <Link href="/login">Sign in</Link>
+                  </Button>
+                </div>
+              )}
             </SheetContent>
           </Sheet>
         </div>

@@ -1,7 +1,10 @@
 import { FirebaseError } from "firebase/app";
 import {
+  browserLocalPersistence,
   createUserWithEmailAndPassword,
   getAuth,
+  indexedDBLocalPersistence,
+  initializeAuth,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
@@ -19,7 +22,24 @@ import { app, db } from "./firebase";
 import type { TeamMember } from "./teams";
 import { MIN_PASSWORD_LENGTH, USERNAME_PATTERN } from "./validation";
 
-export const auth = getAuth(app);
+/**
+ * We only use email/password sign-in, so Auth is set up without the
+ * popup/redirect resolver. That resolver loads Google's apis.google.com
+ * script on every page, which the Content Security Policy would block and
+ * which costs an extra network request.
+ */
+function createAuth() {
+  try {
+    return initializeAuth(app, {
+      persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+    });
+  } catch {
+    // Already initialized (e.g. after a hot reload).
+    return getAuth(app);
+  }
+}
+
+export const auth = createAuth();
 
 export { USERNAME_PATTERN, MIN_PASSWORD_LENGTH };
 

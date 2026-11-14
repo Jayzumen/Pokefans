@@ -158,7 +158,7 @@ export default function SearchForm() {
           </div>
         </div>
 
-        <fieldset>
+        <fieldset className="min-w-0">
           <legend className="eyebrow mb-2 text-muted-foreground">Generation</legend>
           <div className="flex gap-1.5 overflow-x-auto pb-1">
             <Pill active={!filters.gen} onClick={() => update({ gen: null })}>
@@ -178,7 +178,7 @@ export default function SearchForm() {
           </div>
         </fieldset>
 
-        <fieldset>
+        <fieldset className="min-w-0">
           <legend className="eyebrow mb-2 text-muted-foreground">
             Type <span className="normal-case tracking-normal">(pick up to two)</span>
           </legend>

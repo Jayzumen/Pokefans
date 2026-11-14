@@ -32,7 +32,8 @@ export default function TypeChart() {
   const [active, setActive] = useState<{ r: number; c: number } | null>(null);
 
   return (
-    <div className="surface overflow-x-auto p-4 md:p-6">
+    // contain-paint: keeps the wide table from widening the page on phones.
+    <div className="surface overflow-x-auto p-4 contain-paint md:p-6">
       <table className="mx-auto border-separate border-spacing-0.5 text-center font-mono text-xs tabular-nums">
         <caption className="mb-4 text-left font-sans text-sm text-muted-foreground">
           Rows are the <strong className="text-foreground">attacking</strong>{" "}
