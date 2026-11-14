@@ -1,5 +1,5 @@
 import { EffectChange, EffectEntry, FlavorTextEntry } from "./abilityTypes";
-import { Pokemon, PokemonData } from "./pokemonTypes";
+import { Pokemon } from "./pokemonTypes";
 
 export interface Move {
   name: string;
@@ -11,6 +11,10 @@ export interface MoveData {
   effect_chance: number;
   pp: number;
   priority: number;
+  damage_class: {
+    name: string;
+    url: string;
+  };
   power: number;
   type: {
     name: string;
@@ -22,5 +26,4 @@ export interface MoveData {
   effect_entries: EffectEntry[];
   flavor_text_entries: FlavorTextEntry[];
   effect_changes: EffectChange[];
-  pokemon: PokemonData[];
 }

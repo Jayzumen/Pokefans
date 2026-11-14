@@ -1,64 +1,173 @@
-import { PokemonTypes } from "@/assets/constants";
-import PokemonEvoChain from "@/components/pokemonPage/PokemonEvoChain";
-import PokemonImage from "@/components/pokemonPage/PokemonImage";
-import PokemonInfo from "@/components/pokemonPage/PokemonInfo";
-import PokemonStats from "@/components/pokemonPage/PokemonStats";
-import { EvolutionChain, PokemonData, Species } from "@/types/pokemonTypes";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Suspense, ViewTransition } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Container } from "@/components/layout";
+import { getPokemonDetail } from "@/components/pokemonPage/data";
+import PokemonHero from "@/components/pokemonPage/Hero";
+import { DetailBody, HeroExtras } from "@/components/pokemonPage/Sections";
+import { Bone, DetailSkeleton } from "@/components/skeletons";
+import { slugOrNotFound } from "@/lib/pokeapi";
+import { artworkUrl, formatDexNumber } from "@/lib/pokemon";
+import { findPokemon, getPokemonById } from "@/lib/pokemon-index";
+import { titleCase, typeVars } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
-async function getPokemonData(pokemonId: string) {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
-  const pokemonData: PokemonData = await res?.json();
-  const speciesRes = await fetch(pokemonData.species.url);
-  const speciesData: Species = await speciesRes?.json();
-  let evoChainData: EvolutionChain | undefined;
-  if (speciesData.evolution_chain?.url) {
-    const evoChainRes = await fetch(speciesData.evolution_chain.url);
-    evoChainData = await evoChainRes?.json();
-  }
-  return { ...pokemonData, speciesData, evoChainData };
-}
-
+// Pages are rendered on first request and then cached (ISR).
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1");
-  const data = await res?.json();
-  const params = data.results.map((pokemon: { name: string; url: string }) => ({
-    id: pokemon.name,
-  }));
-  return params;
+  return [];
 }
 
-export default async function Pokemon({ params }: { params: { id: string } }) {
-  const pokemon: PokemonData = await getPokemonData(params?.id);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const name = titleCase(id);
+  return {
+    title: `${name}: stats, evolutions & abilities`,
+    description: `Base stats, types, matchups, evolutions, moves and forms of ${name}.`,
+  };
+}
 
-  const matchingTypes = pokemon.types.map((type) => {
-    return PokemonTypes.filter(
-      (pokemonType) => pokemonType.name === type.type.name,
-    )[0];
-  });
+function NeighborLink({ id, dir }: { id: number; dir: "prev" | "next" }) {
+  const p = getPokemonById(id);
+  if (!p) return <span />;
+  const Icon = dir === "prev" ? ChevronLeft : ChevronRight;
   return (
-    <main
-      style={{
-        background: `linear-gradient(180deg, ${matchingTypes[0].color} 0%, ${
-          matchingTypes[1] ? matchingTypes[1]?.color : "white"
-        } 100%)`,
-      }}
-      className="px-4 pt-32 pb-4"
+    <Link
+      href={`/pokemon/${p.name}`}
+      rel={dir}
+      className={cn(
+        "group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50",
+        dir === "next" && "flex-row-reverse",
+      )}
     >
-      <div className="flex w-full flex-col">
-        <PokemonImage pokemon={pokemon} />
+      <Icon className="size-4" />
+      <span className="font-mono tabular-nums">{formatDexNumber(p.id)}</span>
+      <span className="hidden capitalize sm:inline">{p.name.replace(/-/g, " ")}</span>
+    </Link>
+  );
+}
 
-        <div className="my-2 rounded-md bg-slate-700 p-4 text-white lg:m-4">
-          <div className="mx-auto mt-2 flex flex-col text-lg md:mt-0 md:flex-row md:justify-between">
-            <PokemonInfo pokemon={pokemon} />
-            <div className="md:w-[50%]">
-              <PokemonStats pokemon={pokemon} />
-            </div>
-          </div>
-          {pokemon.evoChainData && (
-            <PokemonEvoChain evoChainData={pokemon.evoChainData} />
-          )}
-        </div>
+function ExtrasSkeleton() {
+  return (
+    <div className="mt-3 space-y-4" aria-hidden>
+      <Bone className="h-5 w-40" />
+      <Bone className="mt-8 h-11 w-36 rounded-full" />
+    </div>
+  );
+}
+
+function BodySkeleton() {
+  return (
+    <div className="mt-6 grid gap-6 lg:grid-cols-2" aria-busy="true" aria-label="Loading">
+      <Bone className="h-80 w-full rounded-[var(--radius)]" />
+      <Bone className="h-80 w-full rounded-[var(--radius)]" />
+    </div>
+  );
+}
+
+/** Streams in with a short slide-up once the data has loaded. */
+function Reveal({ children }: { children: React.ReactNode }) {
+  return (
+    <ViewTransition enter="slide-up" default="none">
+      {children}
+    </ViewTransition>
+  );
+}
+
+async function Extras({ slug }: { slug: string }) {
+  const detail = await getPokemonDetail(slug);
+  return (
+    <Reveal>
+      <div>
+        <HeroExtras detail={detail} />
       </div>
+    </Reveal>
+  );
+}
+
+async function Body({ slug }: { slug: string }) {
+  const detail = await getPokemonDetail(slug);
+  return (
+    <Reveal>
+      <div>
+        <DetailBody detail={detail} />
+      </div>
+    </Reveal>
+  );
+}
+
+/** Alternate forms aren't in the static index: render everything from data. */
+async function FormPage({ slug }: { slug: string }) {
+  const detail = await getPokemonDetail(slug);
+  const { pokemon, species } = detail;
+  const types = pokemon.types.map((t) => t.type.name);
+  return (
+    <div style={typeVars(types)}>
+      <PokemonHero
+        id={pokemon.id}
+        name={species.name}
+        subtitle={pokemon.name.replace(`${species.name}-`, "").replace(/-/g, " ")}
+        types={types}
+        artwork={
+          pokemon.sprites.other["official-artwork"].front_default ?? artworkUrl(pokemon.id)
+        }
+      >
+        <HeroExtras detail={detail} />
+      </PokemonHero>
+      <DetailBody detail={detail} />
+    </div>
+  );
+}
+
+export default async function PokemonPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const slug = slugOrNotFound(id);
+  const entry = findPokemon(slug);
+
+  if (!entry) {
+    return (
+      <main>
+        <Container className="py-6 md:py-10">
+          <Suspense fallback={<DetailSkeleton />}>
+            <FormPage slug={slug} />
+          </Suspense>
+        </Container>
+      </main>
+    );
+  }
+
+  return (
+    <main style={typeVars(entry.types)}>
+      <Container className="py-6 md:py-10">
+        <nav aria-label="Previous and next Pokémon" className="mb-3 flex justify-between">
+          <NeighborLink id={entry.id - 1} dir="prev" />
+          <NeighborLink id={entry.id + 1} dir="next" />
+        </nav>
+
+        {/* Known instantly from the index, so the artwork can morph in. */}
+        <PokemonHero
+          id={entry.id}
+          name={entry.name}
+          types={entry.types}
+          artwork={artworkUrl(entry.id)}
+        >
+          <Suspense fallback={<ExtrasSkeleton />}>
+            <Extras slug={entry.name} />
+          </Suspense>
+        </PokemonHero>
+
+        <Suspense fallback={<BodySkeleton />}>
+          <Body slug={entry.name} />
+        </Suspense>
+      </Container>
     </main>
   );
 }

@@ -1,101 +1,91 @@
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import { Badge } from "./ui/badge";
 import Link from "next/link";
-import { PokemonData } from "@/types/pokemonTypes";
-import { PokemonTypes } from "@/assets/constants";
-import { Button } from "./ui/button";
-import { Eye, Heart } from "lucide-react";
+import { ViewTransition } from "react";
+import { artworkUrl, formatDexNumber } from "@/lib/pokemon";
+import { artworkTransitionName, type IndexPokemon } from "@/lib/pokemon-index";
+import { typeVars } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { TypeChips } from "./TypeChip";
 
-interface PokemonCardProps {
-  pokemonData: PokemonData;
-  matchingTypes: {
-    name: string;
-    color: string;
-  }[];
+/** Minimal shape a card needs: works with index entries and team members. */
+export type CardPokemon = Pick<IndexPokemon, "id" | "name" | "types">;
+
+/**
+ * Pokémon card (§4.8): the whole card is one link; artwork sits on a soft
+ * type surface; dex number in mono.
+ */
+export default function PokemonCard({
+  pokemon,
+  priority = false,
+  className,
+}: {
+  pokemon: CardPokemon;
+  priority?: boolean;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={`/pokemon/${pokemon.name}`}
+      style={typeVars(pokemon.types)}
+      className={cn(
+        "surface lift group relative flex flex-col overflow-hidden p-2 outline-none",
+        "hover:border-[color-mix(in_oklch,var(--t)_40%,var(--border))] focus-visible:ring-[3px] focus-visible:ring-ring/50",
+        className,
+      )}
+    >
+      <div className="type-surface relative grid aspect-square place-items-center overflow-hidden rounded-[calc(var(--radius)-6px)]">
+        <span className="absolute top-2.5 left-3 font-mono text-xs text-muted-foreground tabular-nums">
+          {formatDexNumber(pokemon.id)}
+        </span>
+        {/* Same name as the detail hero, so the artwork morphs on click. */}
+        <ViewTransition
+          name={artworkTransitionName(pokemon.id)}
+          share="morph"
+          default="none"
+        >
+          <Image
+            src={artworkUrl(pokemon.id)}
+            alt={`${pokemon.name} official artwork`}
+            width={240}
+            height={240}
+            sizes="(min-width: 1280px) 240px, (min-width: 640px) 30vw, 45vw"
+            priority={priority}
+            className="h-[78%] w-auto object-contain drop-shadow-[0_8px_12px_oklch(0_0_0/0.15)] transition-transform duration-300 ease-out group-hover:scale-[1.06] motion-reduce:transition-none"
+          />
+        </ViewTransition>
+      </div>
+      <div className="flex flex-1 flex-col gap-2 px-2 pt-3 pb-2">
+        <h3 className="text-base font-semibold capitalize leading-tight tracking-[-0.01em]">
+          {pokemon.name.replace(/-/g, " ")}
+        </h3>
+        <TypeChips types={pokemon.types} link={false} />
+      </div>
+    </Link>
+  );
 }
 
-export default function PokemonCard(props: PokemonCardProps) {
-  const { pokemonData, matchingTypes } = props;
-  // if image not available, render no card
-  if (!pokemonData.sprites.other["official-artwork"].front_default) {
-    return;
-  }
-
+/** Responsive grid of cards used by every list page. */
+export function PokemonGrid({
+  pokemon,
+  priorityCount = 0,
+  className,
+}: {
+  pokemon: readonly CardPokemon[];
+  /** How many leading cards are above the fold and should load eagerly. */
+  priorityCount?: number;
+  /** Override the column template, e.g. for a fixed-size featured row. */
+  className?: string;
+}) {
   return (
-    <Card className="pokemon-card-hover group overflow-hidden border-2 hover:border-primary/20 bg-card">
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground font-mono">
-            #{pokemonData.id.toString().padStart(3, '0')}
-          </div>
-          <Button size="icon" variant="ghost" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Heart className="h-4 w-4" />
-          </Button>
-        </div>
-        <CardTitle className="text-xl capitalize">{pokemonData.name}</CardTitle>
-      </CardHeader>
-      
-      <CardContent className="text-center pb-2">
-        <div className="relative mb-4 p-4 rounded-lg"
-          style={{
-            background: `linear-gradient(135deg, ${matchingTypes?.[0]?.color}15 0%, ${
-              matchingTypes?.[1]?.color ? matchingTypes[1]?.color + "15" : matchingTypes?.[0]?.color + "15"
-            } 100%)`,
-          }}
-        >
-          <Link href={`/pokemon/${pokemonData.name}`}>
-            <Image
-              src={pokemonData.sprites.other["official-artwork"].front_default}
-              alt={pokemonData.name}
-              width={160}
-              height={160}
-              className="mx-auto group-hover:scale-110 transition-transform duration-300"
-            />
-          </Link>
-        </div>
-        
-        <div className="flex flex-wrap justify-center gap-2">
-          {pokemonData.types.map((type) => {
-            const matchingType = PokemonTypes.filter(
-              (pokemonType) => pokemonType.name === type.type.name,
-            )[0];
-            return (
-              <Badge
-                key={type.type.name}
-                variant="secondary"
-                className="capitalize text-xs"
-                style={{
-                  backgroundColor: matchingType?.color + "20",
-                  color: matchingType?.color,
-                  borderColor: matchingType?.color + "40",
-                }}
-              >
-                {type.type.name}
-              </Badge>
-            );
-          })}
-        </div>
-      </CardContent>
-      
-      <CardFooter>
-        <Button 
-          variant="outline" 
-          className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" 
-          asChild
-        >
-          <Link href={`/pokemon/${pokemonData.name}`} className="flex items-center justify-center">
-            <Eye className="mr-2 h-4 w-4" />
-            View Details
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+    <div
+      className={cn(
+        "grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] sm:gap-4",
+        className,
+      )}
+    >
+      {pokemon.map((p, i) => (
+        <PokemonCard key={p.id} pokemon={p} priority={i < priorityCount} />
+      ))}
+    </div>
   );
 }

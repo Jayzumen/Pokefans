@@ -1,19 +1,38 @@
 import "./globals.css";
-import { Poppins } from "next/font/google";
-import type { Metadata } from "next";
-import ToastUtils from "@/components/ToastUtils";
+import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/components/auth-provider";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
-const poppins = Poppins({
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+// Variable fonts: one file each covers every weight.
+const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  style: "normal",
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
-  title: "PokeFans",
-  description: "Pokéfans a Pokémon website",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Pokéfans: the Pokémon field guide",
+    template: "%s | Pokéfans",
+  },
+  description:
+    "Every Pokémon, move, ability and type in one fast, beautiful field guide. Build and share your team.",
+  applicationName: SITE_NAME,
+  openGraph: { siteName: SITE_NAME, type: "website", locale: "en_US" },
+  twitter: { card: "summary_large_image" },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafb" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1013" },
+  ],
 };
 
 export default function RootLayout({
@@ -22,20 +41,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head />
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable}`}
+    >
+      {/* Browser extensions often add attributes to <body> before React
+          hydrates; ignore those (this only affects <body> itself). */}
       <body
-        className={`${poppins.className} min-h-screen bg-background font-sans antialiased`}
+        suppressHydrationWarning
+        className="flex min-h-screen flex-col bg-background font-sans antialiased"
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Navbar />
-          <div className="pt-16">{children}</div>
-          <ToastUtils />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <a
+            href="#content"
+            className="sr-only z-[60] rounded-full bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          >
+            Skip to content
+          </a>
+          <AuthProvider>
+            <Navbar />
+            <div id="content" className="flex-1 pt-20">
+              {children}
+            </div>
+          </AuthProvider>
+          <Footer />
+          <Toaster position="bottom-center" closeButton />
         </ThemeProvider>
       </body>
     </html>

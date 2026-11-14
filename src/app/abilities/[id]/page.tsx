@@ -1,49 +1,69 @@
-import AbilityInfo from "@/components/abilityPage/AbilityInfo";
-import AbilityPokemon from "@/components/abilityPage/AbilityPokemon";
+import type { Metadata } from "next";
+import { Container, PageHeader, Section } from "@/components/layout";
+import { PokemonGrid } from "@/components/PokemonCard";
+import { describe, english } from "@/lib/entries";
+import { pokeapi, slugOrNotFound } from "@/lib/pokeapi";
+import { resolveRefs } from "@/lib/pokemon-index";
+import { cleanText, ROMAN, titleCase } from "@/lib/types";
 import { AbilityData } from "@/types/abilityTypes";
-import { PokemonData } from "@/types/pokemonTypes";
 
-async function getAbilityData(id: string): Promise<AbilityData> {
-  const abilityRes = await fetch(`https://pokeapi.co/api/v2/ability/${id}`, {
-    next: { revalidate: 30 },
-  });
-  const abilityData: AbilityData = await abilityRes?.json();
-  const pokemonData: PokemonData[] = await Promise.all(
-    abilityData?.pokemon?.map(async (pokemon) => {
-      const pokemonRes = await fetch(pokemon.pokemon.url);
-      const data: PokemonData = await pokemonRes?.json();
-      return data;
-    }),
-  );
-  return { ...abilityData, pokemonData };
-}
-
+// Pages are rendered on first request and then cached (ISR).
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/ability?limit=1");
-  const data = await res?.json();
-  const params = data.results.map((ability: { name: string; url: string }) => ({
-    id: ability.name,
-  }));
-  return params;
+  return [];
 }
 
-export default async function Ability({ params }: { params: { id: string } }) {
-  const ability = await getAbilityData(params.id);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  return { title: `${titleCase(id)} (ability)` };
+}
 
-  if (ability) {
-    return (
-      <main className="min-h-screen px-4 pt-32 pb-4">
-        <AbilityInfo ability={ability} />
-        <AbilityPokemon ability={ability} />
-      </main>
-    );
-  } else {
-    return (
-      <main className="mx-4">
-        <h1 className="my-2 text-4xl font-bold capitalize underline">
-          Ability not found
-        </h1>
-      </main>
-    );
-  }
+const GEN_NUMBER: Record<string, number> = {
+  i: 1, ii: 2, iii: 3, iv: 4, v: 5, vi: 6, vii: 7, viii: 8, ix: 9,
+};
+
+export default async function Ability({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const ability = await pokeapi<AbilityData>(`ability/${slugOrNotFound(id)}`);
+  const pokemon = resolveRefs((ability.pokemon ?? []).map((p) => p.pokemon));
+  const longEffect = cleanText(english(ability.effect_entries)?.effect);
+  const gen = GEN_NUMBER[ability.generation?.name.split("-")[1] ?? ""];
+
+  return (
+    <main>
+      <PageHeader
+        eyebrow={gen ? `Ability · introduced in Gen ${ROMAN[gen]}` : "Ability"}
+        title={titleCase(ability.name)}
+        description={describe(ability)}
+      />
+      <Container>
+        {longEffect && (
+          <Section title="Effect">
+            <div className="surface p-6 leading-relaxed md:p-8">
+              <p className="max-w-3xl">{longEffect}</p>
+            </div>
+          </Section>
+        )}
+        <Section
+          title={`${pokemon.length} Pokémon can have it`}
+          className={longEffect ? "pt-0" : undefined}
+        >
+          {pokemon.length > 0 ? (
+            <PokemonGrid pokemon={pokemon} />
+          ) : (
+            <p className="text-muted-foreground">
+              No Pokémon have this ability in the main series.
+            </p>
+          )}
+        </Section>
+      </Container>
+    </main>
+  );
 }

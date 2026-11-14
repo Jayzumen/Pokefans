@@ -1,31 +1,48 @@
-import SearchForm from "@/components/movesPage/SearchForm";
+import type { Metadata } from "next";
+import { Container, PageHeader } from "@/components/layout";
+import MoveCard from "@/components/movesPage/MoveCard";
+import { NameSearch } from "@/components/NameSearch";
 import { Move, MoveData } from "@/types/moveTypes";
+import { pokeapi, randomIds } from "@/lib/pokeapi";
 
-async function randomMoves(): Promise<MoveData[]> {
-  const moves: MoveData[] = [];
-  for (let i = 1; i <= 6; i++) {
-    const randomId = Math.floor(Math.random() * 900);
-    const res = await fetch(`https://pokeapi.co/api/v2/move/${randomId}`);
-    const data: MoveData = await res?.json();
-    moves.push(data);
-  }
-  return moves;
-}
+export const metadata: Metadata = {
+  title: "Moves",
+  description: "Every Pokémon move with type, power, accuracy and PP.",
+};
 
-async function getAllMoves() {
-  const res = await fetch("https://pokeapi.co/api/v2/move?limit=900");
-  const data = await res.json();
-  const results: Move[] = await data.results;
-  return results;
-}
+// Re-pick the featured moves once per hour.
+export const revalidate = 3600;
+const MAX_MOVE_ID = 900;
 
 export default async function MovePage() {
-  const randomMoveData: MoveData[] = await randomMoves();
-  const allMoves = await getAllMoves();
+  const [featured, list] = await Promise.all([
+    Promise.all(
+      randomIds(9, MAX_MOVE_ID).map((id) => pokeapi<MoveData>(`move/${id}`)),
+    ),
+    pokeapi<{ results: Move[] }>("move?limit=2000"),
+  ]);
+
   return (
-    <main className="min-h-screen px-4 pt-32 pb-4">
-      <h1 className="my-2 text-4xl font-bold capitalize underline">Move-Dex</h1>
-      <SearchForm randomMoveData={randomMoveData} allMoves={allMoves} />
+    <main>
+      <PageHeader
+        eyebrow="Move-Dex"
+        title="Moves"
+        description="Search by name, or browse a random selection below. Each move shows its type, category, power, accuracy and PP."
+      />
+      <Container className="py-10">
+        <NameSearch
+          names={list.results.map((m) => m.name)}
+          basePath="/moves"
+          noun="move"
+          placeholder="Thunderbolt, fire…"
+        >
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((m) => (
+              <MoveCard key={m.id} move={m} />
+            ))}
+          </div>
+        </NameSearch>
+      </Container>
     </main>
   );
 }

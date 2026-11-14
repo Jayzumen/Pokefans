@@ -1,4 +1,3 @@
-import { PokemonData } from "./pokemonTypes";
 
 export interface AbilityResponse {
   count: number;
@@ -24,7 +23,6 @@ export interface AbilityData {
   };
   is_main_series: boolean;
   effect_changes: EffectChange[];
-  pokemonData: PokemonData[];
 }
 
 export interface EffectEntry {

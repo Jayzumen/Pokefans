@@ -1,32 +1,33 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Container, PageHeader } from "@/components/layout";
 import Team from "@/components/teamsPage/Team";
-import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { USERNAME_PATTERN } from "@/lib/validation";
 
-interface TeamPageProps {
-  name: string;
-}
-
-export async function generateStaticParams() {
-  const q = collection(db, "Teams");
-  const querySnapshot = await getDocs(q);
-  const params: TeamPageProps[] = [];
-  querySnapshot.forEach((doc) => {
-    params.push({ name: doc.id });
-  });
-  return params;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ name: string }>;
+}): Promise<Metadata> {
+  const { name } = await params;
+  return { title: `${name}’s team` };
 }
 
 export default async function TeamPage({
   params,
 }: {
-  params: { name: string };
+  params: Promise<{ name: string }>;
 }) {
-  const name = params.name;
+  // Usernames are plain [A-Za-z0-9_], so no URL-decoding is needed.
+  const { name } = await params;
+  if (!USERNAME_PATTERN.test(name)) notFound();
 
   return (
-    <div className="mx-4 mt-28 mb-4 min-h-screen">
-      <h1 className="text-5xl font-semibold underline">My Team</h1>
-      <Team name={name} />
-    </div>
+    <main>
+      <PageHeader eyebrow="Team" title={`${name}’s team`} />
+      <Container className="py-10">
+        <Team name={name} />
+      </Container>
+    </main>
   );
 }

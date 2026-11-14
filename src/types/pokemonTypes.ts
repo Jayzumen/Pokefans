@@ -25,8 +25,6 @@ export interface PokemonData {
       };
     };
   };
-  speciesData: Species;
-  evoChainData: EvolutionChain | undefined;
 }
 
 export interface Species {
