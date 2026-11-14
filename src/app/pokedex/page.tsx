@@ -1,30 +1,27 @@
 import SearchForm from "@/components/pokedexPage/SearchForm";
-import { Pokemon, PokemonData, Species } from "@/types/pokemonTypes";
+import { Pokemon, PokemonData } from "@/types/pokemonTypes";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, Database } from "lucide-react";
+import { pokeapi } from "@/lib/pokeapi";
 
-async function getDummyPokemon() {
-  const pokemon = [];
-  for (let i = 1; i <= 9; i++) {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
-    const data: PokemonData = await res?.json();
-    const speciesRes = await fetch(data.species.url);
-    const speciesData: Species = await speciesRes?.json();
-    pokemon.push({ ...data, speciesData });
-  }
-  return pokemon;
+async function getDefaultPokemon() {
+  return Promise.all(
+    Array.from({ length: 9 }, (_, i) =>
+      pokeapi<PokemonData>(`pokemon/${i + 1}`),
+    ),
+  );
 }
 
 async function getAllPokemon() {
-  const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=10500");
-  const data = await res.json();
-  const results: Pokemon[] = await data.results;
-  return results;
+  const data = await pokeapi<{ results: Pokemon[] }>("pokemon?limit=10500");
+  return data.results;
 }
 
 export default async function Pokedex() {
-  const defaultPokemon: PokemonData[] = await getDummyPokemon();
-  const allPokemon: Pokemon[] = await getAllPokemon();
+  const [defaultPokemon, allPokemon] = await Promise.all([
+    getDefaultPokemon(),
+    getAllPokemon(),
+  ]);
   
   return (
     <main className="min-h-screen bg-gradient-to-br from-background to-muted/30">

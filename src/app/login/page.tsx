@@ -14,9 +14,9 @@ export default async function Login() {
               </div>
             </div>
             <div>
-              <CardTitle className="text-3xl font-bold">Welcome Back</CardTitle>
+              <CardTitle className="text-3xl font-bold">Welcome, Trainer</CardTitle>
               <CardDescription className="text-base mt-2">
-                Sign in to your account or create a new one to start building your Pokémon team
+                Sign in or create an account to build your Pokémon team
               </CardDescription>
             </div>
           </CardHeader>

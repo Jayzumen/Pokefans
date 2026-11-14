@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import ToastUtils from "@/components/ToastUtils";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/components/auth-provider";
 
 const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
@@ -33,8 +34,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <div className="pt-16">{children}</div>
+          <AuthProvider>
+            <Navbar />
+            <div className="pt-16">{children}</div>
+          </AuthProvider>
           <ToastUtils />
         </ThemeProvider>
       </body>

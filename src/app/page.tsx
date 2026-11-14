@@ -2,25 +2,22 @@ import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import FeaturedPokemon from "@/components/FeaturedPokemon";
 import QuickLinks from "@/components/QuickLinks";
-import { PokemonData, Species } from "@/types/pokemonTypes";
+import { PokemonData } from "@/types/pokemonTypes";
+import { MAX_POKEMON_ID, pokeapi, randomIds } from "@/lib/pokeapi";
+
+// Re-pick the featured Pokémon once per hour.
+export const revalidate = 3600;
 
 async function getRandomPokemon() {
-  const pokemon = [];
-  for (let i = 0; i < 6; i++) {
-    const randomId = Math.floor(Math.random() * 1008);
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`, {
-      next: { revalidate: 30 },
-    });
-    const data: PokemonData = await res?.json();
-    const speciesRes = await fetch(data.species.url);
-    const speciesData: Species = await speciesRes?.json();
-    pokemon.push({ ...data, speciesData });
-  }
-  return pokemon;
+  return Promise.all(
+    randomIds(6, MAX_POKEMON_ID).map((id) =>
+      pokeapi<PokemonData>(`pokemon/${id}`),
+    ),
+  );
 }
 
 export default async function Home() {
-  const randomPokemon: PokemonData[] = await getRandomPokemon();
+  const randomPokemon = await getRandomPokemon();
 
   return (
     <main className="min-h-screen">

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function DamageRelations({ typeData }: { typeData: TypeData }) {
   return (
-    <div className="mx-auto max-w-[1500px] rounded-md bg-slate-500 p-2">
+    <div className="mx-auto max-w-[1500px] rounded-md bg-slate-600 p-2 text-white">
       <p className="mt-4 mb-2 text-2xl font-bold">Damage Relations:</p>
       <div className="mx-auto flex max-w-[1200px] flex-col justify-center gap-4 px-4 text-center md:flex-row md:justify-between">
         <section className="mx-auto flex flex-col gap-4 md:w-[50%]">

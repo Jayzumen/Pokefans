@@ -4,7 +4,7 @@ import React from "react";
 
 export default function PokemonInfo({ pokemon }: { pokemon: PokemonData }) {
   const englishEntry = pokemon.speciesData.flavor_text_entries.find(
-    (entry: any) => entry.language.name === "en"
+    (entry) => entry.language.name === "en"
   );
   return (
     <div className="p-2 md:w-[50%]">

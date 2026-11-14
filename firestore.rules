@@ -1,0 +1,87 @@
+rules_version = '2';
+
+// Data model
+//   users/{uid}               { username, createdAt }            private profile
+//   usernames/{lowercase}     { uid }                            uniqueness index
+//   teams/{uid}               { username, usernameLower, members[≤6], updatedAt }  public
+//
+// Legacy (read-only, used once to migrate old accounts on sign-in):
+//   Users/{uid}               { username, uid }
+//   Teams/{username}/pokemonTeam/{pokemon}
+//
+// Deploy: firebase deploy --only firestore:rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function usernamePath(name) {
+      return /databases/$(database)/documents/usernames/$(name.lower());
+    }
+
+    function userPath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+
+      // Created together with usernames/{name} in one transaction.
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['username', 'createdAt'])
+        && request.resource.data.username is string
+        && request.resource.data.username.matches('^[A-Za-z0-9_]{3,20}$')
+        && request.resource.data.createdAt == request.time
+        && getAfter(usernamePath(request.resource.data.username)).data.uid == uid;
+
+      // Usernames are permanent for now.
+      allow update, delete: if false;
+    }
+
+    match /usernames/{name} {
+      allow read: if true;
+
+      allow create: if signedIn()
+        && name.matches('^[a-z0-9_]{3,20}$')
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid
+        // One username per account.
+        && !exists(userPath(request.auth.uid));
+
+      allow update, delete: if false;
+    }
+
+    match /teams/{uid} {
+      allow read: if true;
+
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['username', 'usernameLower', 'members', 'updatedAt'])
+        && request.resource.data.username == get(userPath(uid)).data.username
+        && request.resource.data.usernameLower == request.resource.data.username.lower()
+        && request.resource.data.members is list
+        && request.resource.data.members.size() <= 6
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if signedIn() && request.auth.uid == uid;
+    }
+
+    // ---- Legacy collections: read-only, kept for migration ----
+    match /Users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /Teams/{username}/pokemonTeam/{pokemon} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    // Deny everything else.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

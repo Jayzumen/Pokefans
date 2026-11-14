@@ -11,10 +11,14 @@ import Link from "next/link";
 import { PokemonData } from "@/types/pokemonTypes";
 import { PokemonTypes } from "@/assets/constants";
 import { Button } from "./ui/button";
-import { Eye, Heart } from "lucide-react";
+import { Eye } from "lucide-react";
+import { formatDexNumber } from "@/lib/pokemon";
+
+/** The minimal Pokémon shape a card needs. */
+export type CardPokemon = Pick<PokemonData, "id" | "name" | "sprites" | "types">;
 
 interface PokemonCardProps {
-  pokemonData: PokemonData;
+  pokemonData: CardPokemon;
   matchingTypes: {
     name: string;
     color: string;
@@ -23,25 +27,21 @@ interface PokemonCardProps {
 
 export default function PokemonCard(props: PokemonCardProps) {
   const { pokemonData, matchingTypes } = props;
+  const artwork = pokemonData.sprites.other["official-artwork"].front_default;
   // if image not available, render no card
-  if (!pokemonData.sprites.other["official-artwork"].front_default) {
-    return;
+  if (!artwork) {
+    return null;
   }
 
   return (
     <Card className="pokemon-card-hover group overflow-hidden border-2 hover:border-primary/20 bg-card">
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground font-mono">
-            #{pokemonData.id.toString().padStart(3, '0')}
-          </div>
-          <Button size="icon" variant="ghost" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Heart className="h-4 w-4" />
-          </Button>
+        <div className="text-sm text-muted-foreground font-mono">
+          {formatDexNumber(pokemonData.id)}
         </div>
         <CardTitle className="text-xl capitalize">{pokemonData.name}</CardTitle>
       </CardHeader>
-      
+
       <CardContent className="text-center pb-2">
         <div className="relative mb-4 p-4 rounded-lg"
           style={{
@@ -50,22 +50,22 @@ export default function PokemonCard(props: PokemonCardProps) {
             } 100%)`,
           }}
         >
-          <Link href={`/pokemon/${pokemonData.name}`}>
+          <Link href={`/pokemon/${pokemonData.name}`} tabIndex={-1} aria-hidden="true">
             <Image
-              src={pokemonData.sprites.other["official-artwork"].front_default}
-              alt={pokemonData.name}
+              src={artwork}
+              alt={`${pokemonData.name} official artwork`}
               width={160}
               height={160}
               className="mx-auto group-hover:scale-110 transition-transform duration-300"
             />
           </Link>
         </div>
-        
+
         <div className="flex flex-wrap justify-center gap-2">
           {pokemonData.types.map((type) => {
-            const matchingType = PokemonTypes.filter(
+            const matchingType = PokemonTypes.find(
               (pokemonType) => pokemonType.name === type.type.name,
-            )[0];
+            );
             return (
               <Badge
                 key={type.type.name}
@@ -83,11 +83,11 @@ export default function PokemonCard(props: PokemonCardProps) {
           })}
         </div>
       </CardContent>
-      
+
       <CardFooter>
-        <Button 
-          variant="outline" 
-          className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" 
+        <Button
+          variant="outline"
+          className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
           asChild
         >
           <Link href={`/pokemon/${pokemonData.name}`} className="flex items-center justify-center">

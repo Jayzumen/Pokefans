@@ -1,32 +1,21 @@
+import { notFound } from "next/navigation";
 import Team from "@/components/teamsPage/Team";
-import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
-
-interface TeamPageProps {
-  name: string;
-}
-
-export async function generateStaticParams() {
-  const q = collection(db, "Teams");
-  const querySnapshot = await getDocs(q);
-  const params: TeamPageProps[] = [];
-  querySnapshot.forEach((doc) => {
-    params.push({ name: doc.id });
-  });
-  return params;
-}
+import { USERNAME_PATTERN } from "@/lib/validation";
 
 export default async function TeamPage({
   params,
 }: {
-  params: { name: string };
+  params: Promise<{ name: string }>;
 }) {
-  const name = params.name;
+  const { name: raw } = await params;
+  // Usernames are plain [A-Za-z0-9_], so no URL-decoding is needed.
+  const name = raw;
+  if (!USERNAME_PATTERN.test(name)) notFound();
 
   return (
-    <div className="mx-4 mt-28 mb-4 min-h-screen">
-      <h1 className="text-5xl font-semibold underline">My Team</h1>
+    <main className="mx-4 min-h-screen py-12">
+      <h1 className="text-5xl font-semibold">{name}&apos;s Team</h1>
       <Team name={name} />
-    </div>
+    </main>
   );
 }

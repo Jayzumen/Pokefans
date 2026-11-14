@@ -1,40 +1,38 @@
 import { PokemonTypes } from "@/assets/constants";
 import DamageRelations from "@/components/typesPage/DamageRelations";
 import TypePokemon from "@/components/typesPage/TypePokemon";
+import { mapLimit, pokeapi, slugOrNotFound } from "@/lib/pokeapi";
+import { PokemonData } from "@/types/pokemonTypes";
 import { TypeData } from "@/types/typeTypes";
 
 async function getTypeData(id: string): Promise<TypeData> {
-  const res = await fetch(`https://pokeapi.co/api/v2/type/${id}`);
-  const data: TypeData = await res?.json();
-  const pokemonData = await Promise.all(
-    data.pokemon.map(async (pokemon) => {
-      const res = await fetch(pokemon.pokemon.url);
-      const data = await res?.json();
-      return data;
-    }),
+  const data = await pokeapi<TypeData>(`type/${id}`);
+  const pokemonData = await mapLimit(data.pokemon, 12, (p) =>
+    pokeapi<PokemonData>(p.pokemon.url),
   );
   return { ...data, pokemonData };
 }
 
+// Pages are rendered on first request and then cached (ISR).
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/type?limit=1");
-  const data = await res?.json();
-  const params = data.results.map((type: { name: string; url: string }) => ({
-    id: type.name,
-  }));
-  return params;
+  return [];
 }
 
-export default async function TypePage({ params }: { params: { id: string } }) {
-  const typeData = await getTypeData(params.id);
+export default async function TypePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const typeData = await getTypeData(slugOrNotFound(id));
 
-  const matchingType = PokemonTypes.filter(
+  const matchingType = PokemonTypes.find(
     (pokemonType) => pokemonType.name === typeData.name,
-  )[0];
+  );
   return (
     <main
       style={{ backgroundColor: matchingType?.color }}
-      className="px-4 pt-32 pb-4"
+      className="min-h-screen px-4 py-12 text-neutral-950"
     >
       <h1 className="my-2 text-4xl font-bold capitalize underline">
         {typeData.name}

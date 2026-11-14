@@ -7,7 +7,6 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 gradient-bg" />
-      <div className="absolute inset-0 bg-grid-white/[0.02] bg-grid-16" />
       
       {/* Floating elements */}
       <div className="absolute top-20 left-10 floating-animation">

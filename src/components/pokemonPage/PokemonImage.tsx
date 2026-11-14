@@ -1,95 +1,72 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PokemonTypes } from "@/assets/constants";
 import { PokemonData, Variety } from "@/types/pokemonTypes";
 import { AiOutlineHeart } from "react-icons/ai";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-} from "firebase/firestore";
 import { toast } from "react-toastify";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/firebase";
+import { useAuth } from "../auth-provider";
+import { getTeam, toggleTeamMember } from "@/lib/teams";
+import { formatDexNumber } from "@/lib/pokemon";
 
 export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
+  const { user, profile } = useAuth();
   const [isSaved, setIsSaved] = useState(false);
-  const [userName, setUsername] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const compareId = async (id: string) => {
-    if (!id) return;
-    const userRef = doc(db, "Users", id);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      setUsername(userSnap.data()?.username);
-    }
-  };
-
+  // Check whether this Pokémon is already in the signed-in user's team.
   useEffect(() => {
-    compareId(auth.currentUser?.uid as string);
-    if (userName) {
-      const userRef = doc(db, "Teams", userName);
-      getDoc(userRef).then((docSnap) => {
-        if (!docSnap.exists()) {
-          setDoc(userRef, {});
-        }
-      });
-      collection(db, "Teams", userName, "pokemonTeam");
-    }
-  }, [userName]);
-
-  // Check if visited Pokemon is already saved
-  useEffect(() => {
-    if (userName) {
-      const docRef = doc(db, "Teams", userName, "pokemonTeam", pokemon.name);
-      getDoc(docRef).then((docSnap) => {
-        if (docSnap.exists()) {
-          setIsSaved(true);
-        } else {
-          setIsSaved(false);
-        }
-      });
-    }
-  }, [userName, pokemon]);
-
-  const handleClick = async () => {
-    if (!userName) {
-      toast("You need to be logged in to save a Pokémon to your Team");
+    if (!user) {
+      setIsSaved(false);
       return;
     }
-    if (isSaved) {
-      const docRef = doc(db, "Teams", userName, "pokemonTeam", pokemon.name);
-      await deleteDoc(docRef);
-      setIsSaved(false);
-      toast(`${pokemon.name} removed from your Team`);
-    } else {
-      const pokemonTeamRef = collection(db, "Teams", userName, "pokemonTeam");
-      const querySnapshot = await getDocs(pokemonTeamRef);
-      if (querySnapshot.size < 6) {
-        const docRef = doc(db, "Teams", userName, "pokemonTeam", pokemon.name);
-        await setDoc(docRef, {
-          id: pokemon.id,
-          name: pokemon.name,
-          types: pokemon.types,
-          sprite: pokemon.sprites.other["official-artwork"].front_default,
-          stats: pokemon.stats,
-        });
-        setIsSaved(true);
-        toast(`${pokemon.name} added to your Team`);
+    let active = true;
+    getTeam(user.uid)
+      .then((team) => {
+        if (active) {
+          setIsSaved(!!team?.members.some((m) => m.id === pokemon.id));
+        }
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [user, pokemon.id]);
+
+  const handleClick = async () => {
+    if (!user || !profile) {
+      toast("Sign in to save Pokémon to your team.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await toggleTeamMember(user.uid, profile.username, {
+        id: pokemon.id,
+        name: pokemon.name,
+        types: pokemon.types.map((t) => t.type.name),
+        bst: pokemon.stats.reduce((sum, s) => sum + s.base_stat, 0),
+      });
+      if (result === "full") {
+        toast("Your team already has 6 Pokémon. Remove one first.");
       } else {
-        toast("You can only have 6 Pokémon in your Team");
+        setIsSaved(result === "added");
+        toast(
+          result === "added"
+            ? `${pokemon.name} added to your team`
+            : `${pokemon.name} removed from your team`,
+        );
       }
+    } catch {
+      toast.error("Couldn't update your team. Please try again.");
+    } finally {
+      setBusy(false);
     }
   };
 
   const englishGenus = pokemon.speciesData.genera.find(
-    (genus: any) => genus.language.name === "en",
+    (genus) => genus.language.name === "en",
   );
 
   const varieties = pokemon.speciesData.varieties.filter(
@@ -101,12 +78,7 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
       <div className="mx-auto mt-4 flex flex-col md:w-[80%] lg:flex-row lg:justify-between">
         <div className="flex flex-col">
           <p className="text-2xl font-semibold">
-            #
-            {pokemon.id < 10
-              ? `00${pokemon.id}`
-              : pokemon.id < 100
-                ? `0${pokemon.id}`
-                : pokemon.id}
+            {formatDexNumber(pokemon.id)}
           </p>
           <p className="my-2 text-5xl font-bold capitalize">{pokemon.name}</p>
           {englishGenus && <span>The {englishGenus?.genus}</span>}
@@ -141,12 +113,19 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
               src={pokemon.sprites.other["official-artwork"].front_default}
               width={475}
               height={475}
-              alt={pokemon.name}
+              alt={`${pokemon.name} official artwork`}
             />
             <button
-              aria-label="save to firestore btn"
+              type="button"
+              aria-label={
+                isSaved
+                  ? `Remove ${pokemon.name} from your team`
+                  : `Add ${pokemon.name} to your team`
+              }
+              aria-pressed={isSaved}
               onClick={handleClick}
-              className="ml-60"
+              disabled={busy}
+              className="ml-60 disabled:opacity-50"
             >
               {isSaved ? (
                 <AiOutlineHeart className="h-12 w-12 rounded-full bg-red-500 text-white shadow-md shadow-black" />

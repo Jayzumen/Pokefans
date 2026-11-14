@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Pokemon, PokemonData, Species } from "@/types/pokemonTypes";
+import { Pokemon, PokemonData } from "@/types/pokemonTypes";
 import DefaultPokemon from "./DefaultPokemon";
 import SearchedPokemon from "./SearchedPokemon";
 import { toast } from "react-toastify";
@@ -9,6 +9,9 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Search, Loader2 } from "lucide-react";
+
+// Each match costs one PokeAPI request; cap it so "a" doesn't fire ~1,000.
+const MAX_RESULTS = 60;
 
 export default function SearchForm({
   pokemon,
@@ -21,22 +24,26 @@ export default function SearchForm({
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const getPokemonByName = async (name: string) => {
+  const getPokemonByName = async (rawName: string) => {
+    const name = rawName.trim().toLowerCase().slice(0, 40);
     if (name.length > 1) {
-      const pokemon = allPokemon.filter((pokemon) =>
-        pokemon.name.includes(name.toLowerCase()),
+      const matches = allPokemon.filter((pokemon) =>
+        pokemon.name.includes(name),
       );
-      if (pokemon.length > 0) {
-        const res: PokemonData[] = await Promise.all(
-          pokemon?.map(async (pokemon) => {
-            const res = await fetch(pokemon.url);
-            const data: PokemonData = await res?.json();
-            const speciesRes = await fetch(data.species.url);
-            const speciesData: Species = await speciesRes?.json();
-            return { ...data, speciesData };
+      if (matches.length > 0) {
+        if (matches.length > MAX_RESULTS) {
+          toast.info(
+            `Showing the first ${MAX_RESULTS} of ${matches.length} matches. Try a more specific name.`,
+          );
+        }
+        const results = await Promise.all(
+          matches.slice(0, MAX_RESULTS).map(async (match) => {
+            const res = await fetch(match.url);
+            if (!res.ok) return null;
+            return (await res.json()) as PokemonData;
           }),
         );
-        return res;
+        return results.filter((p): p is PokemonData => p !== null);
       } else {
         toast.error(`No Pokémon with name "${search}" found`);
         setSearch("");

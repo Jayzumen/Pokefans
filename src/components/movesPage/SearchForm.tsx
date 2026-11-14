@@ -17,19 +17,20 @@ export default function SearchForm({
   const [search, setSearch] = useState("");
 
   const getSearchedMove = async (name: string) => {
+    name = name.trim().toLowerCase().slice(0, 40);
     if (name.length > 1) {
-      const move = allMoves?.filter((move) =>
-        move.name.includes(name.toLowerCase())
-      );
+      const move = allMoves?.filter((move) => move.name.includes(name));
       if (move.length > 0) {
-        const res: MoveData[] = await Promise.all(
-          move?.map(async (move) => {
+        if (move.length > 60) {
+          toast.info(`Showing the first 60 of ${move.length} matches.`);
+        }
+        const res = await Promise.all(
+          move.slice(0, 60).map(async (move) => {
             const res = await fetch(move.url);
-            const data: MoveData = await res?.json();
-            return data;
-          })
+            return res.ok ? ((await res.json()) as MoveData) : null;
+          }),
         );
-        return res;
+        return res.filter((m): m is MoveData => m !== null);
       } else {
         toast.error(`No Move with name "${search}" found`);
         setSearch("");

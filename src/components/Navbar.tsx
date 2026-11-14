@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { dexLinks } from "@/assets/constants";
-import { auth, getCurrentUser, signOutUser } from "../lib/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { usePathname } from "next/navigation";
-import { db } from "@/lib/firebase";
+import { signOutUser } from "@/lib/auth";
+import { useAuth } from "./auth-provider";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
 import {
@@ -36,25 +34,15 @@ import {
 } from "./ui/dropdown-menu";
 
 function Navbar() {
-  const [userData, setUserData] = useState(
-    auth.currentUser ? (auth.currentUser.uid as string) : "",
-  );
-  const [username, setUsername] = useState("");
+  const { user, profile } = useAuth();
+  const router = useRouter();
+  const userData = user?.uid ?? "";
+  const username = profile?.username ?? "";
 
-  const path = usePathname();
-
-  useEffect(() => {
-    getCurrentUser().then(async (user) => {
-      setUserData(user);
-      if (user) {
-        const userRef = doc(db, "Users", user);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          setUsername(userSnap.data()?.username);
-        }
-      }
-    });
-  }, [path]);
+  const handleSignOut = async () => {
+    await signOutUser();
+    router.refresh();
+  };
 
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
@@ -119,7 +107,7 @@ function Navbar() {
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="bg-primary text-primary-foreground">
-                      {username.charAt(0).toUpperCase()}
+                      {(username || user?.email || "?").charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -127,7 +115,7 @@ function Navbar() {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <div className="flex items-center justify-start gap-2 p-2">
                   <div className="flex flex-col space-y-1 leading-none">
-                    <p className="font-medium">{username}</p>
+                    <p className="font-medium">{username || "Choose a username"}</p>
                     <p className="w-[200px] truncate text-sm text-muted-foreground">
                       Pokémon Trainer
                     </p>
@@ -135,12 +123,12 @@ function Navbar() {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href={`/teams/${username}`} className="flex items-center">
+                  <Link href={username ? `/teams/${username}` : "/login"} className="flex items-center">
                     <User className="mr-2 h-4 w-4" />
                     <span>My Team</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={signOutUser}>
+                <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>

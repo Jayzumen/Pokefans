@@ -17,19 +17,22 @@ export default function SearchForm({
   const [search, setSearch] = useState("");
 
   const getSearchedAbility = async (name: string) => {
+    name = name.trim().toLowerCase().slice(0, 40);
     if (name.length > 1) {
       const ability = allAbilities?.filter((ability) =>
-        ability.name.includes(name.toLowerCase()),
+        ability.name.includes(name),
       );
       if (ability.length > 0) {
-        const res: AbilityData[] = await Promise.all(
-          ability?.map(async (ability) => {
+        if (ability.length > 60) {
+          toast.info(`Showing the first 60 of ${ability.length} matches.`);
+        }
+        const res = await Promise.all(
+          ability.slice(0, 60).map(async (ability) => {
             const res = await fetch(ability.url);
-            const data: AbilityData = await res?.json();
-            return data;
+            return res.ok ? ((await res.json()) as AbilityData) : null;
           }),
         );
-        return res;
+        return res.filter((a): a is AbilityData => a !== null);
       } else {
         toast.error(`No Ability with name "${search}" found`);
         setSearch("");

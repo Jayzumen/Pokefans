@@ -1,60 +1,42 @@
 import { PokemonTypes } from "@/assets/constants";
 import MoveInfo from "@/components/movesPage/MoveInfo";
 import MovePokemon from "@/components/movesPage/MovePokemon";
+import { mapLimit, pokeapi, slugOrNotFound } from "@/lib/pokeapi";
 import { MoveData } from "@/types/moveTypes";
+import { PokemonData } from "@/types/pokemonTypes";
 
 async function getMoveData(id: string): Promise<MoveData> {
-  const moveRes = await fetch(`https://pokeapi.co/api/v2/move/${id}`, {
-    next: { revalidate: 30 },
-  });
-  const moveData: MoveData = await moveRes?.json();
-  const pokemon = await Promise.all(
-    moveData?.learned_by_pokemon?.map(async (pokemon) => {
-      const pokemonRes = await fetch(pokemon?.url);
-      const pokemonData = await pokemonRes?.json();
-      return pokemonData;
-    }),
+  const moveData = await pokeapi<MoveData>(`move/${id}`);
+  const pokemon = await mapLimit(moveData.learned_by_pokemon ?? [], 12, (p) =>
+    pokeapi<PokemonData>(p.url),
   );
-
   return { ...moveData, pokemon };
 }
 
+// Pages are rendered on first request and then cached (ISR).
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/move?limit=1");
-  const data = await res?.json();
-  const params = data.results.map((move: { name: string; url: string }) => ({
-    id: move.name,
-  }));
-  return params;
+  return [];
 }
 
-export default async function movePage({ params }: { params: { id: string } }) {
-  const move = await getMoveData(params?.id);
+export default async function MovePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const move = await getMoveData(slugOrNotFound(id));
 
-  const matchingType = PokemonTypes.filter(
+  const matchingType = PokemonTypes.find(
     (pokemonType) => pokemonType.name === move.type.name,
-  )[0];
+  );
 
-  if (move) {
-    return (
-      <main
-        style={{
-          backgroundColor: matchingType.color,
-        }}
-        className="min-h-screen px-4 pt-32 pb-4"
-      >
-        <MoveInfo move={move} />
-
-        <MovePokemon move={move} />
-      </main>
-    );
-  } else {
-    return (
-      <main className="px-4 pt-32 pb-4">
-        <h1 className="my-2 text-4xl font-bold capitalize underline">
-          Move not found
-        </h1>
-      </main>
-    );
-  }
+  return (
+    <main
+      style={{ backgroundColor: matchingType?.color }}
+      className="min-h-screen px-4 py-12 text-neutral-950"
+    >
+      <MoveInfo move={move} />
+      <MovePokemon move={move} />
+    </main>
+  );
 }

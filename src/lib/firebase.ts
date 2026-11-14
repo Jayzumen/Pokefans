@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -10,5 +10,6 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-export const app = initializeApp(firebaseConfig);
+// Reuse the app across hot reloads instead of throwing "duplicate-app".
+export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 export const db = getFirestore(app);

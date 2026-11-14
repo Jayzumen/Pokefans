@@ -12,7 +12,7 @@ function MoveInfo({ move }: { move: MoveData }) {
     (entry) => entry.language.name === "en"
   );
   return (
-    <div className="rounded-lg bg-slate-700 p-2 lg:mx-auto lg:w-[70%]">
+    <div className="rounded-lg bg-slate-700 p-2 text-white lg:mx-auto lg:w-[70%]">
       <h1 className="my-2 text-4xl font-bold capitalize underline">
         {move.name}
       </h1>

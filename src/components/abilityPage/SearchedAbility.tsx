@@ -10,7 +10,7 @@ export default function SearchedAbility({
     <div className="mx-auto mt-4 flex max-w-[1400px] flex-wrap justify-center gap-4 text-white">
       {searchedAbilityData?.map((ability) => {
         const englishEntry = ability.flavor_text_entries?.find(
-          (entry: any) => entry.language.name === "en"
+          (entry) => entry.language.name === "en"
         );
 
         return (

@@ -1,44 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { collection, DocumentData, getDocs } from "firebase/firestore";
+import { getAllTeams, type Team } from "@/lib/teams";
 import TeamsDisplay from "./TeamsDisplay";
-import { db } from "@/lib/firebase";
 
 export default function Teams() {
-  const [teams, setTeams] = useState<DocumentData[]>([]);
-  const path = usePathname();
-
-  async function getTeams() {
-    const teamsRef = collection(db, "Teams");
-    const querySnapshot = await getDocs(teamsRef);
-    const data: DocumentData[] = [];
-    const teamData: DocumentData[] = [];
-    querySnapshot.forEach(async (doc) => {
-      const pokemonTeamRef = collection(db, "Teams", doc.id, "pokemonTeam");
-      teamData.push(
-        getDocs(pokemonTeamRef).then((pokemonTeamSnapshot) => {
-          const pokemonTeamData: DocumentData = [];
-          pokemonTeamSnapshot.forEach((pokemonDoc) => {
-            pokemonTeamData.push(pokemonDoc.data());
-          });
-          data.push({
-            userId: doc.id,
-            pokemonTeam: pokemonTeamData,
-          });
-        }),
-      );
-    });
-    await Promise.all(teamData);
-    return data;
-  }
+  const [teams, setTeams] = useState<Team[] | null>(null);
 
   useEffect(() => {
-    getTeams()
-      .then((data) => setTeams(data))
-      .catch((err) => console.log(err));
-  }, [path]);
+    let active = true;
+    getAllTeams()
+      .then((data) => active && setTeams(data))
+      .catch(() => active && setTeams([]));
+    return () => {
+      active = false;
+    };
+  }, []);
 
+  if (teams === null) {
+    return <p className="py-10 text-muted-foreground">Loading teams…</p>;
+  }
+  if (teams.length === 0) {
+    return <p className="py-10 text-muted-foreground">No teams yet.</p>;
+  }
   return <TeamsDisplay teams={teams} />;
 }

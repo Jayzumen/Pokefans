@@ -12,7 +12,7 @@ export default function DefaultMoves({
     <div className="mx-auto mt-4 flex max-w-[1400px] flex-wrap justify-center gap-4">
       {randomMoveData?.map((move, index) => {
         const englishEntry = move.flavor_text_entries?.find(
-          (entry: any) => entry.language.name === "en"
+          (entry) => entry.language.name === "en"
         );
         const matchingType = PokemonTypes.filter(
           (pokemonType) => pokemonType.name === move.type.name

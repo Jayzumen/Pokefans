@@ -3,46 +3,42 @@ import PokemonEvoChain from "@/components/pokemonPage/PokemonEvoChain";
 import PokemonImage from "@/components/pokemonPage/PokemonImage";
 import PokemonInfo from "@/components/pokemonPage/PokemonInfo";
 import PokemonStats from "@/components/pokemonPage/PokemonStats";
+import { pokeapi, slugOrNotFound } from "@/lib/pokeapi";
 import { EvolutionChain, PokemonData, Species } from "@/types/pokemonTypes";
 
-async function getPokemonData(pokemonId: string) {
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
-  const pokemonData: PokemonData = await res?.json();
-  const speciesRes = await fetch(pokemonData.species.url);
-  const speciesData: Species = await speciesRes?.json();
-  let evoChainData: EvolutionChain | undefined;
-  if (speciesData.evolution_chain?.url) {
-    const evoChainRes = await fetch(speciesData.evolution_chain.url);
-    evoChainData = await evoChainRes?.json();
-  }
+async function getPokemonData(pokemonId: string): Promise<PokemonData> {
+  const pokemonData = await pokeapi<PokemonData>(`pokemon/${pokemonId}`);
+  const speciesData = await pokeapi<Species>(pokemonData.species.url);
+  const evoChainData = speciesData.evolution_chain?.url
+    ? await pokeapi<EvolutionChain>(speciesData.evolution_chain.url)
+    : undefined;
   return { ...pokemonData, speciesData, evoChainData };
 }
 
+// Pages are rendered on first request and then cached (ISR).
 export async function generateStaticParams() {
-  const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1");
-  const data = await res?.json();
-  const params = data.results.map((pokemon: { name: string; url: string }) => ({
-    id: pokemon.name,
-  }));
-  return params;
+  return [];
 }
 
-export default async function Pokemon({ params }: { params: { id: string } }) {
-  const pokemon: PokemonData = await getPokemonData(params?.id);
+export default async function Pokemon({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const pokemon = await getPokemonData(slugOrNotFound(id));
 
-  const matchingTypes = pokemon.types.map((type) => {
-    return PokemonTypes.filter(
-      (pokemonType) => pokemonType.name === type.type.name,
-    )[0];
-  });
+  const matchingTypes = pokemon.types.map((type) =>
+    PokemonTypes.find((pokemonType) => pokemonType.name === type.type.name),
+  );
   return (
     <main
       style={{
-        background: `linear-gradient(180deg, ${matchingTypes[0].color} 0%, ${
-          matchingTypes[1] ? matchingTypes[1]?.color : "white"
+        background: `linear-gradient(180deg, ${matchingTypes[0]?.color ?? "#737373"} 0%, ${
+          matchingTypes[1]?.color ?? "white"
         } 100%)`,
       }}
-      className="px-4 pt-32 pb-4"
+      className="px-4 py-12 text-neutral-950"
     >
       <div className="flex w-full flex-col">
         <PokemonImage pokemon={pokemon} />
