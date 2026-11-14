@@ -62,7 +62,7 @@ function Navbar() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent">
+                <NavigationMenuTrigger className="bg-transparent dark:hover:bg-accent/50 dark:focus:bg-accent/50 dark:data-[state=open]:bg-accent/50">
                   Pokédex
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -102,7 +102,7 @@ function Navbar() {
           
           {/* User Menu */}
           {userData ? (
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">

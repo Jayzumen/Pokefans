@@ -47,14 +47,23 @@ export default function HeroSection() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6" asChild>
+          <Button
+            size="lg"
+            className="group bg-white text-primary text-lg px-8 py-6 shadow-lg shadow-black/10 hover:bg-white hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/20 dark:bg-white/95 dark:text-neutral-900 dark:hover:bg-white"
+            asChild
+          >
             <Link href="/pokedex" className="flex items-center">
               Explore Pokédex
-              <ArrowRight className="ml-2 w-5 h-5" />
+              <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </Button>
-          
-          <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-6" asChild>
+
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-white/80 bg-white/10 text-white text-lg px-8 py-6 backdrop-blur-sm hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-primary dark:border-white/40 dark:bg-white/5 dark:hover:border-white dark:hover:bg-white dark:hover:text-neutral-900"
+            asChild
+          >
             <Link href="/teams">View Teams</Link>
           </Button>
         </div>

@@ -46,10 +46,10 @@ export default function QuickLinks() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild className="w-full group-hover:bg-primary group-hover:text-primary-foreground">
+                  <Button asChild className="w-full">
                     <Link href={link.path} className="flex items-center justify-center">
                       Explore
-                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                     </Link>
                   </Button>
                 </CardContent>

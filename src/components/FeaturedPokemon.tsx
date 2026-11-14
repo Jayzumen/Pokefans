@@ -88,10 +88,10 @@ export default function FeaturedPokemon({ randomPokemon }: FeaturedPokemonProps)
                     })}
                   </div>
                   
-                  <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground" asChild>
+                  <Button variant="outline" className="w-full group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground hover:border-primary hover:bg-primary hover:text-primary-foreground dark:group-hover:border-primary dark:group-hover:bg-primary dark:hover:border-primary dark:hover:bg-primary" asChild>
                     <Link href={`/pokemon/${pokemon.name}`} className="flex items-center justify-center">
                       View Details
-                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                     </Link>
                   </Button>
                 </CardContent>

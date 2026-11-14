@@ -118,9 +118,29 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  
+
+  /* Tailwind 4 no longer sets a pointer cursor on buttons. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="menuitem"]:not([data-disabled]),
+  [role="menuitemradio"]:not([data-disabled]),
+  [role="tab"]:not(:disabled) {
+    cursor: pointer;
+  }
+
   .gradient-bg {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--chart-2) 100%);
+    --hero-from: var(--primary);
+    --hero-to: oklch(0.6 0.118 184.704);
+    background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 100%);
+  }
+
+  /* Dark mode: deeper, less saturated stops plus a soft vignette for depth. */
+  .dark .gradient-bg {
+    --hero-from: oklch(0.42 0.14 38);
+    --hero-to: oklch(0.3 0.07 200);
+    background:
+      radial-gradient(ellipse at 50% 120%, oklch(0.145 0 0 / 0.7) 0%, transparent 60%),
+      linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 100%);
   }
   
   .glass-effect {
