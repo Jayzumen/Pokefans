@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { artworkUrl, formatDexNumber } from "@/lib/pokemon";
-import type { IndexPokemon } from "@/lib/pokemon-index";
+import { artworkTransitionName, type IndexPokemon } from "@/lib/pokemon-index";
 import { typeVars } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { TypeChips } from "./TypeChip";
@@ -36,15 +37,22 @@ export default function PokemonCard({
         <span className="absolute top-2.5 left-3 font-mono text-xs text-muted-foreground tabular-nums">
           {formatDexNumber(pokemon.id)}
         </span>
-        <Image
-          src={artworkUrl(pokemon.id)}
-          alt={`${pokemon.name} official artwork`}
-          width={240}
-          height={240}
-          sizes="(min-width: 1280px) 240px, (min-width: 640px) 30vw, 45vw"
-          priority={priority}
-          className="h-[78%] w-auto object-contain drop-shadow-[0_8px_12px_oklch(0_0_0/0.15)] transition-transform duration-300 ease-out group-hover:scale-[1.06] motion-reduce:transition-none"
-        />
+        {/* Same name as the detail hero, so the artwork morphs on click. */}
+        <ViewTransition
+          name={artworkTransitionName(pokemon.id)}
+          share="morph"
+          default="none"
+        >
+          <Image
+            src={artworkUrl(pokemon.id)}
+            alt={`${pokemon.name} official artwork`}
+            width={240}
+            height={240}
+            sizes="(min-width: 1280px) 240px, (min-width: 640px) 30vw, 45vw"
+            priority={priority}
+            className="h-[78%] w-auto object-contain drop-shadow-[0_8px_12px_oklch(0_0_0/0.15)] transition-transform duration-300 ease-out group-hover:scale-[1.06] motion-reduce:transition-none"
+          />
+        </ViewTransition>
       </div>
       <div className="flex flex-1 flex-col gap-2 px-2 pt-3 pb-2">
         <h3 className="text-base font-semibold capitalize leading-tight tracking-[-0.01em]">

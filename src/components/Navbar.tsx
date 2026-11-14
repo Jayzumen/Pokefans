@@ -6,6 +6,7 @@ import { LogOut, Menu, User } from "lucide-react";
 import { useAuth } from "./auth-provider";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
+import { SearchTrigger } from "./SearchTrigger";
 import { PokeballIcon } from "./icons";
 import {
   Sheet,
@@ -97,6 +98,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <SearchTrigger />
           <ModeToggle />
 
           {user ? (

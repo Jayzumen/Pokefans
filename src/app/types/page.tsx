@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Container, PageHeader } from "@/components/layout";
+import { Container, PageHeader, Section } from "@/components/layout";
+import TypeChart from "@/components/typesPage/TypeChart";
 import { pokemonIndex } from "@/lib/pokemon-index";
 import { TYPE_NAMES, typeVars } from "@/lib/types";
 
@@ -50,6 +51,12 @@ export default function TypesPage() {
             </li>
           ))}
         </ul>
+        <Section
+          title="Type chart"
+          description="Every attacking type against every defending type. Hover or tab through a cell to trace its row and column."
+        >
+          <TypeChart />
+        </Section>
       </Container>
     </main>
   );

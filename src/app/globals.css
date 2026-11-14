@@ -255,3 +255,48 @@
     transform: translateY(12px);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  View transitions (React <ViewTransition>, §4.7)                    */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Card artwork morphing into the detail hero. */
+  ::view-transition-group(.morph) {
+    animation-duration: 420ms;
+    animation-timing-function: var(--ease-out-expo);
+  }
+  ::view-transition-image-pair(.morph) {
+    animation-name: via-blur;
+  }
+
+  /* Streamed sections arriving after their skeleton. */
+  ::view-transition-new(.slide-up) {
+    animation:
+      210ms ease-out both vt-fade,
+      400ms var(--ease-out-expo) both vt-slide-up;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-slide-up {
+  from {
+    transform: translateY(12px);
+  }
+}

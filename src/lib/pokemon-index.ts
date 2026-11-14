@@ -14,10 +14,19 @@ export interface IndexPokemon {
 export const pokemonIndex: readonly IndexPokemon[] = rawIndex;
 
 const byId = new Map(pokemonIndex.map((p) => [p.id, p]));
+const byName = new Map(pokemonIndex.map((p) => [p.name, p]));
 
 export function getPokemonById(id: number) {
   return byId.get(id);
 }
+
+/** Look up by slug ("charizard") or dex number ("6"). */
+export function findPokemon(slug: string) {
+  return byName.get(slug) ?? (/^\d+$/.test(slug) ? byId.get(Number(slug)) : undefined);
+}
+
+/** Shared view-transition name for a Pokémon's artwork (card ↔ detail). */
+export const artworkTransitionName = (id: number) => `pokemon-art-${id}`;
 
 export function getPokemonByGen(gen: number) {
   return pokemonIndex.filter((p) => p.gen === gen);

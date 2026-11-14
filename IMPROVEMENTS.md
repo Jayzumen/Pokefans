@@ -18,8 +18,8 @@
 | 2. Data layer | ✅ Done | Static index in `src/data/pokemon-index.json` (rebuild with `pnpm index:build`); list pages, Pokédex search and featured Pokémon need 0 PokeAPI requests; image optimisation on (WebP); radar chart → CSS stat bars; sonner + lucide only; Firebase lazy-loaded; unused deps/components removed. Lists show default forms only (ids ≤ 1025). |
 | 2b. Dependency upgrades (§6) | ✅ Done | Next 16.4 (Turbopack), React 19.3, Firebase 13.3, lucide 1.x, Tailwind 4.3, TypeScript 6.0, ESLint 9.39 with native flat config. Held back on purpose: TypeScript 7, ESLint 10, `@types/node` 26 (see §6). Lockfile regenerated; unused `navigation-menu`, `separator`, `@eslint/eslintrc` removed. |
 | 3. Design foundation + restyle of all pages (§4, §7) | ✅ Done | OKLCH tokens + `--type-*` palette, Geist Sans/Mono, `.surface`/`.type-surface` utilities, motion tokens. Shared `PageHeader`, `Section`, `Spec`, `TypeChip`, `PokemonCard`/`PokemonGrid`, `SearchField`, skeletons. Every page in §7 restyled and checked in light, dark and at phone width. Not done yet: OG images, sitemap, ⌘K palette, view transitions (Phases 4–5). |
-| 4. Signature experiences | ⏳ Next | |
-| 5. Polish & ship | — | Security headers/CSP (§3.3) still open. |
+| 4. Signature experiences | ✅ Done | **⌘K / Ctrl K / "/" command palette** for Pokémon, types, moves, abilities and pages (lazy-loaded, 24 KB, not in any page's initial JS). **View transitions**: card artwork morphs into the detail hero; streamed sections slide in. **Pokédex filters**: type (up to two), generation and sort, kept in the URL. **Detail page**: sticky section nav, type matchups (×4 … ×0), level-up moves from the newest game, hero renders instantly from the index while the rest streams. **Interactive 18×18 type chart** on /types. `pnpm index:build` now also writes `type-chart.json` and `names.json`. |
+| 5. Polish & ship | ⏳ Next | Security headers/CSP (§3.3), OG images, sitemap/robots, accessibility audit, Lighthouse CI, README. |
 
 ---
 

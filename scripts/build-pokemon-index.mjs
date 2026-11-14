@@ -1,6 +1,7 @@
-// Builds src/data/pokemon-index.json: every default Pokémon with id, name,
-// types (in slot order) and generation. Uses 19 PokeAPI requests in total
-// (the Pokémon list + one per type) instead of one request per Pokémon.
+// Builds the static data the site ships with, from 21 PokeAPI requests:
+//   src/data/pokemon-index.json  every default Pokémon: id, name, types, gen
+//   src/data/type-chart.json     attack multipliers between the 18 types
+//   src/data/names.json          all move and ability names (for search)
 //
 // Run: pnpm index:build   (re-run when a new generation is released)
 
@@ -27,8 +28,10 @@ async function get(path) {
 const idFromUrl = (url) => Number(url.split("/").filter(Boolean).pop());
 const genOf = (id) => GEN_STARTS.findLastIndex((start) => id >= start) + 1;
 
-const [list, ...typeData] = await Promise.all([
+const [list, moves, abilities, ...typeData] = await Promise.all([
   get(`pokemon?limit=${MAX_ID}`),
+  get("move?limit=2000"),
+  get("ability?limit=1000"),
   ...TYPES.map((t) => get(`type/${t}`)),
 ]);
 
@@ -61,6 +64,34 @@ if (missing.length) {
 
 const out = new URL("../src/data/pokemon-index.json", import.meta.url);
 await mkdir(new URL(".", out), { recursive: true });
+
+// chart[attacker][defender] = multiplier, only for non-neutral matchups.
+const chart = {};
+for (const type of typeData) {
+  const rel = type.damage_relations;
+  const row = {};
+  for (const t of rel.double_damage_to) row[t.name] = 2;
+  for (const t of rel.half_damage_to) row[t.name] = 0.5;
+  for (const t of rel.no_damage_to) row[t.name] = 0;
+  chart[type.name] = row;
+}
+await writeFile(
+  new URL("../src/data/type-chart.json", import.meta.url),
+  JSON.stringify(chart, null, 2) + "\n",
+);
+
+// Main-series names only (ids above 10000 are shadow/special variants).
+const mainSeries = (r) =>
+  r.results
+    .filter((x) => idFromUrl(x.url) < 10000)
+    .map((x) => x.name)
+    .sort();
+await writeFile(
+  new URL("../src/data/names.json", import.meta.url),
+  JSON.stringify({ moves: mainSeries(moves), abilities: mainSeries(abilities) }) +
+    "\n",
+);
+
 // One entry per line: compact, but still diff-friendly.
 await writeFile(
   out,
