@@ -1,19 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { dexLinks } from "@/assets/constants";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut, Menu, User } from "lucide-react";
 import { useAuth } from "./auth-provider";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "./ui/navigation-menu";
+import { PokeballIcon } from "./icons";
 import {
   Sheet,
   SheetContent,
@@ -22,21 +15,48 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { Menu, User, LogOut, Users, Zap } from "lucide-react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
-function Navbar() {
+const NAV_LINKS = [
+  { href: "/pokedex", label: "Pokédex", match: "/pokedex" },
+  { href: "/generations/1", label: "Generations", match: "/generations" },
+  { href: "/types", label: "Types", match: "/types" },
+  { href: "/moves", label: "Moves", match: "/moves" },
+  { href: "/abilities", label: "Abilities", match: "/abilities" },
+  { href: "/teams", label: "Teams", match: "/teams" },
+];
+
+function Logo() {
+  return (
+    <Link
+      href="/"
+      className="group flex items-center gap-2 rounded-full pr-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+    >
+      <span className="grid size-8 place-items-center rounded-full bg-primary text-primary-foreground transition-transform duration-500 ease-out group-hover:rotate-[200deg] motion-reduce:transition-none">
+        <PokeballIcon className="size-5" />
+      </span>
+      <span className="text-[15px] font-semibold tracking-[-0.02em]">
+        Pokéfans
+      </span>
+    </Link>
+  );
+}
+
+export default function Navbar() {
   const { user, profile } = useAuth();
   const router = useRouter();
-  const userData = user?.uid ?? "";
+  const pathname = usePathname();
   const username = profile?.username ?? "";
+  const isActive = (match: string) => pathname.startsWith(match);
 
   const handleSignOut = async () => {
     // Loaded on demand so Firebase stays out of the shared bundle.
@@ -46,145 +66,119 @@ function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Zap className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-            Pokéfans
-          </span>
-        </Link>
+    <header className="fixed inset-x-0 top-3 z-50 px-3">
+      <nav
+        aria-label="Main"
+        className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 rounded-full border bg-background/75 py-2 pr-2 pl-3 shadow-md backdrop-blur-xl backdrop-saturate-150"
+      >
+        <Logo />
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent dark:hover:bg-accent/50 dark:focus:bg-accent/50 dark:data-[state=open]:bg-accent/50">
-                  Pokédex
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                    {dexLinks.map((link) => (
-                      <NavigationMenuLink key={link.id} asChild>
-                        <Link
-                          href={link.path}
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                        >
-                          <div className="text-sm font-medium leading-none">
-                            {link.name}
-                          </div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Explore {link.name.toLowerCase()} and discover amazing Pokémon
-                          </p>
-                        </Link>
-                      </NavigationMenuLink>
-                    ))}
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+        {/* Desktop links */}
+        <ul className="hidden items-center gap-0.5 lg:flex">
+          {NAV_LINKS.map((link) => {
+            const active = isActive(link.match);
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "relative rounded-full px-3.5 py-2 text-sm font-medium outline-none transition-colors duration-200 focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                    active
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                  )}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
 
-          <Button variant="ghost" asChild>
-            <Link href="/teams" className="flex items-center space-x-2">
-              <Users className="h-4 w-4" />
-              <span>Teams</span>
-            </Link>
-          </Button>
-        </div>
-
-        {/* Right side actions */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-2">
           <ModeToggle />
-          
-          {/* User Menu */}
-          {userData ? (
+
+          {user ? (
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {(username || user?.email || "?").charAt(0).toUpperCase()}
+                <button
+                  type="button"
+                  aria-label="Account menu"
+                  className="rounded-full outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                >
+                  <Avatar className="size-9">
+                    <AvatarFallback className="bg-primary font-semibold text-primary-foreground">
+                      {(username || user.email || "?").charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                </Button>
+                </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <div className="flex items-center justify-start gap-2 p-2">
-                  <div className="flex flex-col space-y-1 leading-none">
-                    <p className="font-medium">{username || "Choose a username"}</p>
-                    <p className="w-[200px] truncate text-sm text-muted-foreground">
-                      Pokémon Trainer
-                    </p>
-                  </div>
-                </div>
+              <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuLabel className="font-normal">
+                  <p className="font-medium">{username || "Choose a username"}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {user.email}
+                  </p>
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href={username ? `/teams/${username}` : "/login"} className="flex items-center">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>My Team</span>
+                  <Link href={username ? `/teams/${username}` : "/login"}>
+                    <User />
+                    My team
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <LogOut />
+                  Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild>
-              <Link href="/login">Sign In</Link>
+            <Button asChild size="sm" className="h-9 rounded-full px-4">
+              <Link href="/login">Sign in</Link>
             </Button>
           )}
 
-          {/* Mobile Menu */}
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <SheetHeader>
-                  <SheetTitle>Navigation</SheetTitle>
-                  <SheetDescription>
-                    Explore the world of Pokémon
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="space-y-2">
-                    <h4 className="font-medium">Pokédex</h4>
-                    {dexLinks.map((link) => (
-                      <Button key={link.id} variant="ghost" className="w-full justify-start" asChild>
-                        <Link href={link.path}>{link.name}</Link>
-                      </Button>
-                    ))}
-                  </div>
-                  <Button variant="ghost" className="justify-start" asChild>
-                    <Link href="/teams">
-                      <Users className="mr-2 h-4 w-4" />
-                      Teams
+          {/* Mobile menu */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full lg:hidden"
+                aria-label="Open menu"
+              >
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px]">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+                <SheetDescription>Explore the world of Pokémon</SheetDescription>
+              </SheetHeader>
+              <ul className="grid gap-1 px-4">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      aria-current={isActive(link.match) ? "page" : undefined}
+                      className={cn(
+                        "flex h-12 items-center rounded-xl px-4 text-base font-medium transition-colors",
+                        isActive(link.match)
+                          ? "bg-foreground text-background"
+                          : "hover:bg-accent",
+                      )}
+                    >
+                      {link.label}
                     </Link>
-                  </Button>
-                  {!userData && (
-                    <Button asChild>
-                      <Link href="/login">Sign In</Link>
-                    </Button>
-                  )}
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+                  </li>
+                ))}
+              </ul>
+            </SheetContent>
+          </Sheet>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }
-
-export default Navbar;

@@ -16,8 +16,9 @@
 |---|---|---|
 | 1. Stabilize | ✅ Done | All §1 fixes, `pokeapi()` helper, new Firestore model + `firestore.rules`, split sign-in/sign-up. **Rules must be deployed** (`firebase deploy --only firestore:rules`). |
 | 2. Data layer | ✅ Done | Static index in `src/data/pokemon-index.json` (rebuild with `pnpm index:build`); list pages, Pokédex search and featured Pokémon need 0 PokeAPI requests; image optimisation on (WebP); radar chart → CSS stat bars; sonner + lucide only; Firebase lazy-loaded; unused deps/components removed. Lists show default forms only (ids ≤ 1025). |
-| 3. Design foundation | ⏳ Next | |
-| 4. Signature experiences | — | |
+| 2b. Dependency upgrades (§6) | ✅ Done | Next 16.4 (Turbopack), React 19.3, Firebase 13.3, lucide 1.x, Tailwind 4.3, TypeScript 6.0, ESLint 9.39 with native flat config. Held back on purpose: TypeScript 7, ESLint 10, `@types/node` 26 (see §6). Lockfile regenerated; unused `navigation-menu`, `separator`, `@eslint/eslintrc` removed. |
+| 3. Design foundation + restyle of all pages (§4, §7) | ✅ Done | OKLCH tokens + `--type-*` palette, Geist Sans/Mono, `.surface`/`.type-surface` utilities, motion tokens. Shared `PageHeader`, `Section`, `Spec`, `TypeChip`, `PokemonCard`/`PokemonGrid`, `SearchField`, skeletons. Every page in §7 restyled and checked in light, dark and at phone width. Not done yet: OG images, sitemap, ⌘K palette, view transitions (Phases 4–5). |
+| 4. Signature experiences | ⏳ Next | |
 | 5. Polish & ship | — | Security headers/CSP (§3.3) still open. |
 
 ---
@@ -568,12 +569,58 @@ Total                           534
 
 ---
 
-## 6. Suggested roadmap
+## 6. Dependency upgrades (P1)
+
+Upgrade every package to its **latest version that is compatible with the rest of the stack**, not blindly to `latest`. Check peer dependencies first, then upgrade, then run `pnpm typecheck`, `pnpm lint` and `pnpm build`.
+
+| Package | From | To | Notes |
+|---|---|---|---|
+| `next`, `eslint-config-next` | 15.4 | **16.x** | Turbopack becomes the default bundler; `next lint` is removed (we already call ESLint directly); async `params` were already done in Phase 1; check the changed `images` defaults. |
+| `react`, `react-dom`, `@types/react*` | 19.1 | **19.3** | Minor, no code changes expected. |
+| `firebase` | 11.10 | **13.x** | Two majors. We only use the modular `app`/`auth`/`firestore` APIs; verify sign-in, transactions and queries afterwards. |
+| `lucide-react` | 0.525 | **1.x** | v1 removed brand icons (e.g. `Github`), so they become inline SVGs. |
+| `tailwindcss`, `@tailwindcss/postcss` | 4.1 | **4.3** | Minor. |
+| Radix primitives, `sonner`, `tailwind-merge`, `tw-animate-css`, `postcss`, `prettier`, `prettier-plugin-tailwindcss` | — | latest | Minor/patch. |
+| `typescript` | 5.8 | **6.0.x**, *not 7* | `typescript-eslint` (pulled in by `eslint-config-next`) supports only TypeScript `<6.1`. TypeScript 7 (the native Go compiler) waits until it does. |
+| `eslint` | 9.31 | **latest 9.x**, *not 10* | `eslint-plugin-react`, `-import` and `-jsx-a11y` don't list ESLint 10 as a supported peer yet. |
+| `@types/node` | 24.0 | **latest 24.x**, *not 26* | Types should match the Node version the site runs on (Node 24 LTS), not the newest Node. |
+
+Afterwards: keep versions current with Renovate or Dependabot (§3.5) and repeat this check every few months.
+
+---
+
+## 7. Page-by-page restyle checklist (P1)
+
+Phase 3 applies the Style Guide (§4) to **every** page, not just the home page. "Done" means each page:
+
+- uses only semantic tokens (`bg-background`, `text-foreground`, `bg-card`, `text-muted-foreground`, `--type-*`), with no hard-coded `slate-700`, `text-black`/`text-white` or raw type hex colors;
+- starts with the shared `PageHeader` (eyebrow, title, description), never an underlined `h1`;
+- shows type information with `TypeChip`, and Pokémon with the shared `PokemonCard`/`PokemonGrid`;
+- looks right and passes contrast in **both** light and dark mode, with hover, focus and pressed states;
+- has a loading skeleton that matches its layout instead of a spinning Pokéball.
+
+| Page | Restyle |
+|---|---|
+| **Global** | New OKLCH tokens and `--type-*` palette (§4.2–4.3), Geist Sans + Geist Mono (§4.4), elevation and motion tokens (§4.6–4.7), floating pill nav (§4.8), quieter footer. |
+| **Home** | Neutral hero with dot grid and a type-colored glow behind the Pokémon of the day; real stats computed from the index; bento grid instead of "quick links"; featured row uses the shared card. |
+| **Pokédex** | `PageHeader` + large search field; result count; card grid; "Show more". |
+| **Generations** | `PageHeader` with region name; segmented control I–IX with active state instead of purple buttons. |
+| **Types** | 18 tiles on soft type surfaces with icon and Pokémon count; detail page with type-tinted hero, damage relations as `TypeChip` groups (×2, ×½, ×0) on cards, then the grid. |
+| **Moves / Abilities** | `PageHeader`; inline search with the same field style; results as clean cards (move: type chip, power/accuracy/PP in mono); detail page as a spec-sheet card plus the Pokémon grid. |
+| **Pokémon detail** | Neutral page; hero card on the type surface with dex number, name, genus, type chips, artwork and the add-to-team button; info and stats as cards; evolution chain as mini cards with readable triggers; shiny and other forms as small tiles. |
+| **Teams** | Team cards with six slots (empty slots dashed), member mini cards using type chips and BST in mono. |
+| **Login** | Neutral card with soft brand glow, tabs, inline helper text. |
+| **404 / error / loading** | Same visual language; skeletons for grids and the detail page. |
+
+---
+
+## 8. Suggested roadmap
 
 | Phase | Scope | Result |
 |---|---|---|
 | **1. Stabilize** (1–2 days) | All §1 P0 fixes, `pokeapi()` helper, async `params`, Firestore rules, separate sign-in and sign-up | No crashes, safe data |
 | **2. Data layer** (1–2 days) | Build-time Pokémon index, remove the N+1 fetches, enable image optimization, drop unused libs | Pages load in well under 2 s, bundle about 40% smaller |
-| **3. Design foundation** (2–3 days) | New tokens, fonts, type color system, `PageShell`, `TypeChip`, `PokemonCard`, `StatBar`, nav, sonner | Consistent look across all pages |
+| **2b. Dependency upgrades** (½ day) | Everything in §6 | Current, supported stack |
+| **3. Design foundation + restyle** (3–4 days) | New tokens, fonts, type color system, `PageHeader`, `TypeChip`, `PokemonCard`, `StatBar`, nav, then every page in §7 | Consistent, modern look on all pages in both themes |
 | **4. Signature experiences** (3–5 days) | ⌘K palette, view transitions, bento home, detail tabs, Pokédex filters, type chart | The redesign from §4 |
 | **5. Polish & ship** (1–2 days) | A11y audit, OG images, sitemap, security headers and CSP, Lighthouse CI, README | Production-ready |

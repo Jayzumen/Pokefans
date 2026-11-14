@@ -1,30 +1,34 @@
+import type { Metadata } from "next";
 import LoginForm from "@/components/loginPage/LoginForm";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserPlus } from "lucide-react";
+import { PokeballIcon } from "@/components/icons";
 
-export default async function Login() {
+export const metadata: Metadata = {
+  title: "Sign in",
+  description: "Sign in or create an account to build your Pokémon team.",
+};
+
+export default function Login() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <Card className="border-2 border-primary/10 bg-card/50 backdrop-blur-sm">
-          <CardHeader className="text-center space-y-4">
-            <div className="flex justify-center">
-              <div className="p-3 rounded-full bg-primary/10">
-                <UserPlus className="w-8 h-8 text-primary" />
-              </div>
-            </div>
-            <div>
-              <CardTitle className="text-3xl font-bold">Welcome, Trainer</CardTitle>
-              <CardDescription className="text-base mt-2">
-                Sign in or create an account to build your Pokémon team
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <LoginForm />
-          </CardContent>
-        </Card>
+    <main className="relative grid min-h-[calc(100dvh-5rem)] place-items-center overflow-hidden px-4 py-12">
+      <div aria-hidden className="dot-grid absolute inset-0" />
+      <div
+        aria-hidden
+        className="absolute top-1/2 left-1/2 size-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-3xl dark:bg-primary/10"
+      />
+      <div className="surface fade-up relative w-full max-w-[26rem] p-6 shadow-lg sm:p-8">
+        <div className="mb-6 text-center">
+          <span className="mx-auto grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-md">
+            <PokeballIcon className="size-7" />
+          </span>
+          <h1 className="mt-4 text-2xl font-semibold tracking-[-0.03em]">
+            Welcome, Trainer
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Sign in or create an account to build your team.
+          </p>
+        </div>
+        <LoginForm />
       </div>
-    </div>
+    </main>
   );
 }

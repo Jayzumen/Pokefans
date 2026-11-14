@@ -3,11 +3,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ------------------------------------------------------------------ */
+/*  Theme mapping: Tailwind utilities -> design tokens                 */
+/* ------------------------------------------------------------------ */
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -23,162 +30,228 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-xs: var(--elev-xs);
+  --shadow-sm: var(--elev-sm);
+  --shadow-md: var(--elev-md);
+  --shadow-lg: var(--elev-lg);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ------------------------------------------------------------------ */
+/*  Tokens (Style Guide §4.2)                                          */
+/* ------------------------------------------------------------------ */
 :root {
-  --radius: 0.75rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --radius: 1rem;
+
+  --background: oklch(0.985 0.002 260);
+  --foreground: oklch(0.18 0.01 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: var(--foreground);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.646 0.222 41.116);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --popover-foreground: var(--foreground);
+  --muted: oklch(0.955 0.004 260);
+  --muted-foreground: oklch(0.5 0.012 260);
+  --secondary: oklch(0.955 0.004 260);
+  --secondary-foreground: var(--foreground);
+  --accent: oklch(0.94 0.006 260);
+  --accent-foreground: var(--foreground);
+  --border: oklch(0.91 0.004 260);
+  --input: oklch(0.91 0.004 260);
+
+  --primary: oklch(0.6 0.21 25);
+  --primary-foreground: oklch(0.99 0 0);
+  --ring: oklch(0.6 0.21 25 / 0.45);
+  --destructive: oklch(0.58 0.22 27);
+  --success: oklch(0.66 0.16 150);
+
+  --elev-xs: 0 1px 2px oklch(0.2 0.02 260 / 0.06);
+  --elev-sm: 0 1px 2px oklch(0.2 0.02 260 / 0.06), 0 2px 6px oklch(0.2 0.02 260 / 0.05);
+  --elev-md: 0 2px 4px oklch(0.2 0.02 260 / 0.05), 0 8px 24px -4px oklch(0.2 0.02 260 / 0.1);
+  --elev-lg: 0 4px 8px oklch(0.2 0.02 260 / 0.05), 0 24px 48px -12px oklch(0.2 0.02 260 / 0.18);
+  --highlight: inset 0 1px 0 oklch(1 0 0 / 0.6);
+
+  /* Type colors (§4.3): equal lightness/chroma, hue carries meaning. */
+  --type-normal: oklch(0.68 0.03 90);
+  --type-fire: oklch(0.68 0.19 40);
+  --type-water: oklch(0.66 0.15 250);
+  --type-grass: oklch(0.7 0.17 140);
+  --type-electric: oklch(0.82 0.17 95);
+  --type-ice: oklch(0.8 0.1 210);
+  --type-fighting: oklch(0.58 0.18 30);
+  --type-poison: oklch(0.6 0.17 320);
+  --type-ground: oklch(0.7 0.11 75);
+  --type-flying: oklch(0.72 0.1 280);
+  --type-psychic: oklch(0.68 0.2 355);
+  --type-bug: oklch(0.7 0.16 125);
+  --type-rock: oklch(0.64 0.08 80);
+  --type-ghost: oklch(0.52 0.12 295);
+  --type-dragon: oklch(0.56 0.2 280);
+  --type-dark: oklch(0.45 0.03 40);
+  --type-steel: oklch(0.7 0.03 230);
+  --type-fairy: oklch(0.78 0.11 350);
+
+  /* How strongly type color tints surfaces / text. */
+  --type-soft-mix: 14%;
+  --type-ink-mix: 45%;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.646 0.222 41.116);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.145 0.006 260);
+  --foreground: oklch(0.96 0.003 260);
+  --card: oklch(0.185 0.007 260);
+  --popover: oklch(0.2 0.008 260);
+  --muted: oklch(0.22 0.008 260);
+  --muted-foreground: oklch(0.7 0.01 260);
+  --secondary: oklch(0.22 0.008 260);
+  --accent: oklch(0.25 0.01 260);
+  --border: oklch(1 0 0 / 0.08);
+  --input: oklch(1 0 0 / 0.12);
+  --primary: oklch(0.68 0.19 25);
+  --primary-foreground: oklch(0.16 0.01 25);
+  --ring: oklch(0.68 0.19 25 / 0.5);
+  --destructive: oklch(0.7 0.19 22);
+
+  --elev-xs: 0 0 0 1px oklch(1 0 0 / 0.03);
+  --elev-sm: 0 0 0 1px oklch(1 0 0 / 0.04), 0 2px 6px oklch(0 0 0 / 0.3);
+  --elev-md: 0 0 0 1px oklch(1 0 0 / 0.04), 0 8px 24px -4px oklch(0 0 0 / 0.5);
+  --elev-lg: 0 0 0 1px oklch(1 0 0 / 0.05), 0 24px 48px -12px oklch(0 0 0 / 0.6);
+  --highlight: inset 0 1px 0 oklch(1 0 0 / 0.05);
+
+  --type-soft-mix: 16%;
+  --type-ink-mix: 55%;
 }
 
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scrollbar-gutter: stable;
+  }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 25%, transparent);
   }
 
   /* Tailwind 4 no longer sets a pointer cursor on buttons. */
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [role="menuitem"]:not([data-disabled]),
-  [role="menuitemradio"]:not([data-disabled]),
   [role="tab"]:not(:disabled) {
     cursor: pointer;
   }
+}
 
-  .gradient-bg {
-    --hero-from: var(--primary);
-    --hero-to: oklch(0.6 0.118 184.704);
-    background: linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 100%);
+/* ------------------------------------------------------------------ */
+/*  Components                                                         */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Elevation level 1: the default card surface (§4.6). */
+  .surface {
+    background: var(--card);
+    border: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+    border-radius: var(--radius);
+    box-shadow: var(--elev-sm), var(--highlight);
   }
 
-  /* Dark mode: deeper, less saturated stops plus a soft vignette for depth. */
-  .dark .gradient-bg {
-    --hero-from: oklch(0.42 0.14 38);
-    --hero-to: oklch(0.3 0.07 200);
-    background:
-      radial-gradient(ellipse at 50% 120%, oklch(0.145 0 0 / 0.7) 0%, transparent 60%),
-      linear-gradient(135deg, var(--hero-from) 0%, var(--hero-to) 100%);
+  /*
+   * Type-tinted surfaces. Set --t (and optionally --t2) on the element,
+   * e.g. style={{ "--t": "var(--type-fire)" }} via typeVars().
+   */
+  .type-surface {
+    background: linear-gradient(
+      140deg,
+      color-mix(in oklch, var(--t) calc(var(--type-soft-mix) + 6%), var(--card)) 0%,
+      color-mix(in oklch, var(--t2, var(--t)) var(--type-soft-mix), var(--card)) 100%
+    );
   }
-  
-  .glass-effect {
-    backdrop-filter: blur(16px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.125);
+  .type-soft {
+    background: color-mix(in oklch, var(--t) var(--type-soft-mix), var(--card));
   }
-  
-  .dark .glass-effect {
-    background-color: rgba(17, 25, 40, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.125);
+  .type-ink {
+    color: color-mix(in oklch, var(--t) var(--type-ink-mix), var(--foreground));
   }
-  
-  .pokemon-card-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Soft dot grid that fades out towards the edges (hero, headers). */
+  .dot-grid {
+    background-image: radial-gradient(
+      color-mix(in oklch, var(--foreground) 14%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   }
-  
-  .pokemon-card-hover:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
-  
-  @media (prefers-reduced-motion: no-preference) {
-    .floating-animation {
-      animation: float 6s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Motion (§4.7): only for people who haven't asked for less motion   */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  .lift {
+    transition:
+      transform 240ms var(--ease-out-expo),
+      box-shadow 240ms var(--ease-out-expo),
+      border-color 150ms ease;
+  }
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--elev-md), var(--highlight);
+  }
+
+  .stat-bar {
+    transform-origin: left;
+    animation: grow-x 700ms var(--ease-out-expo) both;
+  }
+
+  .fade-up {
+    animation: fade-up 500ms var(--ease-out-expo) both;
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
     }
-    .stat-bar {
-      transform-origin: left;
-      animation: grow-x 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
   }
+}
 
-  @keyframes grow-x {
-    from { transform: scaleX(0); }
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
   }
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
 }

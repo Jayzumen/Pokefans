@@ -1,168 +1,66 @@
-import { PokemonTypes } from "@/assets/constants";
-import { TypeData } from "@/types/typeTypes";
-import Image from "next/image";
-import Link from "next/link";
+import { TypeChip } from "../TypeChip";
+import type { TypeData, Type } from "@/types/typeTypes";
+
+function Row({
+  multiplier,
+  label,
+  types,
+}: {
+  multiplier: string;
+  label: string;
+  types: Type[];
+}) {
+  return (
+    <div className="grid gap-2 py-4 sm:grid-cols-[10.5rem_1fr] sm:items-center">
+      <dt className="flex items-baseline gap-2">
+        <span className="font-mono text-lg font-semibold tabular-nums">
+          {multiplier}
+        </span>
+        <span className="text-sm text-muted-foreground">{label}</span>
+      </dt>
+      <dd className="flex flex-wrap gap-1.5">
+        {types.length > 0 ? (
+          types.map((t) => <TypeChip key={t.name} type={t.name} />)
+        ) : (
+          <span className="text-sm text-muted-foreground">None</span>
+        )}
+      </dd>
+    </div>
+  );
+}
 
 export default function DamageRelations({ typeData }: { typeData: TypeData }) {
+  const d = typeData.damage_relations;
   return (
-    <div className="mx-auto max-w-[1500px] rounded-md bg-slate-600 p-2 text-white">
-      <p className="mt-4 mb-2 text-2xl font-bold">Damage Relations:</p>
-      <div className="mx-auto flex max-w-[1200px] flex-col justify-center gap-4 px-4 text-center md:flex-row md:justify-between">
-        <section className="mx-auto flex flex-col gap-4 md:w-[50%]">
-          <p className="text-2xl font-semibold">Offense:</p>
-          <p className="text-xl font-semibold">Double Damage To:</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {typeData.damage_relations?.double_damage_to?.map((type) => {
-              const matchingType = PokemonTypes.filter(
-                (typ) => typ.name === type.name
-              )[0];
-              return (
-                <Link
-                  href={`/types/${type.name}`}
-                  key={type.name}
-                  style={{ backgroundColor: matchingType?.color }}
-                  className="rounded-full p-2 transition hover:opacity-80"
-                >
-                  <Image
-                    src={`/typeImages/${type.name}.svg`}
-                    alt={type.name}
-                    height={50}
-                    width={50}
-                  />
-                </Link>
-              );
-            })}
-          </div>
-          <p className="text-xl font-semibold">Half Damage To:</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {typeData.damage_relations?.half_damage_to?.map((type) => {
-              const matchingType = PokemonTypes.filter(
-                (typ) => typ.name === type.name
-              )[0];
-              return (
-                <Link
-                  href={`/types/${type.name}`}
-                  key={type.name}
-                  style={{ backgroundColor: matchingType?.color }}
-                  className="rounded-full p-2 transition hover:opacity-80"
-                >
-                  <Image
-                    src={`/typeImages/${type.name}.svg`}
-                    alt={type.name}
-                    height={50}
-                    width={50}
-                  />
-                </Link>
-              );
-            })}
-          </div>
-          <p className="text-xl font-semibold">No Damage To:</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {typeData.damage_relations?.no_damage_to.length > 0 ? (
-              typeData.damage_relations?.no_damage_to?.map((type) => {
-                const matchingType = PokemonTypes.filter(
-                  (typ) => typ.name === type.name
-                )[0];
-                return (
-                  <Link
-                    href={`/types/${type.name}`}
-                    key={type.name}
-                    style={{ backgroundColor: matchingType?.color }}
-                    className="rounded-full p-2 transition hover:opacity-80"
-                  >
-                    <Image
-                      src={`/typeImages/${type.name}.svg`}
-                      alt={type.name}
-                      height={50}
-                      width={50}
-                    />
-                  </Link>
-                );
-              })
-            ) : (
-              <p className="text-lg font-medium">None</p>
-            )}
-          </div>
-        </section>
-        <section className="mx-auto flex flex-col gap-4 md:w-[50%]">
-          <p className="text-2xl font-semibold">Defense:</p>
-          <p className="text-xl font-semibold">Double Damage From:</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {typeData.damage_relations?.double_damage_from?.map((type) => {
-              const matchingType = PokemonTypes.filter(
-                (typ) => typ.name === type.name
-              )[0];
-              return (
-                <Link
-                  href={`/types/${type.name}`}
-                  key={type.name}
-                  style={{ backgroundColor: matchingType?.color }}
-                  className="rounded-full p-2 transition hover:opacity-80"
-                >
-                  <Image
-                    src={`/typeImages/${type.name}.svg`}
-                    alt={type.name}
-                    height={50}
-                    width={50}
-                  />
-                </Link>
-              );
-            })}
-          </div>
-
-          <p className="text-xl font-semibold">Half Damage From:</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {typeData.damage_relations?.half_damage_from?.map((type) => {
-              const matchingType = PokemonTypes.filter(
-                (typ) => typ.name === type.name
-              )[0];
-              return (
-                <Link
-                  href={`/types/${type.name}`}
-                  key={type.name}
-                  style={{ backgroundColor: matchingType?.color }}
-                  className="rounded-full p-2 transition hover:opacity-80"
-                >
-                  <Image
-                    src={`/typeImages/${type.name}.svg`}
-                    alt={type.name}
-                    height={50}
-                    width={50}
-                  />
-                </Link>
-              );
-            })}
-          </div>
-
-          <p className="text-xl font-semibold">Immune to:</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {typeData.damage_relations?.no_damage_from.length > 0 ? (
-              typeData.damage_relations?.no_damage_from?.map((type) => {
-                const matchingType = PokemonTypes.filter(
-                  (typ) => typ.name === type.name
-                )[0];
-                return (
-                  <Link
-                    href={`/types/${type.name}`}
-                    key={type.name}
-                    style={{ backgroundColor: matchingType?.color }}
-                    className="rounded-full p-2 transition hover:opacity-80"
-                  >
-                    <Image
-                      src={`/typeImages/${type.name}.svg`}
-                      alt={type.name}
-                      height={50}
-                      width={50}
-                    />
-                  </Link>
-                );
-              })
-            ) : (
-              <p className="text-lg font-medium">None</p>
-            )}
-          </div>
-        </section>
-      </div>
+    <div className="grid gap-4 md:grid-cols-2">
+      <section className="surface p-6" aria-labelledby="attacking">
+        <h2 id="attacking" className="text-lg font-semibold">
+          When attacking
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          How much damage <span className="capitalize">{typeData.name}</span>{" "}
+          moves deal to…
+        </p>
+        <dl className="mt-2 divide-y">
+          <Row multiplier="×2" label="super effective" types={d.double_damage_to} />
+          <Row multiplier="×½" label="not very effective" types={d.half_damage_to} />
+          <Row multiplier="×0" label="no effect" types={d.no_damage_to} />
+        </dl>
+      </section>
+      <section className="surface p-6" aria-labelledby="defending">
+        <h2 id="defending" className="text-lg font-semibold">
+          When defending
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          How much damage <span className="capitalize">{typeData.name}</span>{" "}
+          Pokémon take from…
+        </p>
+        <dl className="mt-2 divide-y">
+          <Row multiplier="×2" label="weak to" types={d.double_damage_from} />
+          <Row multiplier="×½" label="resists" types={d.half_damage_from} />
+          <Row multiplier="×0" label="immune to" types={d.no_damage_from} />
+        </dl>
+      </section>
     </div>
   );
 }

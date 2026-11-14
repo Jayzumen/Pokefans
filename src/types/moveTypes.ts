@@ -11,6 +11,10 @@ export interface MoveData {
   effect_chance: number;
   pp: number;
   priority: number;
+  damage_class: {
+    name: string;
+    url: string;
+  };
   power: number;
   type: {
     name: string;

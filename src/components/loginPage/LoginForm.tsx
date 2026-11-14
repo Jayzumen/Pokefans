@@ -17,7 +17,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 function PasswordField({
   id,
@@ -36,7 +36,6 @@ function PasswordField({
   return (
     <div className="space-y-2">
       <Label htmlFor={id} className="flex items-center">
-        <Lock className="mr-2 h-4 w-4" />
         Password
       </Label>
       <div className="relative">
@@ -49,7 +48,7 @@ function PasswordField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className="h-11 pr-11"
+          className="h-11 rounded-lg pr-11"
         />
         <button
           type="button"
@@ -78,7 +77,6 @@ function EmailField({
   return (
     <div className="space-y-2">
       <Label htmlFor={id} className="flex items-center">
-        <Mail className="mr-2 h-4 w-4" />
         Email
       </Label>
       <Input
@@ -89,7 +87,7 @@ function EmailField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="h-11"
+        className="h-11 rounded-lg"
       />
     </div>
   );
@@ -107,7 +105,6 @@ function UsernameField({
   return (
     <div className="space-y-2">
       <Label htmlFor="username" className="flex items-center">
-        <User className="mr-2 h-4 w-4" />
         Username
       </Label>
       <Input
@@ -119,7 +116,7 @@ function UsernameField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="h-11"
+        className="h-11 rounded-lg"
       />
       <p className="text-xs text-muted-foreground">
         3–20 characters: letters, numbers or underscores. Shown on your public
@@ -131,7 +128,7 @@ function UsernameField({
 
 function SubmitButton({ busy, children }: { busy: boolean; children: string }) {
   return (
-    <Button type="submit" className="h-11 w-full text-base" disabled={busy}>
+    <Button type="submit" className="h-11 w-full rounded-full text-base" disabled={busy}>
       {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {children}
     </Button>
@@ -241,7 +238,7 @@ export default function LoginForm() {
 
   return (
     <Tabs defaultValue="signin" className="gap-6">
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="grid h-10 w-full grid-cols-2 rounded-full">
         <TabsTrigger value="signin">Sign in</TabsTrigger>
         <TabsTrigger value="signup">Create account</TabsTrigger>
       </TabsList>

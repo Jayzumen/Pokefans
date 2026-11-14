@@ -1,10 +1,23 @@
+import type { Metadata } from "next";
+import { Container, PageHeader } from "@/components/layout";
 import Teams from "@/components/teamsPage/Teams";
 
-export default async function TeamsPage() {
+export const metadata: Metadata = {
+  title: "Teams",
+  description: "Teams of six built by the Pokéfans community.",
+};
+
+export default function TeamsPage() {
   return (
-    <main className="min-h-screen px-4 py-12">
-      <h1 className="text-4xl font-semibold underline">Teams</h1>
-      <Teams />
+    <main>
+      <PageHeader
+        eyebrow="Community"
+        title="Teams"
+        description="Every trainer can build a team of six. Here’s what the community picked."
+      />
+      <Container className="py-10">
+        <Teams />
+      </Container>
     </main>
   );
 }
