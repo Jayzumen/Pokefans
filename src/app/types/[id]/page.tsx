@@ -1,21 +1,14 @@
 import { PokemonTypes } from "@/assets/constants";
 import DamageRelations from "@/components/typesPage/DamageRelations";
 import TypePokemon from "@/components/typesPage/TypePokemon";
-import { mapLimit, pokeapi, slugOrNotFound } from "@/lib/pokeapi";
-import { PokemonData } from "@/types/pokemonTypes";
+import { pokeapi, slugOrNotFound } from "@/lib/pokeapi";
+import { resolveRefs } from "@/lib/pokemon-index";
 import { TypeData } from "@/types/typeTypes";
 
-async function getTypeData(id: string): Promise<TypeData> {
-  const data = await pokeapi<TypeData>(`type/${id}`);
-  const pokemonData = await mapLimit(data.pokemon, 12, (p) =>
-    pokeapi<PokemonData>(p.pokemon.url),
-  );
-  return { ...data, pokemonData };
-}
+export const dynamicParams = false;
 
-// Pages are rendered on first request and then cached (ISR).
-export async function generateStaticParams() {
-  return [];
+export function generateStaticParams() {
+  return PokemonTypes.map((t) => ({ id: t.name }));
 }
 
 export default async function TypePage({
@@ -24,7 +17,8 @@ export default async function TypePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const typeData = await getTypeData(slugOrNotFound(id));
+  const typeData = await pokeapi<TypeData>(`type/${slugOrNotFound(id)}`);
+  const pokemon = resolveRefs(typeData.pokemon.map((p) => p.pokemon));
 
   const matchingType = PokemonTypes.find(
     (pokemonType) => pokemonType.name === typeData.name,
@@ -38,7 +32,7 @@ export default async function TypePage({
         {typeData.name}
       </h1>
       <DamageRelations typeData={typeData} />
-      <TypePokemon typeData={typeData} />
+      <TypePokemon pokemon={pokemon} />
     </main>
   );
 }

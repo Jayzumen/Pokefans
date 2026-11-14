@@ -1,30 +1,13 @@
-import { PokemonTypes } from "@/assets/constants";
-import { TypeData } from "@/types/typeTypes";
-import React from "react";
-import PokemonCard from "../PokemonCard";
+import { PokemonGrid } from "../PokemonCard";
+import type { IndexPokemon } from "@/lib/pokemon-index";
 
-function TypePokemon({ typeData }: { typeData: TypeData }) {
+export default function TypePokemon({ pokemon }: { pokemon: IndexPokemon[] }) {
   return (
     <div className="my-4">
-      <h2 className="my-2 text-2xl font-bold">Pokemon with this Type:</h2>
-      <div className="mx-auto grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
-        {typeData.pokemonData.map((pokemon) => {
-          const matchingTypes = pokemon.types.map((type) => {
-            return PokemonTypes.filter(
-              (pokemonType) => pokemonType.name === type.type.name,
-            )[0];
-          });
-          return (
-            <PokemonCard
-              key={pokemon.name}
-              pokemonData={pokemon}
-              matchingTypes={matchingTypes}
-            />
-          );
-        })}
-      </div>
+      <h2 className="my-2 text-2xl font-bold">
+        Pokémon with this type ({pokemon.length})
+      </h2>
+      <PokemonGrid pokemon={pokemon} />
     </div>
   );
 }
-
-export default TypePokemon;

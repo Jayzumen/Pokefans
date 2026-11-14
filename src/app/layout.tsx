@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import type { Metadata } from "next";
-import ToastUtils from "@/components/ToastUtils";
+import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/components/auth-provider";
@@ -37,7 +37,7 @@ export default function RootLayout({
             <Navbar />
             <div className="pt-16">{children}</div>
           </AuthProvider>
-          <ToastUtils />
+          <Toaster position="bottom-center" closeButton />
         </ThemeProvider>
       </body>
     </html>

@@ -2,7 +2,7 @@ import { Chain, EvolutionChain } from "@/types/pokemonTypes";
 import Image from "next/image";
 import Link from "next/link";
 import EvoCheck from "./EvoCheck";
-import { AiOutlineArrowRight } from "react-icons/ai";
+import { ArrowRight } from "lucide-react";
 
 export default function PokemonEvoChain({
   evoChainData,
@@ -53,7 +53,7 @@ export default function PokemonEvoChain({
                     </Link>
                   </div>
                   <span className="rotate-90">
-                    <AiOutlineArrowRight height={24} width={24} />
+                    <ArrowRight aria-hidden className="h-6 w-6" />
                   </span>
                   <div className="min-h-[40px] max-w-[150px]">
                     <EvoCheck
@@ -83,7 +83,7 @@ export default function PokemonEvoChain({
                           <div key={index} className="m-4">
                             <div className="flex flex-col items-center">
                               <span className="rotate-90">
-                                <AiOutlineArrowRight className="h-4 w-4" />
+                                <ArrowRight aria-hidden className="h-4 w-4" />
                               </span>
                               <div className="min-h-[80px] max-w-[150px]">
                                 <EvoCheck
@@ -140,7 +140,7 @@ export default function PokemonEvoChain({
                       <div key={index} className="m-4">
                         <div className="flex flex-col items-center">
                           <span className="rotate-90 ">
-                            <AiOutlineArrowRight height={24} width={24} />
+                            <ArrowRight aria-hidden className="h-6 w-6" />
                           </span>
                           <div className="min-h-[80px] max-w-[150px]">
                             <EvoCheck
@@ -179,7 +179,7 @@ export default function PokemonEvoChain({
                         <div key={index} className="m-4">
                           <div className="flex flex-col items-center">
                             <span className="rotate-90">
-                              <AiOutlineArrowRight height={24} width={24} />
+                              <ArrowRight aria-hidden className="h-6 w-6" />
                             </span>
                             <div className="min-h-[80px] max-w-[150px]">
                               <EvoCheck
@@ -236,7 +236,7 @@ export default function PokemonEvoChain({
                   <div className="md:flex md:items-center">
                     <div className="mr-2 flex flex-col items-center gap-2">
                       <span className="rotate-90 md:rotate-0">
-                        <AiOutlineArrowRight height={24} width={24} />
+                        <ArrowRight aria-hidden className="h-6 w-6" />
                       </span>
                       {evoChain.evolves_to[0].evolution_details[0] && (
                         <div className="mx-auto max-w-[150px]">
@@ -269,7 +269,7 @@ export default function PokemonEvoChain({
                     <div className="md:flex md:items-center ">
                       <div className="mr-2 flex flex-col items-center gap-2">
                         <span className="rotate-90 md:rotate-0">
-                          <AiOutlineArrowRight height={24} width={24} />
+                          <ArrowRight aria-hidden className="h-6 w-6" />
                         </span>
                         {evoChain.evolves_to[0].evolves_to[0]
                           .evolution_details[0] && (

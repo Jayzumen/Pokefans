@@ -167,6 +167,14 @@
     .floating-animation {
       animation: float 6s ease-in-out infinite;
     }
+    .stat-bar {
+      transform-origin: left;
+      animation: grow-x 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+  }
+
+  @keyframes grow-x {
+    from { transform: scaleX(0); }
   }
   
   @keyframes float {

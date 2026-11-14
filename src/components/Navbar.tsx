@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { dexLinks } from "@/assets/constants";
-import { signOutUser } from "@/lib/auth";
 import { useAuth } from "./auth-provider";
 import { Button } from "./ui/button";
 import { ModeToggle } from "./mode-toggle";
@@ -40,6 +39,8 @@ function Navbar() {
   const username = profile?.username ?? "";
 
   const handleSignOut = async () => {
+    // Loaded on demand so Firebase stays out of the shared bundle.
+    const { signOutUser } = await import("@/lib/auth");
     await signOutUser();
     router.refresh();
   };

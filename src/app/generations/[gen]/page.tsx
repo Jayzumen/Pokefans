@@ -1,23 +1,13 @@
 import { notFound } from "next/navigation";
 import { Generations } from "@/assets/constants";
-import { Pokemon } from "@/types/pokemonTypes";
-import { GenPokemonData } from "@/types/generationTypes";
-import PokemonLayout from "@/components/generationsPage/PokemonLayout";
-import { mapLimit, pokeapi } from "@/lib/pokeapi";
+import { PokemonGrid } from "@/components/PokemonCard";
+import { getPokemonByGen } from "@/lib/pokemon-index";
 
-async function getGenPokemon(genId: string) {
-  const generation = Generations.find((g) => g.id === genId);
-  if (!generation) notFound();
+// Every generation is built at compile time from the static index.
+export const dynamicParams = false;
 
-  const list = await pokeapi<{ results: Pokemon[] }>(
-    `pokemon?limit=${generation.limit}&offset=${generation.offset}`,
-  );
-  return mapLimit(list.results, 12, (p) => pokeapi<GenPokemonData>(p.url));
-}
-
-// Pages are rendered on first request and then cached (ISR).
-export async function generateStaticParams() {
-  return [];
+export function generateStaticParams() {
+  return Generations.map((g) => ({ gen: g.id }));
 }
 
 export default async function GenerationsPage({
@@ -26,6 +16,12 @@ export default async function GenerationsPage({
   params: Promise<{ gen: string }>;
 }) {
   const { gen } = await params;
-  const data = await getGenPokemon(gen);
-  return <PokemonLayout data={data} />;
+  const generation = Generations.find((g) => g.id === gen);
+  if (!generation) notFound();
+
+  return (
+    <div className="px-4 py-4">
+      <PokemonGrid pokemon={getPokemonByGen(Number(gen))} />
+    </div>
+  );
 }

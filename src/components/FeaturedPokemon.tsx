@@ -1,95 +1,69 @@
-import { PokemonData } from "@/types/pokemonTypes";
-import { PokemonTypes } from "@/assets/constants";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Badge } from "./ui/badge";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "./ui/button";
 import { ArrowRight, Star } from "lucide-react";
+import { artworkUrl, formatDexNumber } from "@/lib/pokemon";
+import type { IndexPokemon } from "@/lib/pokemon-index";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { cardButtonHover, colorOfType, TypeBadge } from "./PokemonCard";
 
-interface FeaturedPokemonProps {
-  randomPokemon: PokemonData[];
-}
-
-export default function FeaturedPokemon({ randomPokemon }: FeaturedPokemonProps) {
+export default function FeaturedPokemon({ pokemon }: { pokemon: IndexPokemon[] }) {
   return (
     <section className="py-20 px-4">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
             <Star className="w-6 h-6 text-primary mr-2" />
-            <span className="text-primary font-semibold">Featured</span>
+            <span className="text-primary font-semibold">Pokémon of the day</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Discover Amazing Pokémon
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Meet some incredible Pokémon from our vast database. Each one has unique abilities and characteristics.
+            A fresh selection every day. Each one has unique abilities and
+            characteristics.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {randomPokemon.map((pokemon, index) => {
-            const matchingTypes = pokemon.types.map((type) => {
-              return PokemonTypes.filter(
-                (pokemonType) => pokemonType.name === type.type.name,
-              )[0];
-            });
-
+          {pokemon.map((p) => {
+            const [first, second = first] = p.types.map(colorOfType);
             return (
-              <Card 
-                key={index} 
+              <Card
+                key={p.id}
                 className="pokemon-card-hover group overflow-hidden border-2 hover:border-primary/20"
                 style={{
-                  background: `linear-gradient(135deg, ${matchingTypes[0]?.color}15 0%, ${
-                    matchingTypes[1] ? matchingTypes[1]?.color + "15" : matchingTypes[0]?.color + "15"
-                  } 100%)`,
+                  background: `linear-gradient(135deg, ${first}15 0%, ${second}15 100%)`,
                 }}
               >
                 <CardHeader className="text-center pb-2">
                   <div className="text-sm text-muted-foreground font-mono">
-                    #{pokemon.id.toString().padStart(3, '0')}
+                    {formatDexNumber(p.id)}
                   </div>
-                  <CardTitle className="text-xl capitalize">{pokemon.name}</CardTitle>
+                  <CardTitle className="text-xl capitalize">{p.name}</CardTitle>
                 </CardHeader>
-                
+
                 <CardContent className="text-center">
                   <div className="relative mb-4">
-                    <Link href={`/pokemon/${pokemon.name}`}>
+                    <Link href={`/pokemon/${p.name}`} tabIndex={-1} aria-hidden="true">
                       <Image
-                        src={pokemon.sprites.other["official-artwork"].front_default}
-                        alt={pokemon.name}
+                        src={artworkUrl(p.id)}
+                        alt={`${p.name} official artwork`}
                         width={200}
                         height={200}
-                        className="mx-auto group-hover:scale-110 transition-transform duration-300"
+                        className="mx-auto aspect-square group-hover:scale-110 transition-transform duration-300"
                       />
                     </Link>
                   </div>
-                  
+
                   <div className="flex flex-wrap justify-center gap-2 mb-4">
-                    {pokemon.types.map((type) => {
-                      const matchingType = PokemonTypes.filter(
-                        (pokemonType) => pokemonType.name === type.type.name,
-                      )[0];
-                      return (
-                        <Badge
-                          key={type.type.name}
-                          variant="secondary"
-                          className="capitalize"
-                          style={{
-                            backgroundColor: matchingType?.color + "20",
-                            color: matchingType?.color,
-                            borderColor: matchingType?.color + "40",
-                          }}
-                        >
-                          {type.type.name}
-                        </Badge>
-                      );
-                    })}
+                    {p.types.map((type) => (
+                      <TypeBadge key={type} type={type} />
+                    ))}
                   </div>
-                  
-                  <Button variant="outline" className="w-full group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground hover:border-primary hover:bg-primary hover:text-primary-foreground dark:group-hover:border-primary dark:group-hover:bg-primary dark:hover:border-primary dark:hover:bg-primary" asChild>
-                    <Link href={`/pokemon/${pokemon.name}`} className="flex items-center justify-center">
+
+                  <Button variant="outline" className={`w-full ${cardButtonHover}`} asChild>
+                    <Link href={`/pokemon/${p.name}`} className="flex items-center justify-center">
                       View Details
                       <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                     </Link>

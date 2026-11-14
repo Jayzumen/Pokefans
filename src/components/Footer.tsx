@@ -1,6 +1,4 @@
-import { SiNextdotjs, SiTailwindcss } from "react-icons/si";
-import { BsGithub } from "react-icons/bs";
-import { TbPokeball } from "react-icons/tb";
+import { Github } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
@@ -54,27 +52,47 @@ export default function Footer() {
           {/* Connect */}
           <div className="space-y-4">
             <h4 className="font-semibold">Connect</h4>
-            <div className="flex space-x-2">
-              <Button size="icon" variant="ghost" asChild>
-                <Link href="https://github.com/Jayzumen/pokefans" target="_blank" rel="noreferrer">
-                  <BsGithub className="h-4 w-4" />
-                </Link>
+            <div className="space-y-2 text-sm">
+              <Button variant="outline" size="sm" asChild>
+                <a
+                  href="https://github.com/Jayzumen/pokefans"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Github aria-hidden />
+                  Source on GitHub
+                </a>
               </Button>
-              <Button size="icon" variant="ghost" asChild>
-                <Link href="https://pokeapi.co/" target="_blank" rel="noreferrer">
-                  <TbPokeball className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button size="icon" variant="ghost" asChild>
-                <Link href="https://nextjs.org/" target="_blank" rel="noreferrer">
-                  <SiNextdotjs className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button size="icon" variant="ghost" asChild>
-                <Link href="https://tailwindcss.com/" target="_blank" rel="noreferrer">
-                  <SiTailwindcss className="h-4 w-4" />
-                </Link>
-              </Button>
+              <p className="text-muted-foreground">
+                Data from{" "}
+                <a
+                  href="https://pokeapi.co/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground underline-offset-4 hover:underline"
+                >
+                  PokeAPI
+                </a>
+                . Built with{" "}
+                <a
+                  href="https://nextjs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground underline-offset-4 hover:underline"
+                >
+                  Next.js
+                </a>{" "}
+                and{" "}
+                <a
+                  href="https://tailwindcss.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground underline-offset-4 hover:underline"
+                >
+                  Tailwind CSS
+                </a>
+                .
+              </p>
             </div>
           </div>
         </div>
@@ -82,7 +100,7 @@ export default function Footer() {
         <Separator className="my-8" />
         
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-          <p>&copy; 2024 Pokéfans. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Pokéfans. Pokémon is a trademark of Nintendo, Game Freak and Creatures.</p>
           <p>Built with ❤️ for Pokémon fans everywhere</p>
         </div>
       </div>

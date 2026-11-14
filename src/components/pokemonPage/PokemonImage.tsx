@@ -5,8 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { PokemonTypes } from "@/assets/constants";
 import { PokemonData, Variety } from "@/types/pokemonTypes";
-import { AiOutlineHeart } from "react-icons/ai";
-import { toast } from "react-toastify";
+import { Heart } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "../auth-provider";
 import { getTeam, toggleTeamMember } from "@/lib/teams";
 import { formatDexNumber } from "@/lib/pokemon";
@@ -125,13 +125,17 @@ export default function PokemonImage({ pokemon }: { pokemon: PokemonData }) {
               aria-pressed={isSaved}
               onClick={handleClick}
               disabled={busy}
-              className="ml-60 disabled:opacity-50"
+              className={`ml-60 flex h-12 w-12 items-center justify-center rounded-full transition-[background-color,transform] duration-200 hover:scale-110 active:scale-95 disabled:opacity-50 ${
+                isSaved
+                  ? "bg-red-500 text-white shadow-md shadow-black/30"
+                  : "bg-white/40 hover:bg-white/60"
+              }`}
             >
-              {isSaved ? (
-                <AiOutlineHeart className="h-12 w-12 rounded-full bg-red-500 text-white shadow-md shadow-black" />
-              ) : (
-                <AiOutlineHeart className="h-12 w-12" />
-              )}
+              <Heart
+                aria-hidden
+                className="h-7 w-7"
+                fill={isSaved ? "currentColor" : "none"}
+              />
             </button>
           </div>
 

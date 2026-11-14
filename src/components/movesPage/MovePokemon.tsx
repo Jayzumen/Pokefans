@@ -1,31 +1,13 @@
-import { PokemonTypes } from "@/assets/constants";
-import { MoveData } from "@/types/moveTypes";
-import PokemonCard from "../PokemonCard";
+import { PokemonGrid } from "../PokemonCard";
+import type { IndexPokemon } from "@/lib/pokemon-index";
 
-function MovePokemon({ move }: { move: MoveData }) {
+export default function MovePokemon({ pokemon }: { pokemon: IndexPokemon[] }) {
   return (
     <>
       <p className="py-4 text-2xl font-bold">
-        Pokemon that can learn this move:
+        Pokémon that can learn this move ({pokemon.length})
       </p>
-      <div className="mx-auto grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
-        {move.pokemon.map((pokemon) => {
-          const matchingTypes = pokemon.types.map((type) => {
-            return PokemonTypes.filter(
-              (pokemonType) => pokemonType.name === type.type.name,
-            )[0];
-          });
-          return (
-            <PokemonCard
-              key={pokemon.name}
-              pokemonData={pokemon}
-              matchingTypes={matchingTypes}
-            />
-          );
-        })}
-      </div>
+      <PokemonGrid pokemon={pokemon} />
     </>
   );
 }
-
-export default MovePokemon;

@@ -2,7 +2,7 @@
 
 import { Ability, AbilityData } from "@/types/abilityTypes";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import DefaultAbility from "./DefaultAbility";
 import SearchedAbility from "./SearchedAbility";
 

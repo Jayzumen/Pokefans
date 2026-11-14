@@ -2,7 +2,7 @@
 
 import { Move, MoveData } from "@/types/moveTypes";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import DefaultMoves from "./DefaultMoves";
 import SearchedMoves from "./SearchedMoves";
 

@@ -1,28 +1,9 @@
 import SearchForm from "@/components/pokedexPage/SearchForm";
-import { Pokemon, PokemonData } from "@/types/pokemonTypes";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, Database } from "lucide-react";
-import { pokeapi } from "@/lib/pokeapi";
 
-async function getDefaultPokemon() {
-  return Promise.all(
-    Array.from({ length: 9 }, (_, i) =>
-      pokeapi<PokemonData>(`pokemon/${i + 1}`),
-    ),
-  );
-}
-
-async function getAllPokemon() {
-  const data = await pokeapi<{ results: Pokemon[] }>("pokemon?limit=10500");
-  return data.results;
-}
-
-export default async function Pokedex() {
-  const [defaultPokemon, allPokemon] = await Promise.all([
-    getDefaultPokemon(),
-    getAllPokemon(),
-  ]);
-  
+// Fully static: search runs in the browser against the bundled index.
+export default function Pokedex() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-background to-muted/30">
       <div className="container mx-auto px-4 py-12">
@@ -47,11 +28,11 @@ export default async function Pokedex() {
               <CardTitle className="text-2xl">Search Pokémon</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Find your favorite Pokémon by typing their name below
+              Type a name or a dex number. Results update as you type.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SearchForm pokemon={defaultPokemon} allPokemon={allPokemon} />
+            <SearchForm />
           </CardContent>
         </Card>
       </div>

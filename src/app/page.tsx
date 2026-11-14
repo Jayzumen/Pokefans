@@ -2,28 +2,18 @@ import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import FeaturedPokemon from "@/components/FeaturedPokemon";
 import QuickLinks from "@/components/QuickLinks";
-import { PokemonData } from "@/types/pokemonTypes";
-import { MAX_POKEMON_ID, pokeapi, randomIds } from "@/lib/pokeapi";
+import { pokemonOfTheDay } from "@/lib/pokemon-index";
 
-// Re-pick the featured Pokémon once per hour.
+// The featured set is seeded by the date; re-check hourly so it rolls over
+// shortly after midnight UTC. No PokeAPI requests needed.
 export const revalidate = 3600;
 
-async function getRandomPokemon() {
-  return Promise.all(
-    randomIds(6, MAX_POKEMON_ID).map((id) =>
-      pokeapi<PokemonData>(`pokemon/${id}`),
-    ),
-  );
-}
-
-export default async function Home() {
-  const randomPokemon = await getRandomPokemon();
-
+export default function Home() {
   return (
     <main className="min-h-screen">
       <HeroSection />
       <QuickLinks />
-      <FeaturedPokemon randomPokemon={randomPokemon} />
+      <FeaturedPokemon pokemon={pokemonOfTheDay(6)} />
       <Footer />
     </main>
   );

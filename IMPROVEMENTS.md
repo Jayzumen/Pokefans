@@ -10,6 +10,16 @@
 >
 > Each item has a priority: **P0** = broken or unsafe, fix now · **P1** = high impact · **P2** = polish.
 
+## Progress
+
+| Phase | Status | Notes |
+|---|---|---|
+| 1. Stabilize | ✅ Done | All §1 fixes, `pokeapi()` helper, new Firestore model + `firestore.rules`, split sign-in/sign-up. **Rules must be deployed** (`firebase deploy --only firestore:rules`). |
+| 2. Data layer | ✅ Done | Static index in `src/data/pokemon-index.json` (rebuild with `pnpm index:build`); list pages, Pokédex search and featured Pokémon need 0 PokeAPI requests; image optimisation on (WebP); radar chart → CSS stat bars; sonner + lucide only; Firebase lazy-loaded; unused deps/components removed. Lists show default forms only (ids ≤ 1025). |
+| 3. Design foundation | ⏳ Next | |
+| 4. Signature experiences | — | |
+| 5. Polish & ship | — | Security headers/CSP (§3.3) still open. |
+
 ---
 
 ## 0. TL;DR

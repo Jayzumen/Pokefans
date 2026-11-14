@@ -1,130 +1,104 @@
 "use client";
 
-import { useState } from "react";
-import { Pokemon, PokemonData } from "@/types/pokemonTypes";
-import DefaultPokemon from "./DefaultPokemon";
-import SearchedPokemon from "./SearchedPokemon";
-import { toast } from "react-toastify";
+import { useDeferredValue, useMemo, useState } from "react";
+import { Search, X } from "lucide-react";
+import { pokemonIndex } from "@/lib/pokemon-index";
+import { PokemonGrid } from "../PokemonCard";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Search, Loader2 } from "lucide-react";
 
-// Each match costs one PokeAPI request; cap it so "a" doesn't fire ~1,000.
-const MAX_RESULTS = 60;
+const PAGE_SIZE = 24;
 
-export default function SearchForm({
-  pokemon,
-  allPokemon,
-}: {
-  pokemon: PokemonData[];
-  allPokemon: Pokemon[];
-}) {
-  const [searchedPokemon, setSearchedPokemon] = useState<PokemonData[]>([]);
-  const [search, setSearch] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+function matches(query: string) {
+  const q = query.trim().toLowerCase().replace(/^#/, "");
+  if (!q) return pokemonIndex;
+  if (/^\d+$/.test(q)) {
+    const id = Number(q);
+    return pokemonIndex.filter((p) => p.id === id || String(p.id).startsWith(q));
+  }
+  const words = q.split(/\s+/);
+  return pokemonIndex.filter((p) => words.every((w) => p.name.includes(w)));
+}
 
-  const getPokemonByName = async (rawName: string) => {
-    const name = rawName.trim().toLowerCase().slice(0, 40);
-    if (name.length > 1) {
-      const matches = allPokemon.filter((pokemon) =>
-        pokemon.name.includes(name),
-      );
-      if (matches.length > 0) {
-        if (matches.length > MAX_RESULTS) {
-          toast.info(
-            `Showing the first ${MAX_RESULTS} of ${matches.length} matches. Try a more specific name.`,
-          );
-        }
-        const results = await Promise.all(
-          matches.slice(0, MAX_RESULTS).map(async (match) => {
-            const res = await fetch(match.url);
-            if (!res.ok) return null;
-            return (await res.json()) as PokemonData;
-          }),
-        );
-        return results.filter((p): p is PokemonData => p !== null);
-      } else {
-        toast.error(`No Pokémon with name "${search}" found`);
-        setSearch("");
-      }
-      return null;
-    }
-  };
+export default function SearchForm() {
+  const [query, setQuery] = useState("");
+  const [visible, setVisible] = useState(PAGE_SIZE);
+  // Keep typing responsive even while a large grid re-renders.
+  const deferredQuery = useDeferredValue(query);
+  const results = useMemo(() => matches(deferredQuery), [deferredQuery]);
+  const shown = results.slice(0, visible);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!search.trim()) return;
-    
-    setIsLoading(true);
-    try {
-      const pokemon = await getPokemonByName(search);
-      if (pokemon) {
-        setSearchedPokemon(pokemon);
-        setSearch("");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleClear = () => {
-    setSearchedPokemon([]);
-    setSearch("");
+  const updateQuery = (value: string) => {
+    setQuery(value.slice(0, 40));
+    setVisible(PAGE_SIZE);
   };
 
   return (
     <div className="space-y-8">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <Label htmlFor="search" className="sr-only">
-              Search for a Pokémon
-            </Label>
-            <Input
-              type="search"
-              id="search"
-              name="search"
-              placeholder="Enter a Pokémon name..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="h-12 text-lg"
-              disabled={isLoading}
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button 
-              type="submit" 
-              size="lg" 
-              disabled={isLoading || !search.trim()}
-              className="flex items-center"
-            >
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Search className="mr-2 h-4 w-4" />
-              )}
-              Search
-            </Button>
-            {searchedPokemon.length > 0 && (
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="lg"
-                onClick={handleClear}
-              >
-                Clear
-              </Button>
-            )}
-          </div>
-        </div>
+      <form
+        role="search"
+        onSubmit={(e) => e.preventDefault()}
+        className="relative"
+      >
+        <Label htmlFor="search" className="sr-only">
+          Search for a Pokémon
+        </Label>
+        <Search
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted-foreground"
+        />
+        <Input
+          type="search"
+          id="search"
+          name="search"
+          autoComplete="off"
+          placeholder="Pikachu, char, #25…"
+          value={query}
+          onChange={(e) => updateQuery(e.target.value)}
+          className="h-12 pr-12 pl-12 text-lg [&::-webkit-search-cancel-button]:hidden"
+        />
+        {query && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => updateQuery("")}
+            className="absolute top-1/2 right-2 -translate-y-1/2"
+            aria-label="Clear search"
+          >
+            <X />
+          </Button>
+        )}
       </form>
 
-      {searchedPokemon?.length === 0 ? (
-        <DefaultPokemon pokemon={pokemon} />
-      ) : (
-        <SearchedPokemon pokemon={searchedPokemon} />
-      )}
+      <div className="space-y-6">
+        <p className="text-center text-muted-foreground" aria-live="polite">
+          {deferredQuery.trim()
+            ? `${results.length} Pokémon match “${deferredQuery.trim()}”`
+            : `All ${results.length} Pokémon`}
+        </p>
+
+        {results.length === 0 ? (
+          <p className="py-12 text-center text-lg">
+            No Pokémon found. Check the spelling or try part of the name.
+          </p>
+        ) : (
+          <PokemonGrid pokemon={shown} priorityCount={4} />
+        )}
+
+        {results.length > visible && (
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setVisible((v) => v + PAGE_SIZE)}
+            >
+              Show more ({results.length - visible} left)
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
