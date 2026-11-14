@@ -72,6 +72,7 @@ export default async function GenerationsPage({
         </nav>
       </PageHeader>
       <Container className="py-10">
+        <h2 className="sr-only">Pokémon of Generation {ROMAN[n]}</h2>
         <PokemonGrid pokemon={pokemon} priorityCount={4} />
       </Container>
     </main>

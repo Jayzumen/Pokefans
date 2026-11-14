@@ -16,12 +16,15 @@ export function NameSearch({
   names,
   basePath,
   noun,
+  plural = `${noun}s`,
   placeholder,
   children,
 }: {
   names: string[];
   basePath: string;
   noun: string;
+  /** Defaults to noun + "s"; pass e.g. "abilities". */
+  plural?: string;
   placeholder: string;
   children: React.ReactNode;
 }) {
@@ -41,7 +44,7 @@ export function NameSearch({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <SearchField
           id={`${noun}-search`}
-          label={`Search ${noun}s`}
+          label={`Search ${plural}`}
           placeholder={placeholder}
           value={query}
           onChange={(v) => setQuery(v.slice(0, 40))}
@@ -50,10 +53,14 @@ export function NameSearch({
         <p className="text-sm text-muted-foreground tabular-nums" aria-live="polite">
           {deferred
             ? `${results.length} result${results.length === 1 ? "" : "s"}`
-            : `${names.length} ${noun}s`}
+            : `${names.length} ${plural}`}
         </p>
       </div>
 
+      {/* Keeps the heading outline intact (h1 → h2 → the cards' h3). */}
+      <h2 className="sr-only">
+        {deferred ? "Search results" : `Featured ${plural}`}
+      </h2>
       {!deferred ? (
         children
       ) : results.length === 0 ? (

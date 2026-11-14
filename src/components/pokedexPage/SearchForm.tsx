@@ -227,6 +227,7 @@ export default function SearchForm() {
         )}
       </div>
 
+      <h2 className="sr-only">Results</h2>
       {results.length === 0 ? (
         <div className="surface flex flex-col items-center gap-3 px-6 py-16 text-center">
           <SearchX aria-hidden className="size-10 text-muted-foreground" />

@@ -38,6 +38,7 @@ export default async function AbilityPage() {
           names={list.results.map((a) => a.name)}
           basePath="/abilities"
           noun="ability"
+          plural="abilities"
           placeholder="Levitate, intimidate…"
         >
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

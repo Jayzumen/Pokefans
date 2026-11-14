@@ -1,9 +1,14 @@
-// Builds the static data the site ships with, from 21 PokeAPI requests:
-//   src/data/pokemon-index.json  every default Pokémon: id, name, types, gen
-//   src/data/type-chart.json     attack multipliers between the 18 types
-//   src/data/names.json          all move and ability names (for search)
+// Builds the static data the site ships with:
+//   src/data/pokemon-index.json   every default Pokémon: id, name, types, gen
+//   src/data/type-chart.json      attack multipliers between the 18 types
+//   src/data/names.json           all move and ability names (for search)
+//   src/data/version-groups.json  every game: generation, release order, label
+//   src/data/moves.json           type/category/power/accuracy/PP per move
 //
-// Run: pnpm index:build   (re-run when a new generation is released)
+// About 1,000 PokeAPI requests in total (one per move for moves.json), so
+// it runs at build-maintenance time, never per page view.
+//
+// Run: pnpm index:build   (re-run when a new game or generation is released)
 
 import { writeFile, mkdir } from "node:fs/promises";
 
@@ -98,3 +103,89 @@ await writeFile(
   "[\n" + index.map((p) => JSON.stringify(p)).join(",\n") + "\n]\n",
 );
 console.log(`Wrote ${index.length} Pokémon to ${out.pathname}`);
+
+/* ---------------------------------------------------------------- */
+/*  Games (version groups) and move details                          */
+/* ---------------------------------------------------------------- */
+
+/** Run `fn` over `items` with at most `limit` requests in flight. */
+async function mapLimit(items, limit, fn) {
+  const out = new Array(items.length);
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: limit }, async () => {
+      while (next < items.length) {
+        const i = next++;
+        out[i] = await fn(items[i]);
+      }
+    }),
+  );
+  return out;
+}
+
+const title = (slug) =>
+  slug
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
+// Japan-only and spin-off releases: listed after the main games.
+const SIDE_GAMES = new Set(["red-green-japan", "blue-japan", "colosseum", "xd", "champions"]);
+
+// Official spellings where the slug can't be title-cased mechanically.
+const LABELS = {
+  "red-green-japan": "Red / Green (Japan)",
+  "blue-japan": "Blue (Japan)",
+  xd: "XD: Gale of Darkness",
+  "firered-leafgreen": "FireRed / LeafGreen",
+  "heartgold-soulsilver": "HeartGold / SoulSilver",
+  "lets-go-pikachu-lets-go-eevee": "Let’s Go, Pikachu! / Eevee!",
+  "the-isle-of-armor": "The Isle of Armor (DLC)",
+  "the-crown-tundra": "The Crown Tundra (DLC)",
+  "legends-arceus": "Legends: Arceus",
+  "the-teal-mask": "The Teal Mask (DLC)",
+  "the-indigo-disk": "The Indigo Disk (DLC)",
+  "legends-za": "Legends: Z-A",
+  "mega-dimension": "Mega Dimension (DLC)",
+  champions: "Pokémon Champions",
+};
+
+const groupList = await get("version-group?limit=100");
+const groups = await mapLimit(groupList.results, 8, (g) => get(`version-group/${g.name}`));
+const versionGroups = groups
+  .map((g) => {
+    const label =
+      LABELS[g.name] ?? g.versions.map((v) => title(v.name)).join(" / ");
+    return {
+      name: g.name,
+      gen: idFromUrl(g.generation.url),
+      order: g.order,
+      label,
+      side: SIDE_GAMES.has(g.name),
+    };
+  })
+  .sort((a, b) => a.order - b.order);
+await writeFile(
+  new URL("../src/data/version-groups.json", import.meta.url),
+  "[\n" + versionGroups.map((g) => JSON.stringify(g)).join(",\n") + "\n]\n",
+);
+console.log(`Wrote ${versionGroups.length} games`);
+
+// Compact tuple per move: [type, category, power, accuracy, pp]
+const moveRefs = moves.results.filter((m) => idFromUrl(m.url) < 10000);
+let done = 0;
+const moveDetails = await mapLimit(moveRefs, 16, async (m) => {
+  const d = await get(`move/${m.name}`);
+  if (++done % 100 === 0) console.log(`  moves ${done}/${moveRefs.length}`);
+  return [m.name, [d.type.name, d.damage_class?.name ?? "status", d.power, d.accuracy, d.pp]];
+});
+await writeFile(
+  new URL("../src/data/moves.json", import.meta.url),
+  "{\n" +
+    moveDetails
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([name, t]) => `${JSON.stringify(name)}:${JSON.stringify(t)}`)
+      .join(",\n") +
+    "\n}\n",
+);
+console.log(`Wrote ${moveDetails.length} moves`);

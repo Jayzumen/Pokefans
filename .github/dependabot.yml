@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for all minor/patch updates; majors arrive separately.
+      minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # Held back on purpose: typescript-eslint supports TypeScript <6.1,
+      # ESLint plugins do not support ESLint 10 yet, and @types/node should
+      # match the Node 24 runtime.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: eslint
+        update-types: [version-update:semver-major]
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

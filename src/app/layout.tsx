@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/components/auth-provider";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 // Variable fonts: one file each covers every weight.
 const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
@@ -15,12 +16,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Pokéfans: the Pokémon field guide",
     template: "%s | Pokéfans",
   },
   description:
     "Every Pokémon, move, ability and type in one fast, beautiful field guide. Build and share your team.",
+  applicationName: SITE_NAME,
+  openGraph: { siteName: SITE_NAME, type: "website", locale: "en_US" },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {
