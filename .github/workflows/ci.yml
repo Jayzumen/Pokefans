@@ -27,7 +27,7 @@ jobs:
       NEXT_PUBLIC_FIREBASE_APP_ID: ci-placeholder
       NEXT_PUBLIC_SITE_URL: https://example.com
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6 # reads the version from package.json "packageManager"
       - uses: actions/setup-node@v4
         with:
@@ -54,7 +54,7 @@ jobs:
       NEXT_PUBLIC_FIREBASE_APP_ID: ci-placeholder
       NEXT_PUBLIC_SITE_URL: https://example.com
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v4
         with:
