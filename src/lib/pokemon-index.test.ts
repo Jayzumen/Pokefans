@@ -7,13 +7,19 @@ import {
   pokemonOfTheDay,
   resolveRefs,
 } from "./pokemon-index";
-import { artworkUrl, formatDexNumber, idFromUrl } from "./pokemon";
+import { artworkSourceUrl, artworkUrl, formatDexNumber, idFromUrl } from "./pokemon";
 
 describe("pokemon helpers", () => {
-  it("builds artwork URLs and reads ids from resource URLs", () => {
-    expect(artworkUrl(25)).toBe(
+  it("serves local WebP artwork for default Pokémon and the PNG for forms", () => {
+    expect(artworkUrl(25)).toBe("/artwork/25.webp");
+    expect(artworkUrl("1025")).toBe("/artwork/1025.webp");
+    expect(artworkUrl(10034)).toBe(artworkSourceUrl(10034)); // Mega Charizard X
+    expect(artworkSourceUrl(25)).toBe(
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
     );
+  });
+
+  it("reads ids from resource URLs", () => {
     expect(idFromUrl("https://pokeapi.co/api/v2/pokemon/25/")).toBe("25");
     expect(idFromUrl("https://pokeapi.co/api/v2/pokemon/10034")).toBe("10034");
   });

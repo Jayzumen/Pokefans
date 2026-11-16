@@ -146,3 +146,31 @@ test("pages never scroll sideways on phones", async ({ page, isMobile }) => {
     expect(overflow, path).toBeLessThanOrEqual(0);
   }
 });
+
+test("Pokémon artwork loads from static files, never the image optimizer", async ({ page }) => {
+  const optimizerRequests: string[] = [];
+  page.on("request", (r) => {
+    if (r.url().includes("/_next/image")) optimizerRequests.push(r.url());
+  });
+
+  // Gen IX: Pokémon that were never cached by the old optimizer.
+  await page.goto("/generations/9");
+  const images = page.getByRole("main").locator('img[src^="/artwork/"]');
+  await expect(images.first()).toBeVisible();
+  // Load every card image, then check none of them is broken.
+  for (const img of await images.all()) await img.scrollIntoViewIfNeeded();
+  const broken = await images.evaluateAll((els) =>
+    (els as HTMLImageElement[])
+      .filter((i) => i.complete && i.naturalWidth === 0)
+      .map((i) => i.getAttribute("src")),
+  );
+  expect(broken).toEqual([]);
+  expect(await images.count()).toBeGreaterThan(100);
+
+  const res = await page.request.get("/artwork/1025.webp");
+  expect(res.ok()).toBe(true);
+  expect(res.headers()["content-type"]).toBe("image/webp");
+  expect(res.headers()["cache-control"]).toContain("max-age=2592000");
+
+  expect(optimizerRequests).toEqual([]);
+});

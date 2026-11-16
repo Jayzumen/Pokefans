@@ -54,10 +54,11 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
-    // Optimised WebP instead of ~100–200 KB source PNGs per artwork.
-    formats: ["image/webp"],
-    // Artwork never changes; cache optimised images for a year.
-    minimumCacheTTL: 60 * 60 * 24 * 365,
+    // No runtime image optimizer: the hosted optimizer has a monthly quota
+    // that ~1,025 artworks exhaust quickly (requests then fail with 402).
+    // Artwork is pre-converted to small WebP files in public/artwork by
+    // `pnpm artwork:build` and served as plain static files instead.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -67,7 +68,20 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      {
+        // Artwork only changes when regenerated; let browsers and the CDN
+        // keep it for 30 days and refresh it in the background afterwards.
+        source: "/artwork/:file*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, stale-while-revalidate=604800",
+          },
+        ],
+      },
+    ];
   },
 };
 

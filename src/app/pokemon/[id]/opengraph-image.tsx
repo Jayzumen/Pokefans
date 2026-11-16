@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { artworkUrl, formatDexNumber } from "@/lib/pokemon";
+import { artworkSourceUrl, formatDexNumber } from "@/lib/pokemon";
 import { findPokemon } from "@/lib/pokemon-index";
 import { TYPE_HEX } from "@/lib/site";
 
@@ -77,7 +77,7 @@ export default async function Image({
         </div>
         {p && (
           // eslint-disable-next-line @next/next/no-img-element -- rendered by Satori, not the browser
-          <img src={artworkUrl(p.id)} width={500} height={500} alt="" />
+          <img src={artworkSourceUrl(p.id)} width={500} height={500} alt="" />
         )}
       </div>
     ),

@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { artworkUrl } from "@/lib/pokemon";
+import { artworkSourceUrl } from "@/lib/pokemon";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -38,7 +38,7 @@ export default function Image() {
             // eslint-disable-next-line @next/next/no-img-element -- rendered by Satori
             <img
               key={p.id}
-              src={artworkUrl(p.id)}
+              src={artworkSourceUrl(p.id)}
               width={p.size}
               height={p.size}
               alt=""
