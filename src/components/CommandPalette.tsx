@@ -74,9 +74,10 @@ function search(raw: string): Item[] {
       href: `/pokemon/${p.name}`,
       hint: formatDexNumber(p.id),
       icon: (
-        // eslint-disable-next-line @next/next/no-img-element -- small, already-optimised thumbnail
+        // eslint-disable-next-line @next/next/no-img-element -- small static WebP thumbnail
         <img
-          src={`/_next/image?url=${encodeURIComponent(artworkUrl(p.id))}&w=64&q=75`}
+          src={artworkUrl(p.id)}
+          loading="lazy"
           alt=""
           className="size-8 rounded-md object-contain"
           style={typeVars(p.types)}

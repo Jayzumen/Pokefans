@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import names from "@/data/names.json";
 import moves from "@/data/moves.json";
@@ -58,6 +60,13 @@ describe("generated static data", () => {
       expect(TYPE_NAMES as readonly string[]).toContain(tuple[0]);
       expect(["physical", "special", "status"]).toContain(tuple[1]);
     }
+  });
+
+  it("ships a WebP artwork file for every Pokémon (run pnpm artwork:build)", () => {
+    const missing = pokemonIndex
+      .filter((p) => !existsSync(join(process.cwd(), "public", "artwork", `${p.id}.webp`)))
+      .map((p) => p.id);
+    expect(missing).toEqual([]);
   });
 
   it("has sorted, unique move and ability names", () => {
