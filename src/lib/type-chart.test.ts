@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { defensiveProfile, formatMultiplier, multiplier, multiplierVs } from "./type-chart";
+import {
+  defensiveProfile,
+  formatMultiplier,
+  multiplier,
+  multiplierVs,
+  typeRelations,
+} from "./type-chart";
 
 describe("type chart", () => {
   it("knows single-type matchups", () => {
@@ -31,6 +37,21 @@ describe("type chart", () => {
       { multiplier: 2, types: ["fighting"] },
       { multiplier: 0, types: ["ghost"] },
     ]);
+  });
+
+  it("derives the same damage relations PokeAPI's /type endpoint returns", () => {
+    const fire = typeRelations("fire");
+    const sorted = (list: readonly string[]) => [...list].sort();
+    expect(sorted(fire.double_damage_to)).toEqual(["bug", "grass", "ice", "steel"]);
+    expect(sorted(fire.half_damage_to)).toEqual(["dragon", "fire", "rock", "water"]);
+    expect(fire.no_damage_to).toEqual([]);
+    expect(sorted(fire.double_damage_from)).toEqual(["ground", "rock", "water"]);
+    expect(sorted(fire.half_damage_from)).toEqual(["bug", "fairy", "fire", "grass", "ice", "steel"]);
+    expect(fire.no_damage_from).toEqual([]);
+
+    expect(sorted(typeRelations("ghost").no_damage_from)).toEqual(["fighting", "normal"]);
+    expect(typeRelations("normal").no_damage_to).toEqual(["ghost"]);
+    expect(sorted(typeRelations("fairy").no_damage_from)).toEqual(["dragon"]);
   });
 
   it("formats fractions for display", () => {

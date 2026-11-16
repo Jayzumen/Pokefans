@@ -1,5 +1,5 @@
 import { TypeChip } from "../TypeChip";
-import type { TypeData, Type } from "@/types/typeTypes";
+import { typeRelations } from "@/lib/type-chart";
 
 function Row({
   multiplier,
@@ -8,7 +8,7 @@ function Row({
 }: {
   multiplier: string;
   label: string;
-  types: Type[];
+  types: readonly string[];
 }) {
   return (
     <div className="grid gap-2 py-4 sm:grid-cols-[10.5rem_1fr] sm:items-center">
@@ -20,7 +20,7 @@ function Row({
       </dt>
       <dd className="flex flex-wrap gap-1.5">
         {types.length > 0 ? (
-          types.map((t) => <TypeChip key={t.name} type={t.name} />)
+          types.map((t) => <TypeChip key={t} type={t} />)
         ) : (
           <span className="text-sm text-muted-foreground">None</span>
         )}
@@ -29,8 +29,9 @@ function Row({
   );
 }
 
-export default function DamageRelations({ typeData }: { typeData: TypeData }) {
-  const d = typeData.damage_relations;
+/** Attack and defence multipliers for one type, from the static type chart. */
+export default function DamageRelations({ type }: { type: string }) {
+  const d = typeRelations(type);
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <section className="surface p-6" aria-labelledby="attacking">
@@ -38,7 +39,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
           When attacking
         </h2>
         <p className="text-sm text-muted-foreground">
-          How much damage <span className="capitalize">{typeData.name}</span>{" "}
+          How much damage <span className="capitalize">{type}</span>{" "}
           moves deal to…
         </p>
         <dl className="mt-2 divide-y">
@@ -52,7 +53,7 @@ export default function DamageRelations({ typeData }: { typeData: TypeData }) {
           When defending
         </h2>
         <p className="text-sm text-muted-foreground">
-          How much damage <span className="capitalize">{typeData.name}</span>{" "}
+          How much damage <span className="capitalize">{type}</span>{" "}
           Pokémon take from…
         </p>
         <dl className="mt-2 divide-y">

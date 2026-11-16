@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Container, PageHeader, Section } from "@/components/layout";
 import { PokemonGrid } from "@/components/PokemonCard";
 import DamageRelations from "@/components/typesPage/DamageRelations";
-import { pokeapi, slugOrNotFound } from "@/lib/pokeapi";
-import { resolveRefs } from "@/lib/pokemon-index";
-import { TYPE_NAMES, typeVars } from "@/lib/types";
-import { TypeData } from "@/types/typeTypes";
+import { notFound } from "next/navigation";
+import { pokemonIndex } from "@/lib/pokemon-index";
+import { isTypeName, TYPE_NAMES, typeVars } from "@/lib/types";
 
 export const dynamicParams = false;
 
@@ -32,11 +31,13 @@ export default async function TypePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const typeData = await pokeapi<TypeData>(`type/${slugOrNotFound(id)}`);
-  const pokemon = resolveRefs(typeData.pokemon.map((p) => p.pokemon));
+  // Built entirely from static data: no PokeAPI request, even at build time.
+  if (!isTypeName(id)) notFound();
+  const type = id;
+  const pokemon = pokemonIndex.filter((p) => p.types.includes(type));
 
   return (
-    <main style={typeVars([typeData.name])}>
+    <main style={typeVars([type])}>
       <PageHeader
         className="type-surface"
         eyebrow="Type"
@@ -48,16 +49,16 @@ export default async function TypePage({
               style={{ background: "var(--t)" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element -- tiny static SVG */}
-              <img src={`/typeImages/${typeData.name}.svg`} alt="" className="size-full" />
+              <img src={`/typeImages/${type}.svg`} alt="" className="size-full" />
             </span>
-            {typeData.name}
+            {type}
           </span>
         }
-        description={`${pokemon.length} Pokémon have the ${typeData.name} type.`}
+        description={`${pokemon.length} Pokémon have the ${type} type.`}
       />
       <Container>
         <Section title="Damage relations">
-          <DamageRelations typeData={typeData} />
+          <DamageRelations type={type} />
         </Section>
         <Section title={`${pokemon.length} Pokémon`} className="pt-0">
           <PokemonGrid pokemon={pokemon} />

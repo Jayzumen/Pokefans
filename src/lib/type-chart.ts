@@ -29,6 +29,32 @@ export function defensiveProfile(types: readonly string[]) {
     .map((m) => ({ multiplier: m, types: groups.get(m)! }));
 }
 
+export interface TypeRelations {
+  double_damage_to: TypeName[];
+  half_damage_to: TypeName[];
+  no_damage_to: TypeName[];
+  double_damage_from: TypeName[];
+  half_damage_from: TypeName[];
+  no_damage_from: TypeName[];
+}
+
+/**
+ * The same six lists PokeAPI's /type endpoint returns, computed from the
+ * static chart so type pages need no network request (not even at build).
+ */
+export function typeRelations(type: string): TypeRelations {
+  const to = (m: number) => TYPE_NAMES.filter((d) => CHART[type]?.[d] === m);
+  const from = (m: number) => TYPE_NAMES.filter((a) => CHART[a]?.[type] === m);
+  return {
+    double_damage_to: to(2),
+    half_damage_to: to(0.5),
+    no_damage_to: to(0),
+    double_damage_from: from(2),
+    half_damage_from: from(0.5),
+    no_damage_from: from(0),
+  };
+}
+
 export function formatMultiplier(m: number) {
   if (m === 0.5) return "½";
   if (m === 0.25) return "¼";

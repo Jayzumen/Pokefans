@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { mapLimit, pokeapi, randomIds, slugOrNotFound } from "./pokeapi";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mapLimit, pokeapi, pokeapiOr, randomIds, retryDelay, slugOrNotFound } from "./pokeapi";
 
 /** next/navigation's notFound() throws an error tagged with this digest. */
 const isNotFound = (e: unknown) =>
@@ -112,8 +112,76 @@ describe("pokeapi", () => {
     expect(isNotFound(error)).toBe(true);
   });
 
-  it("throws on other errors so the error page shows", async () => {
-    stubFetch(503);
-    await expect(pokeapi("pokemon/1")).rejects.toThrow(/503/);
+  describe("retries", () => {
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    /** Replies in order; each item is a status code or "reset" (network error). */
+    const stubSequence = (...replies: (number | "reset")[]) => {
+      const fetchMock = vi.fn(async (_url: string, _init?: RequestInit) => {
+        const next = replies.shift() ?? 200;
+        if (next === "reset") throw new TypeError("fetch failed", { cause: { code: "ECONNRESET" } });
+        return new Response(JSON.stringify({ ok: next }), { status: next });
+      });
+      vi.stubGlobal("fetch", fetchMock);
+      return fetchMock;
+    };
+
+    /** Run the request while letting the backoff timers elapse instantly. */
+    const settle = async <T,>(promise: Promise<T>) => {
+      const result = promise.then(
+        (value) => ({ value }),
+        (error: unknown) => ({ error }),
+      );
+      await vi.runAllTimersAsync();
+      return result;
+    };
+
+    it("recovers from a dropped connection (the ECONNRESET build failure)", async () => {
+      const fetchMock = stubSequence("reset", 200);
+      expect(await settle(pokeapi("type/fairy"))).toEqual({ value: { ok: 200 } });
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it("retries rate limiting and server errors with growing delays", async () => {
+      const fetchMock = stubSequence(429, 502, 503, 200);
+      expect(await settle(pokeapi("move/1"))).toEqual({ value: { ok: 200 } });
+      expect(fetchMock).toHaveBeenCalledTimes(4);
+      expect([1, 2, 3].map(retryDelay)).toEqual([400, 1200, 3600]);
+    });
+
+    it("gives up after four attempts", async () => {
+      const fetchMock = stubSequence(503, 503, 503, 503);
+      const result = await settle(pokeapi("pokemon/1"));
+      expect(String((result as { error: unknown }).error)).toMatch(/503/);
+      expect(fetchMock).toHaveBeenCalledTimes(4);
+    });
+
+    it("rethrows the network error after the last attempt", async () => {
+      stubSequence("reset", "reset", "reset", "reset");
+      const result = await settle(pokeapi("pokemon/1"));
+      expect(String((result as { error: unknown }).error)).toMatch(/fetch failed/);
+    });
+
+    it("does not retry client errors or 404s", async () => {
+      let fetchMock = stubSequence(400);
+      await settle(pokeapi("pokemon/1"));
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+
+      fetchMock = stubSequence(404);
+      const result = await settle(pokeapi("pokemon/missingno"));
+      expect(isNotFound((result as { error: unknown }).error)).toBe(true);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("pokeapiOr falls back instead of failing, but keeps 404s", async () => {
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      stubSequence(503, 503, 503, 503);
+      expect(await settle(pokeapiOr("move/1", null))).toEqual({ value: null });
+
+      stubSequence(404);
+      const result = await settle(pokeapiOr("move/missingno", null));
+      expect(isNotFound((result as { error: unknown }).error)).toBe(true);
+    });
   });
 });

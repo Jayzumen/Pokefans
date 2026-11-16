@@ -3,9 +3,10 @@ import Link from "next/link";
 import { Container, PageHeader } from "@/components/layout";
 import { NameSearch } from "@/components/NameSearch";
 import { describe } from "@/lib/entries";
-import { pokeapi, randomIds } from "@/lib/pokeapi";
+import { pokeapiOr, randomIds } from "@/lib/pokeapi";
 import { titleCase } from "@/lib/types";
-import { Ability, AbilityData } from "@/types/abilityTypes";
+import names from "@/data/names.json";
+import { AbilityData } from "@/types/abilityTypes";
 
 export const metadata: Metadata = {
   title: "Abilities",
@@ -14,17 +15,17 @@ export const metadata: Metadata = {
 
 // Re-pick the featured abilities once per hour.
 export const revalidate = 3600;
-const MAX_ABILITY_ID = 298;
 
 export default async function AbilityPage() {
-  const [featured, list] = await Promise.all([
-    Promise.all(
-      randomIds(9, MAX_ABILITY_ID).map((id) =>
-        pokeapi<AbilityData>(`ability/${id}`),
+  // The searchable list is static. The random featured cards are an extra:
+  // if PokeAPI is unreachable, the page still renders (and builds) without them.
+  const featured = (
+    await Promise.all(
+      randomIds(9, names.abilities.length).map((i) =>
+        pokeapiOr<AbilityData | null>(`ability/${names.abilities[i - 1]}`, null),
       ),
-    ),
-    pokeapi<{ results: Ability[] }>("ability?limit=400"),
-  ]);
+    )
+  ).filter((a): a is AbilityData => a !== null);
 
   return (
     <main>
@@ -35,13 +36,18 @@ export default async function AbilityPage() {
       />
       <Container className="py-10">
         <NameSearch
-          names={list.results.map((a) => a.name)}
+          names={names.abilities}
           basePath="/abilities"
           noun="ability"
           plural="abilities"
           placeholder="Levitate, intimidate…"
         >
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.length === 0 && (
+            <p className="surface px-6 py-10 text-center text-muted-foreground">
+              Featured abilities are unavailable right now. Search by name above.
+            </p>
+          )}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 empty:hidden">
             {featured.map((a) => (
               <Link
                 key={a.id}

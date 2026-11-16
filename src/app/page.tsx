@@ -2,7 +2,7 @@ import Bento from "@/components/home/Bento";
 import Hero from "@/components/home/Hero";
 import { Container, Section } from "@/components/layout";
 import { PokemonGrid } from "@/components/PokemonCard";
-import { pokeapi } from "@/lib/pokeapi";
+import names from "@/data/names.json";
 import { pokemonIndex, pokemonOfTheDay } from "@/lib/pokemon-index";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -12,22 +12,15 @@ import { ArrowRight } from "lucide-react";
 // shortly after midnight UTC.
 export const revalidate = 3600;
 
-async function getCounts() {
-  // Two tiny, week-cached requests just for the totals.
-  const [moves, abilities] = await Promise.all([
-    pokeapi<{ count: number }>("move?limit=1"),
-    pokeapi<{ count: number }>("ability?limit=1"),
-  ]);
-  return {
-    pokemon: pokemonIndex.length,
-    moves: moves.count,
-    abilities: abilities.count,
-  };
-}
+// Totals come from the static data: no network request, even at build time.
+const counts = {
+  pokemon: pokemonIndex.length,
+  moves: names.moves.length,
+  abilities: names.abilities.length,
+};
 
-export default async function Home() {
+export default function Home() {
   const [star, ...featured] = pokemonOfTheDay(7);
-  const counts = await getCounts();
 
   return (
     <main>
